@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+	<table class="table table-bordered">
+	  <thead>
+	    <tr>
+	      <th scope="col">Ticker</th>
+	      <th scope="col">Analysis Summary</th>
+	      
+	      <th scope="col">Oscillators</th>
+	      <th scope="col">Moving Averages</th>
+	      <th scope="col">Indicators</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for result in results %}
+	      <tr>
+	        <td>{{ result.ticker }}</td>
+	        <td>{% if result.analysis_summary.RECOMMENDATION == "BUY" or result.analysis_summary.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.analysis_summary.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.analysis_summary.RECOMMENDATION }}</p> {% endif %}</td>
+	        <td>{% if result.oscillators.RECOMMENDATION == "BUY" or result.oscillators.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.oscillators.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.oscillators.RECOMMENDATION }}</p> {% endif %}</td>
+        	<td>{% if result.moving_averages.RECOMMENDATION == "BUY" or result.moving_averages.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.moving_averages.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.moving_averages.RECOMMENDATION }}</p> {% endif %}</td>
+        	<td>{% if result.indicators.RECOMMENDATION == "BUY" %} <p class="text-success">{{ result.indicators.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.indicators.RECOMMENDATION }}</p> {% endif %}</td>
+      	  </tr>
+   		{% endfor %}
+  		</tbody>
+	</table>
+
+{% endblock %}

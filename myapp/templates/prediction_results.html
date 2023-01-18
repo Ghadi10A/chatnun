@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container">
+    <div class="text-center">
+       <div><h3>News: </h3></div>
+        <div id="news-ticker" style="background: #eee;height: 66px;">
+            <ul style="margin-top: 20px;">
+            {% for article in articles %}
+              <li><a href="{{ article.url }}" target="_blank">{{ article.title }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+      </div>
+      <br>
+      
+      <h2 class="card-title text-center">Prediction Results of : {{ ticker }}</h2>
+    
+          <br>
+          <div class="text-center">
+            <table class="table table-bordered">
+            <thead>
+              <tr class="table-dark text-white">
+                <th scope="col">Close Price</th>
+                <th scope="col">Volume Weighted Average Price</th>
+                <th scope="col">Market Signal</th>
+                <th scope="col">Accuracy Score</th>
+                <th scope="col">Last Diffrence Change</th>
+                <th scope="col">Last Diffrence Change Percent</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="table-dark text-success">
+                <th scope="row">{{ close_price }}</th>
+                <td>{{ vwap }}</td>
+                <td>{{ signal }}</td>
+                <td>{{ accuracy }}</td>
+                <td>{{ last_diff }}</td>
+                <td>{{ last_diff_percent }}%</td>
+              </tr>
+            </tbody>
+            </table>
+          </div>
+          <div class="text-center"><div id="chart"></div></div>
+
+          <script src="{% static 'd3/d3.min.js' %}"></script>
+          <script>
+              // Chart dimensions
+              var width = 960;
+              var height = 500;
+              var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+
+              // Chart data
+              var data = {{ data|safe }};
+
+              // Scale functions
+              var x = d3.scaleTime()
+                  .range([margin.left, width - margin.right]);
+              var y = d3.scaleLinear()
+                  .range([height - margin.bottom, margin.top]);
+              var yVolume = d3.scaleLinear()
+                  .range([height - margin.bottom, margin.top]);
+
+              // Axis functions
+              var xAxis = d3.axisBottom(x)
+                  .tickFormat(d3.timeFormat('%m/%d'));
+              var yAxis = d3.axisLeft(y)
+                  .tickFormat(d3.format('.2f'));
+              var yAxisVolume = d3.axisRight(yVolume)
+                  .tickFormat(d3.format('.2s'));
+
+              // Candlestick function
+              var candlestick = fc.seriesCandlestick()
+                  .xScale(x)
+                  .yScale(y);
+              var volume = fc.seriesBar()
+                  .xScale(x)
+                  .yScale(yVolume);
+
+              // Chart function
+              var chart = fc.chart()
+                  .width(width)
+                  .height(height)
+                  .margin(margin);
+              chart.xDomain(d3.extent(data, function(d) { return d.date; }));
+              chart.yDomain(fc.extentLinear().accessors([
+                  function(d) { return d.low; },
+                  function(d) { return d.high; }
+              ])(data));
+              chart.yDomainVolume(fc.extentLinear().accessors([
+                  function(d) { return d.volume; }
+              ])(data));
+
+              // Add the axes
+              chart.xAxis(xAxis);
+              chart.yAxis(yAxis);
+              chart.yAxisVolume(yAxisVolume);
+
+              // Add the series
+              chart.plotArea(candlestick);
+              chart.plotArea(volume);
+
+              // Render the chart
+              d3.select('#chart')
+                  .datum(data)
+                  .call(chart);
+          </script>
+   </div>
+   <br>
+   {# Add a jumbotron component #}
+  <div class="jumbotron text-center">
+            <h1 class="display-5">Welcome to Financial Predictions</h1>
+            <p class="lead">Use our machine learning model to predict the movement of financial instruments.</p>
+            <hr class="my-4">
+            <p>Select an instrument from the dropdown above and click "Predict" to see the result.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+  </div>
+  <div class="row mt-5"  style="margin-bottom: 166px;">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/images.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">About the Model</h5>
+                        <p class="card-text">Our model uses advanced machine learning algorithms to predict the movement of financial instruments based on historical data and market conditions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/download.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Supported Instruments</h5>
+                        <p class="card-text">Our model currently supports prediction for the following instruments: NASDAQ 100, Amazon, Apple, Tesla, Google, Meta, Gold, Oil, BTC.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/down.jpeg' %}" class="card-img-top" alt="..." >
+                    <div class="card-body">
+                        <h5 class="card-title">Accuracy</h5>
+                        <p class="card-text">Our model has a high accuracy rate and is constantly being improved to provide the most reliable predictions possible. and always in developement
+                        </p>
+                    </div>
+                </div>  
+            </div> 
+        </div>
+    </div>          
+{% endblock %}

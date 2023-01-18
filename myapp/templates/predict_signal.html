@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+      <br>
+  <div class="card">
+        
+  <div class="card-header" id="card-header">
+  <h1 class="text-center">Predict Market Signal</h1>
+  </div>
+  <br>
+  <div class="card-body">
+  <form method="post">
+    <div class="row align-items-start">
+    <div class="col">
+    {% csrf_token %}
+    {{ form.as_p }}
+     </div>
+    <div class="col">
+    <button type="submit" class="btn btn-primary w-100">Submit</button>
+    </div>
+    </div>
+  </form>
+  </div>
+  </div>
+  <br>
+  <br>
+  {# Add a jumbotron component #}
+  <div class="jumbotron text-center">
+            <h1 class="display-5">Welcome to Financial Predictions</h1>
+            <p class="lead">Use our machine learning model to predict the movement of financial instruments.</p>
+            <hr class="my-4">
+            <p>Select an instrument from the dropdown above and click "Predict" to see the result.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
+  </div>
+  <div class="row mt-5"  style="margin-bottom: 166px;">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/images.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">About the Model</h5>
+                        <p class="card-text">Our model uses advanced machine learning algorithms to predict the movement of financial instruments based on historical data and market conditions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/download.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Supported Instruments</h5>
+                        <p class="card-text">Our model currently supports prediction for the following instruments: NASDAQ 100, Amazon, Apple, Tesla, Google, Meta, Gold, Oil, BTC.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/down.jpeg' %}" class="card-img-top" alt="..." >
+                    <div class="card-body">
+                        <h5 class="card-title">Accuracy</h5>
+                        <p class="card-text">Our model has a high accuracy rate and is constantly being improved to provide the most reliable predictions possible. and always in developement
+                        </p>
+                    </div>
+                </div>  
+            </div> 
+        </div>
+    </div>
+{% endblock %}

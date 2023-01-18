@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4">Profile</h1>
+
+  <!-- Follow and followers elements -->
+  <div class="row mb-5">
+    <div class="col-6">
+      <h5>Following</h5>
+      {% for user in following %}
+      <p>{{ user }}</p>
+      {% endfor %}
+    </div>
+    <div class="col-6">
+      <h5>Followers</h5>
+      {% for user in followers %}
+      <p>{{ user }}</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Favorite tickers element -->
+  <h5>Favorite Tickers</h5>
+  <div class="row">
+    {% for ticker in favorites %}
+    <div class="col-3 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ ticker }}</h5>
+          <button class="btn btn-secondary" onclick="location.href='{% url 'view_ticker_performance' ticker %}'">View Performance</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Prediction history element -->
+  <h5 class="mt-5">Prediction History</h5>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Ticker</th>
+        <th scope="col">Accuracy</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prediction in prediction_history %}
+      <tr>
+        <td>{{ prediction.ticker }}</td>
+        <td>{{ prediction.accuracy }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

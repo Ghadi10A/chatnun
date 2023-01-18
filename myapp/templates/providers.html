@@ -1,0 +1,5 @@
+{% if provider.id == 'google' %}
+    <a class="btn btn-secondary" href="{% provider_login_url provider.id process='login' %}">
+        Sign in with {{ provider.name }}
+    </a>
+{% endif %}
