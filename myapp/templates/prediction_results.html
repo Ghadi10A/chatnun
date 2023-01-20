@@ -30,10 +30,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="table-dark text-success">
+              <tr class="table-dark">
                 <th scope="row">{{ close_price }}</th>
                 <td>{{ vwap }}</td>
-                <td>{{ signal }}</td>
+                <td>{% if signal == "buy" %}<p class="text-success">{{ signal }}</p>{% else %} <p class="text-danger">{{ signal }}</p>{% endif %}</td>
                 <td>{{ accuracy }}</td>
                 <td>{{ last_diff }}</td>
                 <td>{{ last_diff_percent }}%</td>
