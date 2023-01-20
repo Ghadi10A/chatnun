@@ -1,1 +1,1 @@
-web: gunicorn predictMarkets.wsgi --log-file -
+web: gunicorn predictMarkets.wsgi.application --log-file -
