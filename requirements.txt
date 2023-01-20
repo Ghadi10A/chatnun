@@ -10,7 +10,6 @@ beautifulsoup4==4.11.1
 bidict==0.22.1
 billiard==3.6.4.0
 bokeh==3.0.3
-celery==5.2.7
 certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer==2.1.1
@@ -29,7 +28,6 @@ django-apscheduler==0.6.2
 django-bootstrap-icons==0.8.2
 django-bootstrap-v5==1.0.11
 django-bootstrap5==22.2
-django-celery-beat==2.4.0
 django-heroku==0.3.1
 django-modeltranslation==0.18.7
 django-timezone-field==5.0

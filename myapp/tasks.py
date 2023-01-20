@@ -1,4 +1,3 @@
-from django_celery_beat.models import PeriodicTask, CrontabSchedule
 from django.utils import timezone
 from tradingview_ta import TA_Handler, Interval, Exchange
 from django.shortcuts import render
@@ -46,26 +45,4 @@ def scanner(request):
         results.append(result)
 
     # Render the scanner.html template and pass the results to the template
-    print(results)
     return results
-
-
-def schedule_predictions():
-    # Create a crontab schedule for every hour
-    schedule, created = CrontabSchedule.objects.get_or_create(
-        minute='0',
-        hour='*',
-        day_of_week='*',
-        day_of_month='*',
-        month_of_year='*',
-        timezone=timezone.utc,
-    )
-    # Create a periodic task to call the automate_predictions function
-    task, created = PeriodicTask.objects.get_or_create(
-        crontab=schedule,
-        name='Automate predictions',
-        task='myapp.utils.automate_predictions',
-    )
-
-# Run the scheduling function on startup
-schedule_predictions()

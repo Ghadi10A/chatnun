@@ -15,8 +15,6 @@ from bokeh.plotting import figure, output_file
 from bokeh.embed import components
 from apscheduler.schedulers.background import BackgroundScheduler
 
-#celery -A myapp worker -l info
-
 def automate_predictions():
     while True:
         for instrument in Prediction.INSTRUMENTS:
