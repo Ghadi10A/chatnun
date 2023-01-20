@@ -23,5 +23,22 @@
    		{% endfor %}
   		</tbody>
 	</table>
+	<br>
+	<table class="table table-bordered">
+	  <thead>
+	    <tr>
+	      <th scope="col">Ticker</th>
+	      <th scope="col">Indicators</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    {% for result in results %}
+	      <tr>
+	        <td>{{ result.ticker }}</td>
+        	<td>{{ result.indicators.RECOMMENDATION }}</td>
+      	  </tr>
+   		{% endfor %}
+  		</tbody>
+	</table>
 
 {% endblock %}
