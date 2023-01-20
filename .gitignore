@@ -1,6 +1,6 @@
 # Distribution / packaging
 .Python
-venv/
+my_env/
 env/
 *.sqlite3
 .idea/
