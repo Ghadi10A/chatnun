@@ -35,7 +35,7 @@ def calculate_vwap(ticker):
     return data['vwap'][-1]
 
 def predict_signal(ticker):
-    conn = psycopg2.connect(host="ec2-3-218-171-44.compute-1.amazonaws.com", user="tgjmzvivuenzpj", password="ce5308e80b98ffa36c801aa819faac8d4f17729db81a2bf5fa613329cc0c5f32", dbname="d7f8rqmt3g6vk6")
+    conn = psycopg2.connect(host="localhost", user="postgres", password="Aminn2023", dbname="predictMarkets")
     cursor = conn.cursor()
     cursor.execute("CREATE TABLE models (id SERIAL PRIMARY KEY, model BYTEA)")
     model_file = f"{ticker}.model.pkl"
