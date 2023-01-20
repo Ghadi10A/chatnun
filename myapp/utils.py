@@ -43,7 +43,7 @@ def predict_signal(ticker):
     if os.path.exists(model_file):
         # Load the trained model from the pickle file
         with open(model_file, 'rb') as f:
-            clf = pickle.load(f)
+            model = pickle.load(f)
     else:
         # Retrieve financial data for the instrument using yfinance
         data = yf.Ticker(ticker).history(period="max")
