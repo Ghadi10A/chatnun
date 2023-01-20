@@ -2,7 +2,7 @@ from django.urls import include, path
 from . import views
 
 urlpatterns = [
-    path('', views.predict_signals, name='predict_signals'),
+    path('/predict_signals', views.predict_signals, name='predict_signals'),
     path('accounts/profile/<str:username>', include('django.contrib.auth.urls')),
     path('signup/', views.user_signup, name='signup'),
     path('login/', views.user_login, name='login'),
