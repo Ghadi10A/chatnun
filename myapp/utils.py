@@ -8,6 +8,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from django.core.mail import send_mail
 from .models import Prediction
 import psycopg2
@@ -46,35 +47,47 @@ def predict_signal(ticker):
     else:
         # Retrieve financial data for the instrument using yfinance
         data = yf.Ticker(ticker).history(period="max")
+        # Calculate the VWAP
+        data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
+        # Calculate the moving average of the close price over the past 20 days
+        data['MA'] = data['Close'].rolling(20).mean()
         # Use pandas to preprocess the data
-        data = pd.DataFrame(data)
-        data['target'] = data['Close'].shift(-1) > data['Close']
         data.dropna(inplace=True)
+        scaler = StandardScaler()
+        scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+        data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+        # Define the target variable
+        data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
         # Split the data into training and testing sets
-        X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
-        y = data['target']
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
-        # Train a Random Forest classifier on the training data
-        clf = RandomForestClassifier()
-        clf.fit(X_train, y_train)
+        # Split the data into training and testing sets
+        X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
+        y = data['Signal']
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Fit a random forest classifier to the training data
+        model = RandomForestClassifier()
+        model.fit(X_train, y_train)
         # Save the trained model to a pickle file
         with open(model_file, 'wb') as f:
-            pickle.dump(clf, f)
+            pickle.dump(model, f)
             cursor.execute("INSERT INTO models (model) VALUES (%s)", (psycopg2.Binary(f),))
             conn.commit()
             conn.close()
     # Use the trained model to make predictions on the latest data
-    data = yf.Ticker(ticker).history(period="max")
-    X_latest = data[['Open', 'High', 'Low', 'Close', 'Volume']]
-    y_pred = clf.predict(X_latest)
-    accuracy = clf.score(X_latest, y_pred)
+    latest_data = yf.Ticker(ticker).history(period="5m").iloc[-1]
+    X_latest = latest_data[['Open', 'High', 'Low', 'Close', 'Volume']]
+    y_pred = model.predict(X_latest)
+    accuracy = model.score(X_latest, y_pred)
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
+    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']].values.reshape(1, -1))
+    prediction = model.predict(scaled_latest_data)[0]
     # Determine the predicted market signal based on the model's predictions
-    if y_pred[0]:
+    if prediction == 1:
         signal = 'buy'
-    else:
+    elif prediction == 0:
         signal = 'sell'
+    else:
+        signal = 'Neutral'    
     return data['Close'][-1], signal, accuracy, last_diff, last_diff_percent
 
 def get_historical_data(ticker):
