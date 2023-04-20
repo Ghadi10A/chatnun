@@ -150,7 +150,11 @@ USE_TZ = True
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+=======
+STATICFILES_DIRS = [BASE_DIR / 'static']
+>>>>>>> parent of 008ff0a... Clean Repo
 =======
 STATICFILES_DIRS = [BASE_DIR / 'static']
 >>>>>>> parent of 008ff0a... Clean Repo
