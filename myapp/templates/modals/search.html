@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<style type="text/css">
+  label {
+    display: none;
+  }
+  #chat-log {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #chat-log li {
+    display: flex;
+    margin-bottom: 10px;
+  }
+  
+  #chat-log li:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+  
+  #chat-log li .message-content {
+    background-color: #DCF8C6;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  
+  #chat-log li:nth-child(even) .message-content {
+    background-color: #F0F0F0;
+  }
+  
+  #chat-log li .message-timestamp {
+    font-size: 12px;
+    color: gray;
+    margin-left: 10px;
+  }
+  
+  #chat-log li .profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  #chat-log li:nth-child(even) .profile-image {
+    margin-right: 0;
+    margin-left: 10px;
+  }
+
+  .float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+</style>
+<div class="container ">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+        <div class="card-body">
+           <form method="GET" action="{% url 'search_users' %}">
+    {% csrf_token %}
+    {{ search_form.as_p }}
+    <button type="submit" class="btn btn-primary">{% trans "Search" %}</button>
+  </form>
+  <br>
+          <h4 class="mb-3">{% trans "Saved Conversations" %}</h4>
+          <hr>
+          <div class="list-group">
+           {% for conversation in conversations %}
+              {% if conversation.sender == request.user %}
+                {% with recipient=conversation.recipient %}
+                  <div class="conversation">
+                    <a href="{% url 'message_thread' recipient.username %}">
+                      <img src="{{ recipient.profile.image.url }}" alt="Profile Image" class="profile-image">
+                      <span class="username">{{ recipient.username }}</span>
+                      <span class="last-message">{{ conversation.content }}</span>
+                      <span class="timestamp">{{ conversation.timestamp|date:"F j, Y, g:i a" }}</span>
+                    </a>
+                  </div>
+                {% endwith %}
+              {% else %}
+                {% with sender=conversation.sender %}
+                  <div class="conversation">
+                    <a href="{% url 'message_thread' sender.username %}">
+                      <img src="{{ sender.profile.image.url }}" alt="Profile Image" class="profile-image">
+                      <span class="username">{{ sender.username }}</span>
+                      <span class="last-message">{{ conversation.content }}</span>
+                      <span class="timestamp">{{ conversation.timestamp|date:"F j, Y, g:i a" }}</span>
+                    </a>
+                  </div>
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+
+   <h2>{% trans "Search Results" %}</h2>
+ 
+
+    <h4>Users</h4>
+ <ul class="list-group">
+  {% if users %}
+  {% for user in users %}
+    <li class="list-group-item"><a href="{% url 'message_thread' username=user.username %}">{{ user.username }}</a></li>
+  {% endfor %}
+{% else %}
+  <li class="list-group-item"><span style="font-size: 12px;color: gray">{% trans "No users found" %}.</span></li>
+{% endif %}
+
+</ul>
+
+{% if users %}
+  {% if threads %}
+    <h4>Threads</h4>
+    <ul class="list-group mt-3">
+      {% for thread in threads %}
+        <li class="list-group-item">
+          <a href="{% url 'message_thread' thread.user.username %}">
+            {% if thread.last_message %}
+              {{ thread.last_message.content|truncatechars:30 }}
+            {% else %}
+              {% trans "No messages" %}
+            {% endif %}
+          </a>
+        </li>
+      {% empty %}
+        <li class="list-group-item">{% trans "No threads found" %}.</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>{% trans "No threads found" %}.</p>
+  {% endif %}
+{% else %}
+  {% if threads %}
+    <p>{% trans "No users found" %}.</p>
+  {% else %}
+    <p>{% trans "No users or threads found" %}.</p>
+  {% endif %}
+{% endif %}
+ 
+  </div>
+  </div>
+  </div>
+  {% endblock %}   

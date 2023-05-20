@@ -5,9 +5,16 @@ import json
 import requests
 import yfinance as yf
 import pandas as pd
+import numpy as np
+import joblib
+from django.conf import settings
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import precision_score
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from django.core.mail import send_mail
 from .models import Prediction
@@ -15,6 +22,7 @@ import psycopg2
 from bokeh.plotting import figure, output_file
 from bokeh.embed import components
 from apscheduler.schedulers.background import BackgroundScheduler
+
 
 def automate_predictions():
     while True:
@@ -35,61 +43,109 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 
+
+def train_and_save_model(ticker):
+    data = yf.Ticker(ticker).history(period="3y")
+    # Use pandas to preprocess the data
+    data['target'] = data['Close'].shift(-1) > data['Close']
+    data.dropna(inplace=True)
+    # Check if VWAP column exists
+    # Split the data into training and testing sets
+    X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
+    y = data['target']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Train a Random Forest classifier on the training data
+    clf = RandomForestClassifier()
+    clf.fit(X_train, y_train)
+    y_pred = clf.predict(X_test)
+    accuracy = clf.score(X_test, y_pred)
+    # Save the trained model to a pickle file
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    with open(model_file, 'wb') as f:
+        pickle.dump(clf, f)
+    # Evaluate the accuracy of the model on the testing data
+    return accuracy
+
+
 def predict_signal(ticker):
-    conn = psycopg2.connect(host="ec2-3-218-171-44.compute-1.amazonaws.com", user="tgjmzvivuenzpj", password="ce5308e80b98ffa36c801aa819faac8d4f17729db81a2bf5fa613329cc0c5f32", dbname="d7f8rqmt3g6vk6")
-    cursor = conn.cursor()
-    cursor.execute("CREATE TABLE models (id SERIAL PRIMARY KEY, model BYTEA)")
-    model_file = f"{ticker}.model.pkl"
-    if os.path.exists(model_file):
-        # Load the trained model from the pickle file
-        with open(model_file, 'rb') as f:
-            model = pickle.load(f)
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+
+    # Retrieve financial data for the instrument using yfinance
+    data = yf.Ticker(ticker).history(period="max", interval="1m")
+    data = data.dropna()
+
+    # Scale the data
+    scaler = StandardScaler()
+    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close']])
+    y = data['Close'].shift(-1) > data['Close']
+
+    # Split the data into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+    # Train the model on the training set
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+
+    # Evaluate the model on the testing set using cross-validation if the testing set has sufficient samples
+    if len(X_test) < 5:
+        accuracy = 1.0
     else:
-        # Retrieve financial data for the instrument using yfinance
-        data = yf.Ticker(ticker).history(period="max")
-        # Calculate the VWAP
-        data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
-        # Calculate the moving average of the close price over the past 20 days
-        data['MA'] = data['Close'].rolling(20).mean()
-        # Use pandas to preprocess the data
-        data.dropna(inplace=True)
-        scaler = StandardScaler()
-        scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-        data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
-        # Define the target variable
-        data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
-        # Split the data into training and testing sets
-        # Split the data into training and testing sets
-        X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
-        y = data['Signal']
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        # Fit a random forest classifier to the training data
-        model = RandomForestClassifier()
-        model.fit(X_train, y_train)
-        # Save the trained model to a pickle file
-        with open(model_file, 'wb') as f:
-            pickle.dump(model, f)
-            cursor.execute("INSERT INTO models (model) VALUES (%s)", (psycopg2.Binary(f),))
-            conn.commit()
-            conn.close()
+        scores = cross_val_score(model, X_test, y_test, cv=5)
+        accuracy = scores.mean()
+
+    # Make a prediction
+    prediction = model.predict([X[-1]])[0]
+
+    # Save the trained model to a pickle file
+    with open(model_file, 'wb') as f:
+        pickle.dump(model, f)
+
+    # Load the trained model
+    with open(model_file, 'rb') as f:
+        model = pickle.load(f)
+
+    # Determine the prediction signal
+    if prediction == True:
+        signal = 'Buy'
+    elif prediction == False:
+        signal = 'Sell'
+    else:
+        signal = 'Neutral'
+
     # Use the trained model to make predictions on the latest data
-    latest_data = yf.Ticker(ticker).history(period="5m").iloc[-1]
-    X_latest = latest_data[['Open', 'High', 'Low', 'Close', 'Volume']]
+    data = yf.Ticker(ticker).history(period="max")
+    X_latest = data[['Open', 'High', 'Low', 'Close']]
     y_pred = model.predict(X_latest)
-    accuracy = model.score(X_latest, y_pred)
+
+    # Calculate other metrics
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
-    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']].values.reshape(1, -1))
-    prediction = model.predict(scaled_latest_data)[0]
-    # Determine the predicted market signal based on the model's predictions
-    if prediction == 1:
-        signal = 'buy'
-    elif prediction == 0:
-        signal = 'sell'
-    else:
-        signal = 'Neutral'    
-    return data['Close'][-1], signal, accuracy, last_diff, last_diff_percent
+    close_price = data['Close'][-1]
+    # latest_target = close_price < (latest_close - last_diff)
 
+    return close_price, signal, accuracy, last_diff, last_diff_percent
+
+# def train_and_save_model():
+#     # Load the stock data
+#     stock_data = yf.Ticker('AAPL').history(period='max')
+
+#     # Calculate the VWAP
+#     stock_data['VWAP'] = (stock_data['Volume'] * (stock_data['High'] + stock_data['Low']) / 2).cumsum() / stock_data['Volume'].cumsum()
+
+#     # Select the features and labels
+#     X = stock_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
+#     y = stock_data['Close']
+
+#     # Split the data into training and testing sets
+#     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+#     # Train the model
+#     model = RandomForestClassifier()
+#     model.fit(X_train, y_train)
+
+#     # Save the model
+#     with open('model.pkl', 'wb') as f:
+#         pickle.dump(model, f)
 def get_historical_data(ticker):
     stock = yf.Ticker(ticker)
     data = stock.history(period='1y')
@@ -129,22 +185,41 @@ def register_job(id, func, trigger, **kwargs):
     scheduler = BackgroundScheduler()
     scheduler.add_job(func=func, id=id, trigger=trigger, **kwargs)
 
-# def get_chart_data(ticker):
-#     # Retrieve financial data for the instrument using yfinance
-#     data = yf.Ticker(ticker).history(period="max")
+def get_news_articles_yahoo(ticker):
+    articles = []
+    api_key = '9c9a27dc62mshf06f89e609daf51p1aaea8jsnfe9fee2c882f' # Replace with your own API key
+    base_url = 'https://yahoo-finance15.p.rapidapi.com/api/yahoo/ne/news'
     
-#     # Use pandas to calculate the difference between the current close price and the previous close price
-#     data['diff'] = data['Close'] - data['Close'].shift(1)
-#     data['diff_pct'] = data['diff'] / data['Close'].shift(1)
+    headers = {
+        "x-rapidapi-key": api_key,
+        "x-rapidapi-host": "yahoo-finance15.p.rapidapi.com"
+    }
+
+    params = {
+        "symbols": ticker,
+        "region": "US",
+        "count": 50 # Retrieve up to 50 news articles
+    }
     
-#     # Create the Bokeh plot
-#     plot = figure(x_axis_type="datetime", title=f"{ticker} Stock Prices")
-#     plot.line(data.index, data['Close'], line_width=2, legend_label="Close Price")
-#     plot.line(data.index, data['diff'], line_width=2, color='red', legend_label="Difference")
-#     plot.line(data.index, data['diff_pct'], line_width=2, color='green', legend_label="Difference %")
+    response = requests.get(base_url, headers=headers, params=params)
+    data = response.json()
     
-#     # Embed the plot in HTML
-#     script, div = components(plot)
+    if isinstance(data, list):
+        # If data is a list, assume it's the top-level object and get the 'items' array
+        data = data[0].get('items', [])
     
-#     return script, div, data['diff'][-1], data['diff_pct'][-1]
+    for article in data:
+        article_info = {
+            "title": article["title"],
+            "author": article.get("authors", ""),
+            "publish_date": article.get("publishDate", ""),
+            "description": article.get("summary", ""),
+            "image": article.get("thumbnail", ""),
+            "url": article.get("url", "")
+        }
+        articles.append(article_info)
+        
+    return articles
+
+
 

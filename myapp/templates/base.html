@@ -1,7 +1,9 @@
 {% load static %}
+{% load i18n %}
+{% load static %}
 {% load bootstrap_icons %}
 <!DOCTYPE html>
-<html>
+<html {% get_current_language as LANGUAGE_CODE %} lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% get_language_info for LANGUAGE_CODE as LANGUAGE_INFO %} dir="{{ LANGUAGE_INFO.bidi|yesno:"rtl,ltr" }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,64 +11,181 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-    <title>Predict Market Signal</title>
+    <title>{% trans "ChatNun | App" %}</title>
+    <meta name="description" content="Chatnun App allows users to predict market movements and chat with others.">
+    <meta property="og:title" content="Chatnun App">
+    <meta property="og:description" content="Our app allows you to predict market movements and chat with others about your predictions.">
+    <meta property="og:image" content="{% static 'prediction.png' %}">
+    <meta property="og:url" content="https://www.mypredictionmarketsapp.com/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My Prediction Markets App">
+    <meta name="twitter:description" content="Our app allows you to predict market movements and chat with others about your predictions.">
+    <meta name="twitter:image" content="{% static 'prediction.png' %}">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Chatnun App",
+      "description": "Our app allows you to predict market movements and chat with others about your predictions.",
+      "applicationCategory": "Investment",
+      "operatingSystem": "Web",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.5",
+        "reviewCount": "23"
+      }
+    }
+    </script>
+    
   </head>
   <body>
   	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container">
-            <a class="navbar-brand" href="#" style="color:#fff; font-size:bold;">Financial Predictions</a>
+            {% if is_arabic %}
+<a class="navbar-brand" href="#" style="color:#fff; font-size:bold;">
+    <img src="{% static 'images/text17.png' %}" style="max-width:250px;" alt="...">
+</a>
+{% else %}
+<a class="navbar-brand" href="#" style="color:#fff; font-size:bold;">
+    <img src="{% static 'images/text16.png' %}" style="max-width:250px;" alt="...">
+</a>
+{% endif %}
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{% url 'predict_signals' %}" style="color:#fff; font-size:bold;">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" style="color:#fff; font-size:bold;">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" style="color:#fff; font-size:bold;">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'run_scanner' %}" style="color:#fff; font-size:bold;">Scanners</a>
-                    </li>
-                </ul>
-            </div>
+    <span class="navbar-toggler-icon"></span>
+</button>
+{% if user.is_authenticated %}
+<div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="nav me-lg-auto justify-content-md-center" style="margin-left: 5rem;">
+    <li class="nav-item {% if request.path == '/' %}active{% else %}gray{% endif %}">
+        <a class="nav-link" href="{% url 'home' %}" style="{% if request.path == '/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Home" %}</a>
+    </li>
+    <li class="nav-item {% if request.path == '/predict_signals/' %}active{% else %}gray{% endif %}">
+        <a class="nav-link" href="{% url 'predict_signals' %}" style="{% if request.path == '/get-signal' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Signal" %}</a>
+    </li>
+    <li class="nav-item {% if request.path == '/run_scanner/' %}active{% else %}gray{% endif %}">
+        <a class="nav-link" href="{% url 'run_scanner' interval='5m' %}" style="{% if request.path == '/scanner/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Scanner" %}</a>
+    </li>
+    <li class="nav-item dropdown {% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}active{% else %}gray{% endif %}">
+  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="{% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
+    {% trans "ChatBot" %}
+  </a>
+  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+    <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">{% trans "ChatBot" %}</a></li>
+    <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">{% trans "ChatBotTrade" %}</a></li>
+  </ul>
+</li>
+
+</ul>
+
+</div>
+{% endif %}
             <div class="text-end">
 
                 {% if user.is_authenticated %}
-                    {% if trend %}
-                    <span class="navbar-text text-danger">
-                        Market trend: {{ trend }}
-                    </span>
-                    {% endif %}
                     <div class="btn-group">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">Setting</a>
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+  {% if unread_notifications|length > 0 %}
+    {% bs_icon 'bell' extra_classes='text-white position-relative' %} 
+      <span id="notification-count" class="top-0 start-100 translate-middle badge rounded-pill bg-danger">{{ unread_notifications|length }}+</span>
+  {% else %}
+    {% bs_icon 'bell' extra_classes='text-white' %}
+  {% endif %}
+</a>
+                          <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+    {% for notification in notifications %}
+    <div class="container">
+        <br>
+        <a class="dropdown-item btn-sm{% if not notification.is_read %} font-weight-bold{% endif %}" href="{% if notification.post %}{% url 'show_post' post_id=notification.post.id %}{% elif notification.group_post %}{% url 'show_group_post' post_id=notification.group_post.id %}{% elif notification.message %}{% url 'message_thread' notification.message.sender.username %}{% elif notification.group_message and notification.group_message.group %}{% url 'chat_group_detail' name=notification.group_message.group.name pk=notification.group_message.group.pk %}{% elif notification.emoji_reaction %}{% url 'show_post' post_id=notification.emoji_reaction.post.id %}{% elif notification.comment %}{% url 'show_post' post_id=notification.comment.post.id %}{% elif notification.emoji_reaction_group %}{% url 'show_group_post' post_id=notification.emoji_reaction_group.post.id %}{% elif notification.comment_group %}{% url 'show_group_post' post_id=notification.comment_group.post.id %}{% elif notification.join_request %}{% url 'group_join_requests' group_id=notification.join_request.group.id %}{% endif %}" onclick="markNotificationAsRead({{ notification.id }})">
+            {% if notification.is_read %}
+            <div class="notification read" style="font-weight: lighter;">
+            {% else %}
+            <div class="notification unread" style="font-weight: bold;">
+            {% endif %}
+                {% if notification.message and notification.message.sender and notification.message.sender.profile.image %}
+                {{ notification.get_notification_type }} <img src="{{ notification.message.sender.profile.image.url }}" alt="{{ notification.message.sender.username }}" width="30" height="30">
+                {% elif notification.post and notification.post.author and notification.post.author.profile.image %}
+                {{ notification.get_notification_type }} <img src="{{ notification.post.author.profile.image.url }}" alt="{{ notification.post.author.username }}" width="30" height="30">
+                {% elif notification.group_message and notification.group_message.sender and notification.group_message.sender.profile.image %}
+                {{ notification.get_notification_type }} <img src="{{ notification.group_message.sender.profile.image.url }}" alt="{{ notification.group_message..sender.username }}" width="30" height="30">
+                {% elif notification.group_post and notification.group_post.author and notification.group_post.author.profile.image %}
+                {{ notification.get_notification_type }} <img src="{{ notification.group_post.author.profile.image.url }}" alt="{{ notification.group_post.author.username }}" width="30" height="30">
+                {% elif notification.emoji_reaction %}
+                {{ notification.get_notification_type }} <img src="{{ notification.emoji_reaction.author.profile.image.url }}" alt="{{ notification.emoji_reaction.author.username }}" width="30" height="30">
+                {% elif notification.comment %}
+                {{ notification.get_notification_type }} <img src="{{ notification.comment.author.profile.image.url }}" alt="{{ notification.comment.author.username }}" width="30" height="30">
+                {% elif notification.emoji_reaction_group %}
+                {{ notification.get_notification_type }} <img src="{{ notification.emoji_reaction_group.author.profile.image.url }}" alt="{{ notification.emoji_reaction_group.author.username }}" width="30" height="30">
+                {% elif notification.comment_group %}
+                {{ notification.get_notification_type }} <img src="{{ notification.comment_group.author.profile.image.url }}" alt="{{ notification.comment_group.author.username }}" width="30" height="30">
+                {% elif notification.join_request %}
+                {{ notification.get_notification_type }} <img src="{{ notification.join_request.user.profile.image.url }}" alt="{{ notification.join_request.user.username }}" width="30" height="30">
+                {% else %}
+                {{ notification.get_notification_type }}
+                {% endif %}
+
+                              </div>
+                          </a>
+                        </div>
+                        {% endfor %}
+
+                            <br>
+                             <div class="text-center"><a href="{% url 'notification' %}"><span style="font-size: 14;color: gray;font-size: 12px;">{% trans "View All" %}</span></a></div>
+                          </div>
+                      
+                        <script>
+function markNotificationAsRead(notificationId) {
+    $.ajax({
+        url: "{% url 'mark_notification_as_read' %}",
+        data: {
+            notification_id: notificationId,
+        },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                // Update the notification count in the dropdown
+                var countElement = $('#notification-count');
+                var count = parseInt(countElement.text());
+                if (count > 0) {
+                    countElement.text(count - 1);
+                }
+                
+                // Redirect to the appropriate page
+                window.location.href = response.redirect_url;
+            } else {
+                alert('Failed to mark notification as read.');
+            }
+        },
+        error: function() {
+            alert('Failed to mark notification as read.');
+        }
+    });
+}
+</script>
+
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                      {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+                      {% else %}
+                        <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
+                    {% endif %}
+                      {{ user.username }}
+                    </a>
                     <ul class="dropdown-menu">
                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} Account</a></li>
+                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
+                     <li><a class="dropdown-item" href="{% url 'saved_conversations' %}">{% bs_icon 'chat-dots-fill' %} {% trans "Messages" %}</a></li>
                     <div class="dropdown-divider"></div>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} log out</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} {% trans "log out" %}</a></li>
                     </ul>
+                        </div>
                     </div>
                 {% else %}
-                    <a type="button" class="btn btn-outline-light me-2" href="{% url 'login' %}">Log in</a>
-                    <a type="button" class="btn btn-outline-success me-2" href="{% url 'signup' %}">Sign up</a>
+                    <a type="button" class="btn btn-outline-light me-2" href="{% url 'user_login' %}">{% trans "Log in" %}</a>
+                    <a type="button" class="btn btn-outline-success me-2" href="{% url 'user_signup' %}">{% trans "Sign up" %}</a>
                 {% endif %}
             </div>
         </div>
-        </nav>
-        <br>
-            {% if messages %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-            {% endif %}
-        <br>    
+        </nav> 
     <div class="container mt-5">
       {% block content %}{% endblock %}
     <br>
@@ -76,13 +195,31 @@
             <div class="container">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Terms of Use</a>
+                        <a class="nav-link" href="{% url 'terms_of_service' %}">{% trans "Terms of Use" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Privacy Policy</a>
+                        <a class="nav-link" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about_us' %}">{% trans "About Us" %}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact_us' %}">{% trans "Contact Us" %}</a>
+                    </li>
+                    <li class="nav-item">
+   <form class="nav-link" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
+            {% csrf_token %}
+            <select name="language" onchange="this.form.submit()">
+                {% for code, name in LANGUAGES %}
+                    <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{% trans name %}</option>
+                {% endfor %}
+            </select>
+            <noscript><input type="submit" value="{% trans 'Switch' %}"></noscript>
+        </form>
+
+                  </li>
                 </ul>
-                <span class="navbar-text ml-auto">Copyright &copy; 2023 - Financial Predictions</span>
+                <span class="navbar-text ml-auto">{% trans "Copyright" %} &copy; {% trans "2023 All Rights Reserved" %}</span>
             </div>
         </footer>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>

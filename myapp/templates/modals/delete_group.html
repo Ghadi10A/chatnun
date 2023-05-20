@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+   <div class="col-md-7">
+    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+<div class="card-header">{% trans "Delete Group" %}</div>
+<div class="card-body">
+<p>{% trans "Are you sure you want to delete the group" %} "{{ group.name }}"?</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-sm">{% trans "Delete" %}</button>
+    <a href="{% url 'delete_group' name=name pk=pk %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+</form>
+</div>
+</div>
+</div>
+</div>
+<br>
+<br>
+{% endblock %}

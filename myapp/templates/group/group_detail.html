@@ -1,0 +1,320 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load emoji_reactions_tags %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+        <div class="text-center" style="margin-top: 6px;">
+        {% if group.image %}
+                        <img src="{{ group.image.url }}" class="rounded-circle me-2" alt="{{ group.name }} image" width="300" height="300">
+                      {% else %}
+    <img src="{% static 'images/group.png' %}" class="rounded-circle me-2">
+{% endif %}
+        </div>
+        <hr>
+        <div class="card-body">
+          <h5 class="card-title">{{ group.name }}</h5>
+          <p>{{ group.description }}</p>
+            <div class="col-md-2">
+                        {% if group.admin.image %}
+                        <img src="{{ group.admin.image.url }}" class="profile-image" width="30" height="30">
+                        {% else %}
+                        <img src="{% static 'images/Default_image_profile.png' %}" class="profile-image" width="30" height="30">
+                        {% endif %}
+                        <p class="card-text" style="font-size: 10px;">{% trans "Admin" %}</p>
+                    </div>
+            <a href="{% url 'show_profile' group.admin.username %}" style="text-decoration: none;">{{ group.admin.username }}</a></p>
+          {% if request.user == group.admin %}
+            <form action="{% url 'delete_group' group.name group.pk %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-danger btn-sm w-100">{% trans "Delete Group" %}</button>
+        </form>
+        <a class="btn btn-outline-success btn-sm w-100" href="{% url 'join_requests' group.pk %}" style="margin-top: 6px;">{% trans "View join requests" %}</a>
+        <button type="button" class="btn btn-outline-warning btn-sm w-100" data-bs-toggle="modal" data-bs-target="#updateModal" style="margin-top: 6px;">
+  {% trans "Update Group" %}
+</button>
+ <a href="{% url 'chat_group_detail' group.name group.pk %}" class="btn btn-outline-primary btn-sm w-100" style="margin-top: 6px;">{% trans "Group Chat" %}</a>
+          {% elif request.user not in group.members.all %}
+            <a href="{% url 'join_group' group.pk %}" class="btn btn-outline-primary btn-sm">{% trans "Join group" %}</a>
+          {% elif request.user in group.members.all %}
+            <a href="{% url 'leave_group' group.pk %}" class="btn btn-outline-danger btn-sm">{% trans "Leave group" %}</a>
+            <a href="{% url 'chat_group_detail' group.name group.pk %}" class="btn btn-outline-danger btn-sm">{% trans "Group Chat" %}</a>
+          {% endif %}
+        </div>
+
+      </div>
+      <div class="card mt-3" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+          <div class="card-body">
+                {% if group.members.count > 0 %}
+  <h6 class="card-subtitle mb-2 text-muted">{% trans "Members" %}:</h6>
+  <ul class="list-group list-group-flush">
+    {% for member in group.members.all %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div class="col-md-1">
+          {% if member.image %}
+            <img src="{{ member.image.url }}" class="profile-image" width="30" height="30">
+          {% else %}
+            <img src="{% static 'images/Default_image_profile.png' %}" class="profile-image" width="30" height="30">
+          {% endif %}
+        </div>
+        <a href="{% url 'show_profile' member.username %}">{{ member.username }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>{% trans "No members yet" %}.</p>
+{% endif %}
+
+          </div>
+      </div>
+      <br>
+      <br>
+    </div>
+    <div class="col-md-7">
+      <div>
+          {% if messages %}
+            <div class="container mt-3">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <br>
+          <form method="post" action="{% url 'search' %}">
+            <div class="d-flex flex-nowrap">
+             <div class="order-1 p-2">
+              {% csrf_token %}
+              {{ search_form.as_p }}
+            </div>
+            <div class="order-2 p-2">
+              <button type="submit" name="search" class="btn btn-success btn-sm align-middle" onclick="showLoadingSpinner()">{% trans "Search" %}</button>
+            </div>
+            <div class="order-3 p-2">
+            <div class="text-center" style="float: right;"><div id="loading" class="spinner-border" style="display: none;"></div></div>
+    <script type="text/javascript">
+          function showLoadingSpinner() {
+      $("#loading").show();
+    }
+
+    function hideLoadingSpinner() {
+      $("#loading").hide();
+}
+
+  hideLoadingSpinner();
+</script>
+</div>
+            </div>  
+            </form>
+</div>
+<br>
+      <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+<!--           <div class="card-header">
+            <h5>Share Something</h5>
+          </div> -->
+          <div class="card-body">
+        <form method="post" id="post-form" enctype="multipart/form-data">
+  <div class="form-group">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ post_form.content }}
+    </div>
+    <div class="d-flex align-items-center">
+      <div class="col-4">
+         <label for="image">{% trans "Image" %}:</label>
+        {{ post_form.image }}
+      </div>
+
+    <div class="col-4">
+       <label for="video">{% trans "Video" %}:</label>
+        {{ post_form.video }}
+      </div>
+
+    <div class="col-4">
+       <label for="sound">{% trans "Sound" %}:</label>
+        {{ post_form.sound }}
+      </div>
+    </div>
+  </div>
+  
+  <div class="card-footer">
+    <button type="submit" class="btn btn-warning btn-sm w-100" onclick="showLoadingSpinner()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+  <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
+</svg></button>
+  </div>
+</form>
+      </div>
+        </div>
+        {% for post in posts %}
+  <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-top:6px;margin-bottom: 6px;">
+    <div class="card-body">
+      <div class="card mb-3">
+        <!-- <div class="card-header">{{ post.title }}</div> -->
+        <div class="card-body">
+          {% if post.author == request.user %}
+  <div class="dropdown" style="float: right;padding-top: 10px;">
+  <button class="btn btn-outline-white btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+      <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+    </svg>
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="{% url 'update_post_group' post_id=post.id %}">{% trans "Edit" %}</a>
+    <a class="dropdown-item delete-post-link" href="{% url 'delete_post_group' post_id=post.id %}">{% trans "Delete" %}</a>
+  </div>
+</div>
+
+
+{% endif %}
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="m-0" style="color: #000;font-size: 11px;">
+                {% trans "Posted" %} {{ post.created_at|timesince }} {% trans "ago" %}
+              </p>
+            </div>
+            <div>
+              <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if post.author.profile.image %}
+                  <img src="{{ post.user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+                {% else %}
+                  <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
+                {% endif %}
+              </a>
+              <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
+            </div>
+          </div>
+
+                    <br>
+                    <br>
+                    <div class="text-center">
+          <p class="card-text">{{ post.content }}</p>
+          {% if post.image %}
+          <img src="{{ post.image.url }}" class="img-fluid mb-2">
+          {% endif %}
+          {% if post.video %}
+          <video src="{{ post.video.url }}" class="img-fluid mb-2" controls></video>
+          {% endif %}
+          {% if post.sound %}
+          <audio src="{{ post.sound.url }}" class="img-fluid mb-2" controls></audio>
+          {% endif %}
+        </div>
+  
+        </div>
+      </div>
+      
+  <ul class="list-group">
+  {% if post.emoji_reactions_group.all %}
+    {% regroup post.emoji_reactions_group.all by emoji as reactions_by_emoji %}
+    {% for group in reactions_by_emoji %}
+      <li class="list-group-item" style="border: none;">
+        <div class="text-center">
+          <span style="font-size: 12px;">
+            {% for reaction in group.list %}
+              {% if forloop.last %}
+                {% if reaction.emoji == 'heart' %}
+                  &#x2764;&#xFE0F; {# Unicode escape sequence for heart emoji #}
+                {% else %}
+                  {{ reaction.get_emoji_display }}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ group.list|length }} {% trans "Reactions" %}
+          </span>
+        </div>
+      </li>
+    {% endfor %}
+  {% else %}
+    <li class="list-group-item">
+      <div class="text-center">
+        <span style="font-size: 12px;color: gray;">{% trans "No reactions yet. 0 Reactions" %}</span>
+      </div>
+    </li>
+  {% endif %}
+</ul>
+
+
+<div class="card-footer">
+             {% if post|has_reacted_group:request.user %}
+    <span style="font-size: 12px;color: gray;float: right;margin-bottom: 5px;">{% trans "You've already reacted to this post!" %}</span>
+  {% else %}
+    <form method="POST" id="reaction-form-{{ post.id }}" style="float: right;margin-bottom: 6px;">
+      {% csrf_token %}
+      <input type="hidden" name="post_id" value="{{ post.id }}">
+      <div id="emoji-picker-container">
+        {% for choice in form_reaction.emoji.field.choices %}
+          <button class="emoji-picker-item btn-sm" type="button" data-emoji="{{ choice.0 }}">{{ choice.1 }}</button>
+        {% endfor %}
+      </div>
+      <input type="hidden" id="id_emoji_{{ post.id }}" name="emoji" value="" />
+      <input type="submit" id="submit-reaction-{{ post.id }}" value="{{ post.id }}" style="display: none;" />
+    </form>
+    <script>
+      const reactionForm{{ post.id }} = document.getElementById('reaction-form-{{ post.id }}');
+      const emojiButtons{{ post.id }} = reactionForm{{ post.id }}.querySelectorAll('.emoji-picker-item');
+      
+      reactionForm{{ post.id }}.addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Your code to handle form submission
+      });
+
+      emojiButtons{{ post.id }}.forEach(button => {
+        button.addEventListener('click', () => {
+          const emoji = button.dataset.emoji;
+          document.getElementById('id_emoji_{{ post.id }}').value = emoji;
+          reactionForm{{ post.id }}.submit();
+        });
+      });
+    </script>
+  {% endif %}
+ <form method="POST" id="comment-form-{{ post.id }}">
+    {% csrf_token %}
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+    {{ form_comment.as_p }}
+        <button type="submit" class="btn btn-primary btn-sm" style="float: right;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+</svg></button>
+<br>
+</form> 
+<span style="font-size: 12px; color: gray;">
+  <p class="mb-3 text-center">{{ post.comments_group.all|length }} {% trans "Comments" %}</p>
+</span>
+
+          <div class="container-fluid">
+      
+          
+      <div class="text-center"><a href="{% url 'show_group_post' group_name=group.name post_id=post.id %}" class="btn btn-outline-white btn-sm">{% trans "View Post" %}</a></div>
+    </div>
+     </div>
+    </div>
+  </div>
+  {% empty %}
+  <p>{% trans "No posts yet" %}.</p>
+  {% endfor %}
+</div>
+</div>
+<br>
+<br>
+</div>
+
+<div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="profileModalLabel">{% trans "Update Profile" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Form goes here -->
+        <form method="post" enctype="multipart/form-data" id="profile-form">
+          {% csrf_token %}
+          {{ form_update.as_p }}
+          <button type="submit" class="btn btn-primary btn-sm w-100">{% trans "Save" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %} 
+
+

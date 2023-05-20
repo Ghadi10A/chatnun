@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+
+    <div class="jumbotron text-center">
+       <div class="text-center">
+        <div id="loading" class="spinner-border" style="display: none;float: right;"></div>
+      </div>
+      <script type="text/javascript">
+        function showLoadingSpinner() {
+          $("#loading").show();
+        }
+
+        function hideLoadingSpinner() {
+          $("#loading").hide();
+        }
+
+        hideLoadingSpinner();
+      </script>
+      <br>
+     <div class="container">
+       <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'images/ezgif.com-webp-to-jpg(2).jpg' %}" class="d-block w-100" style="width: 100%;height: 500px; /* Set a fixed height for all images */object-fit: cover;">
+      <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
+  padding: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+        <h5>{% trans "Predict Markets with Machine Learning" %}</h5>
+        <p>{% trans "Our app uses advanced machine learning algorithms to provide accurate market predictions" %}.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/three.jpg' %}" class="d-block w-100" style="width: 100%;height: 500px; /* Set a fixed height for all images */object-fit: cover;">
+      <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
+  padding: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+        <h5>{% trans "Real-time Scanners" %}</h5>
+        <p>{% trans "Our app includes real-time scanners to keep you up-to-date on market trends" %}.</p>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/slideone.jpg' %}" class="d-block w-100" style="width: 100%;height: 500px;">
+      <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
+  padding: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+        <p>{% trans "Free Signup for" %}</p>
+        <h5>{% trans "Chatbot and Social Capabilities" %}</h5>
+        <p>{% trans "Our app includes a chatbot for personalized predictions and social capabilities to connect with other users" %}.</p>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<script>
+  $(document).ready(function() {
+    $('#carouselExampleCaptions').carousel();
+  });
+</script>
+
+</div>
+<br>
+            <h1 class="display-5">{% trans "Welcome to Chatnun App" %}</h1>
+            <p class="lead">{% trans "Use our machine learning model to predict the movement of financial instruments" %}.</p>
+            <hr class="my-4">
+            <p>{% trans "Select an instrument from the dropdown above and click Predict to see the result" %}.</p>
+
+            <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "3 Months" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$9" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'user_signup' %}" class="btn btn-lg btn-block btn-primary" onclick="showLoadingSpinner()">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "6 Months" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$19" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'user_signup' %}" class="btn btn-lg btn-block btn-primary" onclick="showLoadingSpinner()">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "1 Year" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$29" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'user_signup' %}" class="btn btn-lg btn-block btn-primary" onclick="showLoadingSpinner()">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="row mt-5"  style="margin-bottom: 166px;">
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/one.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans "About the Model" %}</h5>
+                        <p class="card-text">{% trans "Our model uses advanced machine learning algorithms to predict the movement of financial instruments based on historical data and market conditions" %}.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/two.jpg' %}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans "Supported Instruments" %}</h5>
+                        <p class="card-text">{% trans "Our model currently supports prediction for the following instruments: NASDAQ 100, Amazon, Apple, Tesla, Google, Meta, Gold, Oil, BTC and forex" %}.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <img src="{% static 'images/slidetwo.jpg' %}" class="card-img-top" alt="..." >
+                    <div class="card-body">
+                        <h5 class="card-title">{% trans "Accuracy" %}</h5>
+                        <p class="card-text">{% trans "Our model has a high accuracy rate and is constantly being improved to provide the most reliable predictions possible. and always in developement" %}
+                        </p>
+                    </div>
+                </div>  
+            </div> 
+        </div>
+    </div>
+
+{% endblock %}

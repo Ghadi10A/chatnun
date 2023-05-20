@@ -1,42 +1,318 @@
 {% extends 'base.html' %}
-{% block content %}
+{% load i18n %}
+{% load static %}
+{% block content %} 
+               <div class="row">
+ 
+  <div class="col-md-4">
+   <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+      <div class="card-body">
+        <div class="text-center">
+         {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
+                      {% else %}
+    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
+{% endif %}
+<hr>
+  </div>
+  </div>
+  <div class="container">
+    <h1>{{ user.get_full_name }}</h1>
+    <p><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    {% if user.profile.bio %}
+      <p><strong>{% trans "Bio" %}:</strong> {{ user.profile.bio }}</p>
+    {% endif %}
+    {% if user.profile.birthdate %}
+      <p><strong>{% trans "Birthdate" %}:</strong> {{ user.profile.birthdate }}</p>
+    {% endif %}
+    {% if user.profile.city %}
+      <p><strong>{% trans "City" %}:</strong> {{ user.profile.city }}</p>
+    {% endif %}
+    {% if user.profile.location %}
+      <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
+    {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <div class="text-center"><div id="loading" class="spinner-border" style="display: none;"></div></div>
+    <script type="text/javascript">
+          function showLoadingSpinner() {
+      $("#loading").show();
+    }
+
+    function hideLoadingSpinner() {
+      $("#loading").hide();
+}
+
+  hideLoadingSpinner();
+</script>
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/markets/" rel="noopener" target="_blank"><span class="blue-text">{% trans "Markets today" %}</span></a></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+  {
+  "symbols": [
+    {
+      "proName": "FOREXCOM:SPXUSD",
+      "title": "S&P 500"
+    },
+    {
+      "proName": "FOREXCOM:NSXUSD",
+      "title": "US 100"
+    },
+    {
+      "proName": "FX_IDC:EURUSD",
+      "title": "EUR/USD"
+    },
+    {
+      "proName": "BITSTAMP:BTCUSD",
+      "title": "Bitcoin"
+    },
+    {
+      "proName": "BITSTAMP:ETHUSD",
+      "title": "Ethereum"
+    },
+    {
+      "description": "Gold",
+      "proName": "MCX:GOLD1!"
+    },
+    {
+      "description": "Nasdaq100",
+      "proName": "NASDAQ:NDX"
+    },
+    {
+      "description": "Oil",
+      "proName": "AMEX:OIL"
+    }
+  ],
+  "showSymbolLogo": true,
+  "colorTheme": "dark",
+  "isTransparent": false,
+  "displayMode": "adaptive",
+  "locale": "en"
+}
+  </script>
+</div>
+<div class="d-flex justify-content-center">
+  <form method="post" class="form-inline" action="{% url 'choose_interval' interval=interval %}">
+  {% csrf_token %}
+  <div class="align-items-center" style="padding: 6px;">
+    {{ form.interval }}
+    
+    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Submit" %}</button>
+
+  </div>
+</form>
+
+</div>
+<br>
 	<table class="table table-bordered">
 	  <thead>
 	    <tr>
-	      <th scope="col">Ticker</th>
-	      <th scope="col">Analysis Summary</th>
+	      <th scope="col">{% trans "Ticker" %}</th>
+	      <th scope="col">{% trans "Analysis Summary" %}</th>
 	      
-	      <th scope="col">Oscillators</th>
-	      <th scope="col">Moving Averages</th>
+	      <th scope="col">{% trans "Oscillators" %}</th>
+	      <th scope="col">{% trans "Moving Averages" %}</th>
 	    </tr>
 	  </thead>
 	  <tbody>
-	    {% for result in results %}
-	      <tr>
-	        <td>{{ result.ticker }}</td>
-	        <td>{% if result.analysis_summary.RECOMMENDATION == "BUY" or result.analysis_summary.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.analysis_summary.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.analysis_summary.RECOMMENDATION }}</p> {% endif %}</td>
-	        <td>{% if result.oscillators.RECOMMENDATION == "BUY" or result.oscillators.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.oscillators.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.oscillators.RECOMMENDATION }}</p> {% endif %}</td>
-        	<td>{% if result.moving_averages.RECOMMENDATION == "BUY" or result.moving_averages.RECOMMENDATION == "STRONG_BUY" %} <p class="text-success">{{ result.moving_averages.RECOMMENDATION }}</p> {% else %} <p class="text-danger">{{ result.moving_averages.RECOMMENDATION }}</p> {% endif %}</td>
-      	  </tr>
-   		{% endfor %}
+	    
+
+{% for result in results %}
+        <tr class="table-dark text-center">
+            <td style="padding: 0 !important; margin: 0 !important;">{{ result.ticker }}</td>
+            <td style="padding: 0 !important; margin: 0 !important;">
+                {% if result.analysis_summary.RECOMMENDATION == "BUY" or result.analysis_summary.RECOMMENDATION == "STRONG_BUY" %}
+                    <p class="text-success">
+                        {% if result.analysis_summary.RECOMMENDATION == "BUY" %}
+                            {% trans "BUY" %}
+                        {% else %}
+                            {% trans "STRONG BUY" %}
+                        {% endif %}
+                    </p>
+                {% elif result.analysis_summary.RECOMMENDATION == "NEUTRAL" %}
+                    <p class="text-secondary">{% trans "NEUTRAL" %}</p>
+                {% else %}
+                    <p class="text-danger">
+                        {% if result.analysis_summary.RECOMMENDATION == "SELL" %}
+                            {% trans "SELL" %}
+                        {% else %}
+                            {% trans "STRONG SELL" %}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </td>
+            <td style="padding: 0 !important; margin: 0 !important;">
+                {% if result.oscillators.RECOMMENDATION == "BUY" or result.oscillators.RECOMMENDATION == "STRONG_BUY" %}
+                    <p class="text-success">
+                        {% if result.oscillators.RECOMMENDATION == "BUY" %}
+                            {% trans "BUY" %}
+                        {% else %}
+                            {% trans "STRONG BUY" %}
+                        {% endif %}
+                    </p>
+                {% elif result.oscillators.RECOMMENDATION == "NEUTRAL" %}
+                    <p class="text-secondary">{% trans "NEUTRAL" %}</p>
+                {% else %}
+                    <p class="text-danger">
+                        {% if result.oscillators.RECOMMENDATION == "SELL" %}
+                            {% trans "SELL" %}
+                        {% else %}
+                            {% trans "STRONG SELL" %}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </td>
+            <td style="padding: 0 !important; margin: 0 !important;">
+                {% if result.moving_averages.RECOMMENDATION == "BUY" or result.moving_averages.RECOMMENDATION == "STRONG_BUY" %}
+                    <p class="text-success">
+                        {% if result.moving_averages.RECOMMENDATION == "BUY" %}
+                            {% trans "BUY" %}
+                        {% else %}
+                            {% trans "STRONG BUY" %}
+                        {% endif %}
+                    </p>
+                {% elif result.moving_averages.RECOMMENDATION == "NEUTRAL" %}
+                    <p class="text-secondary">{% trans "NEUTRAL" %}</p>
+                {% else %}
+                    <p class="text-danger">
+                        {% if result.moving_averages.RECOMMENDATION == "SELL" %}
+                            {% trans "SELL" %}
+                        {% else %}
+                            {% trans "STRONG SELL" %}
+                        {% endif %}
+                    </p>
+                {% endif %}
+            </td>
+        </tr>
+{% endfor %}
+
   		</tbody>
 	</table>
 	<br>
-	<table class="table table-bordered">
-	  <thead>
-	    <tr>
-	      <th scope="col">Ticker</th>
-	      <th scope="col">Indicators</th>
-	    </tr>
-	  </thead>
-	  <tbody>
-	    {% for result in results %}
-	      <tr>
-	        <td>{{ result.ticker }}</td>
-        	<td>{{ result.indicators }}</td>
-      	  </tr>
-   		{% endfor %}
-  		</tbody>
-	</table>
-
+	
+<div class="text-center">
+    <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <div class="tradingview-widget-copyright">
+            <span class="blue-text">{% trans "Stock quotes" %}</span>
+        </div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js" async>
+            {
+                "title": "{% trans "Stocks" %}",
+                "width": "100%",
+                "height": 400,
+                "locale": "{{ language_code }}",
+                "showSymbolLogo": true,
+                "symbolsGroups": [
+                    {
+                        "name": "{% trans "Technology" %}",
+                        "symbols": [
+                            {
+                                "name": "NASDAQ:NDX",
+                                "displayName": "NASDAQ100"
+                            },
+                            {
+                                "name": "NASDAQ:AAPL",
+                                "displayName": "Apple"
+                            },
+                            {
+                                "name": "NASDAQ:GOOGL",
+                                "displayName": "Google Inc"
+                            },
+                            {
+                                "name": "NASDAQ:AMZN",
+                                "displayName": "Amazon"
+                            },
+                            {
+                                "name": "NASDAQ:TSLA",
+                                "displayName": "Tesla"
+                            },
+                            {
+                                "name": "NYSE:ORCL",
+                                "displayName": "Oracle Corp"
+                            },
+                            {
+                                "name": "NASDAQ:INTC",
+                                "displayName": "Intel Corp"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "{% trans "Services" %}",
+                        "symbols": [
+                            {
+                                "name": "NASDAQ:AMZN",
+                                "displayName": "Amazon Com Inc"
+                            },
+                            {
+                                "name": "NYSE:BABA",
+                                "displayName": "Alibaba Group Hldg Ltd"
+                            },
+                            {
+                                "name": "NYSE:T",
+                                "displayName": "At&t Inc"
+                            },
+                            {
+                                "name": "NYSE:WMT",
+                                "displayName": "Wal-mart Stores Inc"
+                            },
+                            {
+                                "name": "NYSE:V",
+                                "displayName": "Visa Inc"
+                            }
+                        ]
+                    }
+                ],
+                "colorTheme": "dark"
+            }
+        </script>
+    </div>
+    <br>
+    <div class="tradingview-widget-container">
+  <div class="tradingview-widget-container__widget"></div>
+  <div class="tradingview-widget-copyright"><span class="blue-text">{% trans "Forex market heatmap" %}</span></div>
+  <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-forex-heat-map.js" async>
+  {
+  "width": "100%",
+  "height": 400,
+  "currencies": [
+    "EUR",
+    "USD",
+    "JPY",
+    "GBP",
+    "CHF",
+    "AUD",
+    "CAD",
+    "NZD",
+    "CNY",
+    "TRY",
+    "SEK",
+    "NOK",
+    "DKK",
+    "ZAR",
+    "HKD",
+    "SGD",
+    "THB",
+    "MXN",
+    "IDR",
+    "KRW",
+    "PLN"
+  ],
+  "isTransparent": false,
+  "colorTheme": "dark",
+  "locale": "en"
+}
+  </script>
+</div>
+  
+</div>
+     </div>
+     </div>  
+     <br>
+     <br>     
 {% endblock %}

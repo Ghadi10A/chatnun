@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+<section class="main-section py-3">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left section -->
+      <div class="col-md-4">
+        <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+
+          <div class="card-body">
+     {% if user.profile.image %}
+    <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
+    {% else %}
+    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
+{% endif %}
+  <div class="col-md-9">
+    <h1>{{ user.get_full_name }}</h1>
+    <p><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
+    {% if user.profile.bio %}
+      <p><strong>{% trans "Bio" %}:</strong> {{ user.profile.bio }}</p>
+    {% endif %}
+    {% if user.profile.birthdate %}
+      <p><strong>{% trans "Birthdate" %}:</strong> {{ user.profile.birthdate }}</p>
+    {% endif %}
+    {% if user.profile.city %}
+      <p><strong>{% trans "City" %}:</strong> {{ user.profile.city }}</p>
+    {% endif %}
+    {% if user.profile.location %}
+      <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+      {% if request.user != user %}
+        {% if is_following %}
+          <form method="post" action="{% url 'unfollow' username=user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">{% trans "Unfollow" %}</button></form>
+            <br>
+            <a href="{% url 'message_thread' username=user.username %}">{% trans "Send Message" %}</a>
+             {% else %}
+          <form method="post" action="{% url 'follow' username=user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">{% trans "Follow" %}</button>
+          </form>
+          <br>
+          <a href="{% url 'message_thread' username=user.username %}">{% trans "Send Message" %}</a>
+        {% endif %}
+      {% endif %}
+      {% endif %}
+    </div>
+</div>
+</div>
+</div>
+<div class="col-md-7">
+
+<div class="container mt-3">
+  <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+<div class="card-body">
+{% for post in posts %}
+  <div class="card mb-3">
+    <div class="card-header">{{ post.title }}</div>
+    <div class="card-body">
+      <p class="card-text">{{ post.content }}</p>
+    </div>
+  </div>
+{% empty %}
+  <p>{% trans "No posts yet" %}.</p>
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+<br>
+</div>
+</div>
+</section>
+
+
+{% endblock %}      

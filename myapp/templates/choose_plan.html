@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-5 mb-3">{% trans "Choose a Plan" %}</h1>
+  <p class="lead">{% trans "Select a subscription plan to activate your account" %}</p>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "3 Months" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$18" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'subscribe' '3months' %}" class="btn btn-lg btn-block btn-primary">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "6 Months" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$29" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'subscribe' '6months' %}" class="btn btn-lg btn-block btn-primary">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4 box-shadow">
+        <div class="card-header">
+          <h4 class="my-0 font-weight-normal">{% trans "1 Year" %}</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title">{% trans "$49" %}</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>{% trans "Access to all features" %}</li>
+            <li>{% trans "Free support" %}</li>
+            <li>{% trans "Cancel anytime" %}</li>
+          </ul>
+          <a href="{% url 'subscribe' '1year' %}" class="btn btn-lg btn-block btn-primary">{% trans "Subscribe now" %}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

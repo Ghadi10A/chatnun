@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% load emoji_reactions_tags %}
+{% block content %}
+  <section class="main-section py-3">
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Left section -->
+      <div class="col-md-4">
+        <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+        <!--   <div class="card-header">
+            <h5>{{ user.username }}</h5>
+          </div> -->
+          <div class="card-body">
+            <div class="text-center">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
+                      {% else %}
+    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200">
+{% endif %}
+<hr>
+            </div>
+            
+            <br>
+            <!-- <img src="{{ user.profile.profile_pic.url }}" alt="Profile Picture" class="img-fluid mb-3"> -->
+           <h1>{{ user.get_full_name }}</h1>
+            <p><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
+            {% if user.profile.bio %}
+              <p><strong>{% trans "Bio" %}:</strong> {{ user.profile.bio }}</p>
+            {% endif %}
+            {% if user.profile.birthdate %}
+              <p><strong>{% trans "Birthdate" %}:</strong> {{ user.profile.birthdate }}</p>
+            {% endif %}
+            {% if user.profile.city %}
+              <p><strong>{% trans "City" %}:</strong> {{ user.profile.city }}</p>
+            {% endif %}
+            {% if user.profile.location %}
+              <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
+            {% endif %}
+            {% if user.profile.followers %}
+            <p><strong>{% trans "Followers" %}:</strong> <span class="badge badge-primary">{{ user.followers|length }}</span></p>
+            {% endif %}
+            {% if user.profile.following %}
+            <p><strong>{% trans "Following" %}:</strong> <span class="badge badge-primary">{{ user.following|length }}</span></p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-top: 6px;">
+          <div class="card-header">
+            <h5>{% trans "Groups" %}</h5>
+          </div>
+          <div class="card-body">
+            <ul>
+      {% for group in user.joined_groups.all %}
+         <li class="list-group-item"> <a href="{% url 'group_detail' group.name group.id %}">
+            {{ group.name }}
+            <span class="badge badge-primary">{{ group.members.count }} {% trans "Members" %}</span>
+          </a>
+        </li>
+        {% endfor %}
+        {% for group in user.admin_groups.all %}
+          <li class="list-group-item"><a href="{% url 'group_detail' group.name group.id %}">
+            {{ group.name }} (admin)
+            <span class="badge badge-primary">{{ group.members.count }} {% trans "Members" %}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      </div>
+    </div>
+      </div>
+    
+      <div class="col-md-7">
+        <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-bottom: 6px;;margin-top:6px">
+    <div class="card-body">
+      <div class="card mb-3">
+        <!-- <div class="card-header">{{ post.title }}</div> -->
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <div>
+              <p class="m-0" style="color: #000;font-size: 11px;">
+                {% trans "Posted" %} {{ post.created_at|timesince }} {% trans "ago" %}
+              </p>
+            </div>
+            <div>
+              <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                {% if post.author.profile.image %}
+                  <img src="{{ post.user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+                {% else %}
+                  <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
+                {% endif %}
+              </a>
+              <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
+            </div>
+          </div>
+
+                    <br>
+                    
+          <p class="card-text">{{ post.content }}</p>
+          <div class="text-center">
+          {% if post.image %}
+          <img src="{{ post.image.url }}" class="img-fluid mb-2">
+          {% endif %}
+          {% if post.video %}
+          <video src="{{ post.video.url }}" class="img-fluid mb-2" controls></video>
+          {% endif %}
+          {% if post.sound %}
+          <audio src="{{ post.sound.url }}" class="img-fluid mb-2" controls></audio>
+          {% endif %}
+        </div>
+  
+        </div>
+
+      </div>
+    <ul>
+  {% if post.emoji_reactions.all %}
+    {% regroup post.emoji_reactions.all by emoji as reactions_by_emoji %}
+    {% for group in reactions_by_emoji %}
+      <li class="list-group-item" style="border: none;">
+        <div class="text-center">
+          <span style="font-size: 12px;">
+            {% for reaction in group.list %}
+              {% if forloop.last %}
+                {% if reaction.emoji == 'heart' %}
+                  &#x2764;&#xFE0F; {# Unicode escape sequence for heart emoji #}
+                {% else %}
+                  {{ reaction.get_emoji_display }}
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+            {{ group.list|length }} {% trans "Reactions" %}
+          </span>
+        </div>
+      </li>
+    {% endfor %}
+  {% else %}
+    <li class="list-group-item">
+      <div class="text-center">
+        <span style="font-size: 12px;color: gray;">{% trans "No reactions yet. 0 Reactions" %}</span>
+      </div>
+    </li>
+  {% endif %}
+</ul>
+
+
+<div class="card-footer">
+           {% if post|has_reacted:request.user %}
+    <span style="font-size: 12px;color: gray;float: right;margin-bottom: 5px;">{% trans "You've already reacted to this post!" %}</span>
+  {% else %}
+    <form method="POST" id="reaction-form-{{ post.id }}" style="float: right;margin-bottom: 6px;">
+      {% csrf_token %}
+      <input type="hidden" name="post_id" value="{{ post.id }}">
+      <div id="emoji-picker-container">
+        {% for choice in form_reaction.emoji.field.choices %}
+          <button class="emoji-picker-item btn-sm" type="button" data-emoji="{{ choice.0 }}">{{ choice.1 }}</button>
+        {% endfor %}
+      </div>
+      <input type="hidden" id="id_emoji_{{ post.id }}" name="emoji" value="" />
+      <input type="submit" id="submit-reaction-{{ post.id }}" value="{{ post.id }}" style="display: none;" />
+    </form>
+    <script>
+      const reactionForm{{ post.id }} = document.getElementById('reaction-form-{{ post.id }}');
+      const emojiButtons{{ post.id }} = reactionForm{{ post.id }}.querySelectorAll('.emoji-picker-item');
+      
+      reactionForm{{ post.id }}.addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Your code to handle form submission
+      });
+
+      emojiButtons{{ post.id }}.forEach(button => {
+        button.addEventListener('click', () => {
+          const emoji = button.dataset.emoji;
+          document.getElementById('id_emoji_{{ post.id }}').value = emoji;
+          reactionForm{{ post.id }}.submit();
+        });
+      });
+    </script>
+  {% endif %}
+
+ <form method="post" class="comment-form">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form_comment.comment }}
+    </div>    
+    <br>
+        <button type="submit" class="btn btn-primary btn-sm" style="float: right;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+  <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+</svg></button>
+<br>
+          </form> 
+<span style="font-size: 12px;color: gray;"><p class="mb-3 text-center">{{ comments|length }} {% trans "Comments" %}</p></span>
+<style>
+  .small-list-group-item {
+    padding: 0.5rem 1rem;
+    font-size: 14px;
+  }
+</style>
+<ul class="list-group mb-4">
+  {% for comment in comments %}
+    <li class="list-group-item  small-list-group-item"  style="padding-top: 8px; padding-bottom: 8px;">
+      <div class="row">
+        <div class="col-md-2">
+          {% if comment.author.profile.image %}
+            <img src="{{ comment.author.profile.image.url }}" alt="Profile Image" class="profile-image img-fluid rounded-circle" width="20" height="20">
+          {% else %}
+            <img src="{% static 'images/Default_image_profile.png' %}" alt="Default Profile Image" class="profile-image img-fluid rounded-circle" width="20" height="20">
+          {% endif %}
+          <div class="comment-info ml-3">
+            <span style="color: #000; font-weight: bold; font-size: 14px;">{{ comment.author }}</span>
+            <p><small class="text-muted" style="font-size: 9px;">{{ comment.created_at|date:"F d, Y" }}</small></p>
+          </div>
+        </div>
+        <div class="col-md-10">
+          {% if request.user == comment.author %}
+            <div class="dropdown" style="float: right;">
+              <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                  <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a href="{% url 'edit_comment' post_id=post.id comment_id=comment.id %}" class="dropdown-item delete-comment" data-toggle="modal" data-target="#editModal">{% trans "Edit" %}</a>
+                <a href="{% url 'delete_comment' post_id=post.id comment_id=comment.id %}" class="dropdown-item delete-comment" data-comment-id="{{ comment_id }}" data-toggle="modal" data-target="#deleteModal">{% trans "Delete Comment" %}</a>
+              </div>
+            </div>
+          {% endif %}
+          <div>
+            <br>
+          <p style="font-size: 16px">{{ comment.comment }}</p>
+        </div>
+          
+        </div>
+      </div>
+    </li>
+    {% empty %}
+      <li class="list-group-item text-muted">{% trans "No comments yet. Be the first to comment!" %}</li>
+  {% endfor %}
+</ul>
+
+
+
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+</section>
+{% endblock %}
+{% block scripts %}
+  <script>
+    $(document).ready(function() {
+      // Toggle the emoji picker when the react button is clicked
+      $('#emoji-reaction-form button[type="submit"]').on('click', function(event) {
+        event.preventDefault();
+        $('#emoji-picker-container').toggle();
+      });
+
+      // Select an emoji from the picker and submit the form
+      $('.emoji-picker-item').on('click', function(event) {
+        event.preventDefault();
+        var emoji = $(this).data('emoji');
+        $('#id_emoji').val(emoji);
+        $('#emoji-reaction-form').submit();
+      });
+    });
+  </script>
+{% endblock %}

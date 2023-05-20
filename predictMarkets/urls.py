@@ -13,10 +13,34 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.urls import path, include
 from django.contrib import admin
-from django.urls import include, path
+from django.views.generic import TemplateView
+from django.utils.translation import gettext_lazy as _
+from django.conf.urls.i18n import i18n_patterns
+from django.conf.urls.static import static
+from django.conf import settings
+from allauth import urls as allauth_urls
+from myapp import routing
+from myapp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('', include('myapp.urls')),
 ]
+
+# WebSocket URL routing
+urlpatterns += [
+    path('ws/', include(routing.websocket_urlpatterns)),
+]
+
+# Add language switcher URLs
+urlpatterns += [
+    path('i18n/', include('django.conf.urls.i18n')),
+]
+
+# Serve media files in development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
