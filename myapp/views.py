@@ -148,6 +148,8 @@ def renew_subscription(request):
         return redirect('choose_plan')
 
     return render(request, 'renew_subscription.html')
+
+@requires_subscription    
 def choose_interval(request, interval):
     form = IntervalForm(initial={'interval': interval})
     if request.method == 'POST':
@@ -159,13 +161,15 @@ def choose_interval(request, interval):
             return render(request, 'scanner.html', {'results': results, 'form': form, 'interval': interval, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'scanner.html', {'form': form, 'interval': interval, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})    
-@login_required(login_url='get_started')
+
+@requires_subscription
 def run_scanner(request, interval):
     results = scanner(request, interval)
     form = IntervalForm(initial={'interval': interval})
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'scanner.html', {'form': form, 'results': results, 'interval': interval, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})    
 
+@requires_subscription
 @login_required(login_url='get_started')
 def predict_signals(request):
     new_conversation_id = str(uuid.uuid4())
