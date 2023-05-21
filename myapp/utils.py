@@ -60,7 +60,7 @@ def train_and_save_model(ticker):
     y_pred = clf.predict(X_test)
     accuracy = clf.score(X_test, y_pred)
     # Save the trained model to a pickle file
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
     with open(model_file, 'wb') as f:
         pickle.dump(clf, f)
     # Evaluate the accuracy of the model on the testing data
@@ -68,7 +68,7 @@ def train_and_save_model(ticker):
 
 
 def predict_signal(ticker):
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
 
     # Retrieve financial data for the instrument using yfinance
     data = yf.Ticker(ticker).history(period="max", interval="1m")
