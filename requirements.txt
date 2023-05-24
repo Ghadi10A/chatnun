@@ -135,6 +135,7 @@ flake8-variables-names==0.0.5
 flake8-warnings==0.4.0
 flake8_simplify==0.20.0
 Flask==0.11.1
+cryptography
 Flask-RESTful==0.3.6
 Flask-Uploads==0.2.1
 frozendict==2.3.4
