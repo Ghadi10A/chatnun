@@ -1,0 +1,10 @@
+gfortran
+flang
+nvfortran
+pgfortran
+ifort
+ifx
+g95
+build-essential
+libblas-dev
+liblapack-dev
