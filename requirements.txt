@@ -108,7 +108,7 @@ Pint==0.20.1
 pkg_resources==0.0.0
 plac==0.9.6
 pluggy==1.0.0
-preshed==2.0.1
+preshed==3.0.8
 proglog==0.1.10
 prompt-toolkit==1.0.15
 psycopg2==2.9.5
