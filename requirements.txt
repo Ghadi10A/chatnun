@@ -45,7 +45,6 @@ colorama==0.4.6
 configparser==5.3.0
 contourpy==1.0.6
 coverage==7.2.6
-cryptography==38.0.4
 cymem==2.0.7
 darglint==1.8.1
 decorator==4.4.2
