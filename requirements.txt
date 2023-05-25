@@ -129,7 +129,7 @@ python-socketio==5.0.4
 python3-openid==3.2.0
 pytz==2022.7
 pytz-deprecation-shim==0.1.0.post0
-PyYAML>=6.0
+PyYAML>=3.10
 pansi==2020.7.3
 pbr==3.1.1
 Pint==0.20.1
