@@ -26,6 +26,7 @@ bokeh==3.0.3
 Babel==2.12.1
 black==23.3.0
 blis==0.2.4 --global-option="--no-binary=blis"
+celery==5.2.7
 certifi==2022.12.7
 cffi==1.15.1
 charset-normalizer>=2.0.12
@@ -95,7 +96,7 @@ jieba==0.39
 Jinja2==3.1.2
 joblib==1.2.0
 jsonfield==3.1.0
-kombu==5.2.0 --global-option="--no-binary=kombu"
+kombu==5.2.4
 lxml==4.9.2
 langdetect==1.0.9
 MarkupSafe==2.1.1
