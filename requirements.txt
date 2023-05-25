@@ -134,7 +134,7 @@ pbr==3.1.1
 Pint==0.20.1
 plac==0.9.6
 pluggy==1.0.0
-preshed==3.0.8 --global-option="--no-binary=preshed"
+preshed --global-option="--no-binary=preshed"
 proglog==0.1.10
 py2neo>=3.1.2
 Pygments==2.14.0
