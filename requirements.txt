@@ -53,7 +53,7 @@ django-bootstrap-icons
 django-bootstrap-v5
 django-bootstrap5
 django-heroku
-django-modeltranslation
+django-modeltranslation==0.18.7
 django-timezone-field==5.0
 decorator==4.4.2
 defusedxml==0.7.1
