@@ -236,6 +236,7 @@ def verification_email_sent(request):
     send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
 
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+
 @login_required
 def verification_email_resend(request):
     user = request.user
@@ -246,6 +247,7 @@ def verification_email_resend(request):
     send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
 
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+
 
      
 # @login_required
