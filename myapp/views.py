@@ -207,7 +207,7 @@ def user_signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = False  # User is not active until they verify their email
+            user.is_active = True  # User is not active until they verify their email
             user.save()
             send_verification_email(request, user)
             return render(request, 'auth/email_verification_sent.html')
@@ -278,7 +278,7 @@ def verification_email_sent(request):
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user':user})
 
 def verification_email_resend(request, user_id):
-    user = User.objects.get(id=user_id)
+    user = request.user
     verification_link = generate_verification_link(request, user)
     
     # Create a multi-part message and set the headers
@@ -331,10 +331,6 @@ def user_login(request):
             if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
-            if not request.user.is_active:
-                return render(request, 'auth/email_verification_sent.html')    
-            else:
-                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
