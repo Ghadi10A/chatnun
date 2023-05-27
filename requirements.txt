@@ -80,6 +80,7 @@ nltk==3.8.1
 numpy==1.21.2
 scikit-learn
 scipy==1.9.3
+sendgrid==6.9.7
 oauthlib==3.2.2
 openai==0.26.4
 outcome==1.2.0
