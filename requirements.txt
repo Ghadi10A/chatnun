@@ -27,16 +27,11 @@ contourpy==1.0.6
 cryptography==38.0.4
 cymem==2.0.7
 decorator==4.4.2
-defusedxml==0.7.1
-decorator==4.4.2
-defusedxml==0.7.1
-dj-database-url
 dj-database-url==1.2.0
 Django==4.1.4
 django-allauth==0.51.0
 django-apscheduler==0.6.2
 django-crispy-forms==2.0
-django-heroku==0.3.1
 django-chat==0.1.0
 django-hvad==1.8.0
 django-location-field==2.1.0
