@@ -34,7 +34,7 @@ decorator==4.4.2
 defusedxml==0.7.1
 dj-database-url
 dj-database-url==1.2.0
-Django>=3.2.0
+Django==3.2.4
 django-allauth==0.51.0
 django-apscheduler==0.6.2
 django-bootstrap-icons==0.8.2
