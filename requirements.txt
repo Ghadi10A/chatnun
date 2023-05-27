@@ -1,4 +1,3 @@
-aniso8601==9.0.1
 appdirs==1.4.4
 APScheduler==3.9.1.post1
 asgiref==3.6.0
@@ -28,7 +27,7 @@ cryptography==38.0.4
 cymem==2.0.7
 decorator==4.4.2
 dj-database-url==1.2.0
-Django==4.1.5
+Django==4.1.4
 django-allauth==0.51.0
 django-apscheduler==0.6.2
 django-bootstrap-icons==0.8.2
@@ -81,7 +80,7 @@ neo4j-driver==5.5.0
 nltk==3.8.1
 numpy==1.21.2
 oauthlib==3.2.2
-openai==0.27.0
+openai==0.26.4
 outcome==1.2.0
 packaging==22.0
 pansi==2020.7.3
