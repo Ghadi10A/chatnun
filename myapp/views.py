@@ -6,6 +6,7 @@ import os
 import pickle
 import emojis
 import openai
+from django.contrib.auth import get_user
 from django.http import JsonResponse
 from django.db.models import Count, Prefetch
 from django.utils import timezone
