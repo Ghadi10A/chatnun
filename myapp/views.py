@@ -226,7 +226,7 @@ def send_verification_email(request, user):
     to_email = user.email
 
     # Send the email
-    send_mail(subject, message, from_email, [to_email], html_message=render_to_string('auth/email_verification.html', {'verification_link': verification_link}))
+    send_mail(subject, message, from_email, [to_email], html_message=render_to_string('auth/email_verification_sent.html', {'verification_link': verification_link}))
 
 def verification_email_sent(request):
     user = request.user
