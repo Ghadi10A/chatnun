@@ -53,7 +53,6 @@ INSTALLED_APPS = [
     'modeltranslation',
     'location_field.apps.DefaultConfig',
     'channels',
-    'chat',
     'myapp.notifications',
     'django.contrib.humanize',
     'emojis',
