@@ -28,7 +28,7 @@ cryptography==38.0.4
 cymem==2.0.7
 decorator==4.4.2
 dj-database-url==1.2.0
-Django==4.1.4
+Django==4.1.5
 django-allauth==0.51.0
 django-apscheduler==0.6.2
 django-bootstrap-icons==0.8.2
@@ -59,7 +59,7 @@ httpcore==0.9.1
 httpx==0.13.3
 hyperframe==5.2.0
 idna==2.10
-imageio==2.26.0
+imageio==2.10.0
 imageio-ffmpeg==0.4.8
 iniconfig==2.0.0
 interchange==2021.0.4
@@ -81,7 +81,7 @@ neo4j-driver==5.5.0
 nltk==3.8.1
 numpy==1.21.2
 oauthlib==3.2.2
-openai==0.26.4
+openai==0.27.0
 outcome==1.2.0
 packaging==22.0
 pansi==2020.7.3
