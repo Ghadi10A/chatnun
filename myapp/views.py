@@ -48,6 +48,8 @@ from django.utils import translation
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.utils.translation import activate
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -223,85 +225,24 @@ def send_verification_email(request, user):
     from_email = settings.EMAIL_HOST_USER
     to_email = user.email
 
-    # Create a multi-part message and set the headers
-    msg = MIMEMultipart()
-    msg['From'] = from_email
-    msg['To'] = to_email
-    msg['Subject'] = subject
-
-    # Add HTML body to the email
-    html_message = f"""
-    <html>
-        <body>
-            <p>{message}</p>
-        </body>
-    </html>
-    """
-    msg.attach(MIMEText(html_message, 'html'))
-
-    # Connect to the Google SMTP server
-    with smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT) as smtp:
-        smtp.starttls()
-
-        # Login to the SMTP server
-        smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-
-        # Send the email
-        smtp.sendmail(from_email, to_email, msg.as_string())
+    # Send the email
+    send_mail(subject, message, from_email, [to_email], html_message=render_to_string('auth/email_verification.html', {'verification_link': verification_link}))
 
 def verification_email_sent(request):
     user = request.user
     verification_link = generate_verification_link(request, user)
-    
-    # Create a multi-part message and set the headers
-    msg = MIMEMultipart()
-    msg['From'] = settings.EMAIL_HOST_USER
-    msg['To'] = user.email
-    msg['Subject'] = 'Verify your email'
 
-    # Add HTML body to the email
-    html_message = render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link})
-    msg.attach(MIMEText(html_message, 'html'))
+    # Send the email
+    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
 
-    # Connect to the Google SMTP server
-    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.ehlo()
-
-        # Login to the SMTP server
-        smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-
-        # Send the email
-        smtp.sendmail(settings.EMAIL_HOST_USER, user.email, msg.as_string())
-
-    return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user':user})
+    return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
 
 def verification_email_resend(request, user_id):
-    user = request.user
+    user = User.objects.get(id=user_id)
     verification_link = generate_verification_link(request, user)
-    
-    # Create a multi-part message and set the headers
-    msg = MIMEMultipart()
-    msg['From'] = settings.EMAIL_HOST_USER
-    msg['To'] = user.email
-    msg['Subject'] = 'Verify your email'
 
-    # Add HTML body to the email
-    html_message = render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link, 'verification_sent': True})
-    msg.attach(MIMEText(html_message, 'html'))
-
-    # Connect to the Google SMTP server
-    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-        smtp.ehlo()
-        smtp.starttls()
-        smtp.ehlo()
-
-        # Login to the SMTP server
-        smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-
-        # Send the email
-        smtp.sendmail(settings.EMAIL_HOST_USER, user.email, msg.as_string())
+    # Send the email
+    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link, 'verification_sent': True}))
 
     messages.success(request, 'Verification email has been resent.')
     return redirect('auth/verification_email_sent', user.id)
@@ -328,9 +269,13 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None:
+            if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
+            if not request.user.is_active:
+                return render(request, 'auth/email_verification_sent.html')    
+            else:
+                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
