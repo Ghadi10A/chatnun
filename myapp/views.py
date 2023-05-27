@@ -6,7 +6,6 @@ import os
 import pickle
 import emojis
 import openai
-from django.contrib.auth import get_user
 from django.http import JsonResponse
 from django.db.models import Count, Prefetch
 from django.utils import timezone
@@ -237,21 +236,17 @@ def verification_email_sent(request):
     send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
 
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+@login_required
 def verification_email_resend(request):
-    user = get_user(request)
+    user = request.user
     
-    if user is not None:
-        verification_link = generate_verification_link(request, user)
-        
-        # Send the email
-        send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
+    verification_link = generate_verification_link(request, user)
     
-        messages.success(request, 'Verification email has been resent.')
-        return redirect('auth/verification_email_sent')
-    else:
-        # Handle the case when the user is not authenticated
-        # Redirect or display an error message as per your requirements
-        return redirect('home')
+    # Send the email
+    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
+
+    return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+
      
 # @login_required
 # def activate_account(request, uidb64, token):
