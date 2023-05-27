@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
     'modeltranslation',
+    'django_bootstrap_icons',
     'location_field.apps.DefaultConfig',
     'channels',
     'myapp.notifications',
