@@ -13,7 +13,6 @@ bokeh==3.0.3
 certifi==2022.12.7
 cffi==1.15.1
 channels==4.0.0
-chatterbot==1.1.0
 channels-redis==4.0.0
 chardet==3.0.4
 charset-normalizer==2.0.12
