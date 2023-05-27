@@ -237,8 +237,8 @@ def verification_email_sent(request):
 
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
 
-def verification_email_resend(request, user_id):
-    user = User.objects.get(id=user_id)
+def verification_email_resend(request, user):
+    user = request.user
     verification_link = generate_verification_link(request, user)
 
     # Send the email
