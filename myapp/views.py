@@ -211,8 +211,8 @@ def user_signup(request):
             user = form.save(commit=False)
             user.is_active = True  # User is not active until they verify their email
             user.save()
-            send_verification_email(request, user)
-            return render(request, 'auth/email_verification_sent.html')
+            #send_verification_email(request, user)
+            return render(request, 'home')
     else:
         form = SignUpForm()
     new_conversation_id = str(uuid.uuid4())
@@ -272,13 +272,9 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None and user.is_active:
+            if user is not None:
                 login(request, user)
                 return redirect('home')
-            if not request.user.is_active:
-                return render(request, 'auth/email_verification_sent.html')    
-            else:
-                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
