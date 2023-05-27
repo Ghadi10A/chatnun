@@ -139,7 +139,6 @@ urllib3-secure-extra==0.1.0
 vine==5.0.0
 wasabi==0.10.1
 wcwidth==0.2.5
-webencodings==0.5.1
 websocket-client==1.4.2
 Werkzeug==2.2.3
 whitenoise==6.3.0
