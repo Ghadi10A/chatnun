@@ -34,7 +34,7 @@ decorator==4.4.2
 defusedxml==0.7.1
 dj-database-url
 Django>=4.1.4
-django-allauth
+django-allauth>=0.51.0
 django-bootstrap-icons
 django-bootstrap-v5
 django-bootstrap5
