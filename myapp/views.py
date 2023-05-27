@@ -40,6 +40,8 @@ from functools import wraps
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.hashers import check_password
 import smtplib
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail, Email, Content
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.utils import translation
