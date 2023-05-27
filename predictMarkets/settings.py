@@ -32,7 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = False
 #DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = ['predict-markets.herokuapp.com', '127.0.0.1', 'chatnun.com']
+ALLOWED_HOSTS = ['predict-markets.herokuapp.com', '127.0.0.1', 'chatnun.com', 'www.chatnun.com']
 
 
 # Application definition
@@ -51,9 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.microsoft',
     'modeltranslation',
-    'django_bootstrap_icons',
     'location_field.apps.DefaultConfig',
-    'bootstrap5',
     'channels',
     'chat',
     'myapp.notifications',
