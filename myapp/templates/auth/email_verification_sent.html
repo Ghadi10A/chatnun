@@ -12,7 +12,7 @@
               {% if verification_sent %}
                 <p>{% trans "Verification email has been resent" %}.</p>
               {% else %}
-                <p>{% trans "Didn't receive an email?" %}" <a href="{% url 'verification_email_resend' user=request.user %}">{% trans "Resend verification email" %}</a>.</p>
+                <p>{% trans "Didn't receive an email?" %}" <a href="{% url 'verification_email_resend' %}">{% trans "Resend verification email" %}</a>.</p>
               {% endif %}
               <p><a class="link-item" href="{% url 'logout' %}">{% trans "log out" %}</a></p>
             </div>        	
