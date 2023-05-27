@@ -35,8 +35,6 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, Email, Content
 import stripe
 from functools import wraps
 from django.contrib.auth.tokens import default_token_generator
