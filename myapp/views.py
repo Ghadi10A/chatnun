@@ -236,16 +236,36 @@ def verification_email_sent(request):
     send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
 
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
-
-def verification_email_resend(request, user):
-    user = request.user
+def verification_email_resend(request):
+    user_id = request.user.id  # Get the user ID from the authenticated user
+    user = User.objects.get(id=user_id)  # Retrieve the user from the database
+    
     verification_link = generate_verification_link(request, user)
+    
+    # Create a multi-part message and set the headers
+    msg = MIMEMultipart()
+    msg['From'] = settings.EMAIL_HOST_USER
+    msg['To'] = user.email
+    msg['Subject'] = 'Verify your email'
 
-    # Send the email
-    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link, 'verification_sent': True}))
+    # Add HTML body to the email
+    html_message = render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link, 'verification_sent': True})
+    msg.attach(MIMEText(html_message, 'html'))
+
+    # Connect to the Google SMTP server
+    with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
+
+        # Login to the SMTP server
+        smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
+
+        # Send the email
+        smtp.sendmail(settings.EMAIL_HOST_USER, user.email, msg.as_string())
 
     messages.success(request, 'Verification email has been resent.')
-    return redirect('auth/verification_email_sent', user.id)
+    return redirect('auth/verification_email_sent')
      
 # @login_required
 # def activate_account(request, uidb64, token):
