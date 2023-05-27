@@ -65,7 +65,7 @@ imageio-ffmpeg==0.4.8
 iniconfig==2.0.0
 interchange==2021.0.4
 itsdangerous==2.1.2
-jieba==0.39
+jieba
 Jinja2==3.1.2
 joblib==1.2.0
 jsonfield==3.1.0
