@@ -29,9 +29,6 @@ from django.db.models import Q
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from langdetect import detect
-from chatterbot import ChatBot
-from chatterbot.trainers import ListTrainer
-from chatterbot.trainers import ChatterBotCorpusTrainer
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
@@ -1210,7 +1207,7 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
         'LANGUAGES': settings.LANGUAGES
     })
 @login_required(login_url='user_login')
-def chatbot(request, conversation_id=None):
+def chatbot(request, post_id=None, conversation_id=None):
     user = request.user
     if not conversation_id:
         conversation_id = str(uuid.uuid4()) # Generate a new conversation ID if none is provided
@@ -1218,57 +1215,66 @@ def chatbot(request, conversation_id=None):
     form = ChatbotForm()
     response = None
     history = []
-
-    # Check if a conversation with the given conversation_id already exists
     saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('-timestamp')
-    if saved_chats.exists():
-        # If it exists, get the latest conversation
-        current_conversation = saved_chats.first()
-    else:
-        # If it doesn't exist, create a new conversation
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id)
+    # Check if a conversation with the given conversation_id already exists
+    current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
 
-    history.append(("User", current_conversation.prompt))
-    history.append(("Chatbot", current_conversation.response))
+    if current_conversation:
+        # Conversation already exists, update the existing conversation
+        prompt = current_conversation.prompt
+        response = current_conversation.response
+        current_conversation.save()
+    else:
+        # Conversation doesn't exist, create a new conversation
+        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response=response)
+        prompt = current_conversation.prompt
+        response = current_conversation.response
+
+    history.append(("User", prompt))
+    history.append(("Chatbot", response))
 
     if request.method == 'POST':
         form = ChatbotForm(request.POST)
         if form.is_valid():
             prompt = form.cleaned_data['prompt']
+            history.append(("You", prompt))
             user_lang = detect(prompt)
-            chatbot = ChatBot("Chatbot")
-            # trainer = ChatterBotCorpusTrainer(chatbot)
-            exit_conditions = (":q", "quit", "exit")
-            while True:
-                query = prompt
-                if query in exit_conditions:
-                    break
-                else:
-                    response = chatbot.get_response(query, output_statement_probability=0.5, maximum_statement_length=10000)
-                    response = str(response)
-                    # # translate response to user language if necessary
-                    if user_lang == 'ar':
-                        translator = Translator()
-                        translation = translator.translate(response, dest=user_lang)
-                        response = translation.text   
-                    history.append(("You", query))
-                    history.append(("Chatbot", response))
-                    current_conversation.prompt = query
-                    current_conversation.response = response
-                    current_conversation.save()
-                    # chat_history = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response=response)
-                    # chat_history.save()
-                    return redirect('chatbot', conversation_id=conversation_id)
-                    # Save the model after every 3 responses
-                    if len(history) % 3 == 0:
-                        with open('model.pkl', 'wb') as f:
-                            pickle.dump(chatbot, f)
+            completions = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=4000,
+                n=2,
+                stop=None,
+                temperature=0.5,
+            )
+            response = completions.choices[0].text
+            response = str(response)
+
+            # Clone the conversation and save the cloned prompt and response
+            cloned_prompt = current_conversation.prompt
+            cloned_response = current_conversation.response
+            # ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=cloned_prompt, response=cloned_response)
+
+            # Translate response to user language if necessary
+            if user_lang == 'ar':
+                translator = Translator()
+                translation = translator.translate(response, dest=user_lang)
+                response = translation.text
+
+            history.append(("You", prompt))
+            history.append(("Chatbot", response))
+            current_conversation.prompt = prompt
+            current_conversation.response = response
+            current_conversation.save()
+
+            return redirect('chatbotTrade', conversation_id=conversation_id)
+
     elif request.method == 'GET' and 'new' in request.GET:
         # Clear the history list when the new conversation button is clicked
-        conversation_id = str(uuid.uuid4())
         history = []
         response = None
-        form = ChatbotForm()  
+        form = ChatbotForm()
+
     elif request.method == 'GET' and 'history' in request.GET:
         chat_id = request.GET.get('history')
         history_chat = ChatHistory.objects.filter(user=user, id=chat_id).first()
@@ -1276,52 +1282,30 @@ def chatbot(request, conversation_id=None):
             prompt = history_chat.prompt
             response = history_chat.response
             form = ChatbotForm(initial={'prompt': prompt})
-            history.append(('You', prompt))
+            history.append(('User', prompt))
             history.append(('Chatbot', response))
-            saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('timestamp')
-            for chat in saved_chats:
-                history.append(("You", chat.prompt))
-                history.append(("Chatbot", chat.response))
 
-     # Get unread notifications for the current user
-    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
-
-        # Mark all notifications as read
     unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
-
+    # Mark all notifications as read
+    notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
     # Separate notifications by type
     message_notifications = []
     post_notifications = []
     group_message_notifications = []
     group_post_notifications = []
-    emoji_reaction_notifications = []
-    comment_notifications = []
-    emoji_reaction_group_notifications = []
-    comment_group_notifications = []
-    join_request_notifications = []
-    for notification in unread_notifications:
+    for notification in notifications:
         if notification.message:
             message_notifications.append(notification)
         elif notification.post:
             post_notifications.append(notification)
         elif notification.group_post:
-            group_post_notifications.append(notification)     
+            group_post_notifications.append(notification)
         elif notification.group_message:
             group_message_notifications.append(notification)
-        elif notification.emoji_reaction:
-            emoji_reaction_notifications.append(notification)
-        elif notification.comment:
-            comment_notifications.append(notification)
-        elif notification.emoji_reaction_group:
-            emoji_reaction_group_notifications.append(notification)
-        elif notification.comment_group:
-            comment_group_notifications.append(notification)
-        elif notification.join_request:
-            join_request_notifications.append(notification)
+            notification.is_read = True
+            notification.save()
 
-        notification.is_read = True
-        notification.save()            
-    new_conversation_id = str(uuid.uuid4())          
+    new_conversation_id = str(uuid.uuid4())        
     return render(request, 'chatbot/chatbot.html', {'form': form, 'response': response, 'history': history, 'saved_chats': saved_chats, 'conversation_id': conversation_id, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
 @login_required(login_url='login')
