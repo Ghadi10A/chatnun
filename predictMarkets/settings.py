@@ -229,6 +229,7 @@ AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
 MEDIA_URL_PREFIX = 'media'
+
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_URL_PREFIX}/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -261,10 +262,6 @@ EMAIL_HOST_PASSWORD = 'Ghadi03@' # Replace with your email password
 # SENDGRID_API_KEY='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'
 # EMAIL_BACKEND = 'sgbackend.SendGridBackend'
 # OPENAI_API_KEY = "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"
-
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
 
 LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
