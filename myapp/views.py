@@ -210,7 +210,7 @@ def user_signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_active = True  # User is not active until they verify their email
+            user.is_active = False  # User is not active until they verify their email
             user.save()
             #send_verification_email(request, user)
             return redirect('home')
