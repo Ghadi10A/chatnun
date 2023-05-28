@@ -228,7 +228,7 @@ AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
-MEDIA_URL_PREFIX = '/static/'
+MEDIA_URL_PREFIX = 'media'
 
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_URL_PREFIX}/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
