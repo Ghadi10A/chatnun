@@ -279,7 +279,7 @@ def user_login(request):
             messages.error(request, 'Invalid username or password.')
     else:
         form = LoginForm()
-    return render(request, 'login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
+    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
 
 def user_logout(request):
     logout(request)
