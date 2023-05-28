@@ -217,8 +217,8 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
+DEFAULT_FILE_STORAGE = 'myapp.storage_backends.MediaStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # Amazon S3 configurations
 AWS_ACCESS_KEY_ID = 'AKIARVGPJVYVEQ2BFMNR'
 AWS_SECRET_ACCESS_KEY = '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'
