@@ -212,7 +212,7 @@ def user_signup(request):
             user.is_active = True  # User is not active until they verify their email
             user.save()
             #send_verification_email(request, user)
-            return render(request, 'home')
+            return redirect('home')
     else:
         form = SignUpForm()
     new_conversation_id = str(uuid.uuid4())
