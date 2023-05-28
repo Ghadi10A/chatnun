@@ -75,7 +75,7 @@ def requires_subscription(view_func):
     @wraps(view_func)
     def wrapper(request, *args, **kwargs):
         user = request.user
-        if user.is_authenticated and user.subscription_status == 'active':
+        if user.is_authenticated and user.profile.subscription_status == 'active':
             return view_func(request, *args, **kwargs)
         else:
             return redirect('choose_plan')
