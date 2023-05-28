@@ -274,9 +274,11 @@ def user_login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('show_profile', username=request.user.username)
+                return redirect('home')
+            else:
+                messages.error(request, 'The username/password combination is incorrect.')
         else:
-            messages.error(request, 'Invalid username or password.')
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
