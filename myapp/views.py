@@ -286,7 +286,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return redirect('predict_signals')    
+    return redirect('user_login')    
 
 def view_following(request):
     following = Follow.objects.filter(follower=request.user)
