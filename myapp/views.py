@@ -1049,6 +1049,8 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
     # Check if a conversation with the given conversation_id already exists
     current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
 
+    prompt = ""  # Assign an initial value to prompt
+
     if current_conversation:
         # Conversation already exists, update the existing conversation
         prompt = current_conversation.prompt
@@ -1161,6 +1163,8 @@ def chatbot(request, post_id=None, conversation_id=None):
     saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('-timestamp')
     # Check if a conversation with the given conversation_id already exists
     current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
+
+    prompt = ""  # Assign an initial value to prompt
 
     if current_conversation:
         # Conversation already exists, update the existing conversation
