@@ -1058,7 +1058,7 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
         current_conversation.save()
     else:
         # Conversation doesn't exist, create a new conversation
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response=response)
+        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response="")
         prompt = current_conversation.prompt
         response = current_conversation.response
 
@@ -1173,7 +1173,7 @@ def chatbot(request, post_id=None, conversation_id=None):
         current_conversation.save()
     else:
         # Conversation doesn't exist, create a new conversation
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response=response)
+        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response="")
         prompt = current_conversation.prompt
         response = current_conversation.response
 
