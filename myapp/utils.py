@@ -106,9 +106,9 @@ def predict_signal(ticker):
 
     # Determine the prediction signal
     if prediction == True:
-        signal = 'Buy'
-    elif prediction == False:
         signal = 'Sell'
+    elif prediction == False:
+        signal = 'Buy'
     else:
         signal = 'Neutral'
 
