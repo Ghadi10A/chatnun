@@ -223,9 +223,9 @@ STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Amazon S3 configurations
 AWS_ACCESS_KEY_ID = 'AKIARVGPJVYVEQ2BFMNR'
-AWS_SECRET_ACCESS_KEY = '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 '
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06 '
-AWS_S3_REGION_NAME = 'us-east-1 '
+AWS_SECRET_ACCESS_KEY = 'NVdhrQDI/RuxtGLX2f0TSUVi7ut2ATCRlz6BgNXa'
+AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06'
+AWS_S3_REGION_NAME = 'us-east-1'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
