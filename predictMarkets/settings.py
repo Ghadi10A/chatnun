@@ -16,6 +16,8 @@ import os
 from django.utils.translation import gettext_lazy as _
 from decouple import config
 from django_redis.cache import RedisCache
+import boto3
+from storages.backends.s3boto3 import S3Boto3Storage
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -215,11 +217,15 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+# Configure the static and media file storage
+DEFAULT_FILE_STORAGE = 'myapp.storage_backends.MediaStorage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Amazon S3 configurations
+AWS_ACCESS_KEY_ID = 'AKIARVGPJVYVEQ2BFMNR'
+AWS_SECRET_ACCESS_KEY = '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 '
+AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06 '
+AWS_S3_REGION_NAME = 'us-east-1 '
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
