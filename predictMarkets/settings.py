@@ -212,25 +212,28 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+# Configure storage backend
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# Set the bucket name
+AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-DEFAULT_FILE_STORAGE = 'myapp.storage_backends.MediaStorage'
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# Amazon S3 configurations
+# Set the AWS access keys (replace with your own credentials)
 AWS_ACCESS_KEY_ID = 'AKIARVGPJVYVEQ2BFMNR'
 AWS_SECRET_ACCESS_KEY = 'NVdhrQDI/RuxtGLX2f0TSUVi7ut2ATCRlz6BgNXa'
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06'
-AWS_S3_REGION_NAME = 'us-east-1'
-AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-MEDIA_URL_PREFIX = 'media'
 
-MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_URL_PREFIX}/'
+# Set the static and media URLs
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# Set the static and media root directories
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Set the static and media file storage locations
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
