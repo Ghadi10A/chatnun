@@ -183,12 +183,12 @@
                     <br>
                     
           <p class="card-text">{{ post.content }}</p>
-          <div class="container">
+          <div class="text-center">
           {% if post.image %}
-          <img src="{{ post.image.url }}" style="max-height: 350px;max-width: 550px;">
+          <img src="{{ post.image.url }}" style="max-width: 100%; height: auto; max-height: 350px;">
           {% endif %}
           {% if post.video %}
-          <video src="{{ post.video.url }}" style="max-height: 350px;max-width: 550px;" controls></video>
+          <video src="{{ post.video.url }}" style="max-width: 100%; height: auto; max-height: 350px;" controls></video>
           {% endif %}
           {% if post.sound %}
           <audio src="{{ post.sound.url }}" controls></audio>
