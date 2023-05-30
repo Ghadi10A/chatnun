@@ -6,7 +6,7 @@
 <html {% get_current_language as LANGUAGE_CODE %} lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% get_language_info for LANGUAGE_CODE as LANGUAGE_INFO %} dir="{{ LANGUAGE_INFO.bidi|yesno:"rtl,ltr" }}">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
@@ -38,7 +38,7 @@
     </script>
   
   </head>
-  <body>
+  <body class="d-flex flex-column h-100">
   	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container">
             {% if is_arabic %}
@@ -187,12 +187,12 @@ function markNotificationAsRead(notificationId) {
             </div>
         </div>
         </nav> 
-    <div class="container mt-5">
+    <div class="container flex-grow-1">
       {% block content %}{% endblock %}
     <br>
   <br>
   
-   		<footer class="navbar navbar-expand navbar-light bg-light fixed-bottom">
+   		<footer class="bg-light text-center py-3">
             <div class="container">
                 <ul class="navbar-nav">
                     <li class="nav-item">
