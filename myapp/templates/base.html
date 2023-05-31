@@ -38,7 +38,7 @@
     </script>
   
   </head>
-  <body class="d-flex flex-column h-100">
+  <body>
   	<nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container">
             {% if is_arabic %}
@@ -196,16 +196,16 @@ function markNotificationAsRead(notificationId) {
             <div class="container">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'terms_of_service' %}">{% trans "Terms of Use" %}</a>
+                        <a class="nav-link" href="{% url 'terms_of_service' %}" style="font-size:11px;">{% trans "Terms of Use" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
+                        <a class="nav-link" href="{% url 'privacy_policy' %}" style="font-size:11px;">{% trans "Privacy Policy" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about_us' %}">{% trans "About Us" %}</a>
+                        <a class="nav-link" href="{% url 'about_us' %}" style="font-size:11px;">{% trans "About Us" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact_us' %}">{% trans "Contact Us" %}</a>
+                        <a class="nav-link" href="{% url 'contact_us' %}" style="font-size:11px;">{% trans "Contact Us" %}</a>
                     </li>
                     <li class="nav-item">
    <form class="nav-link" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
