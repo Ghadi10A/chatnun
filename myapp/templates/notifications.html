@@ -17,7 +17,7 @@
                {% if user.profile.image %}
                         <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
                       {% else %}
-    <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
+    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
 {% endif %}
 <hr>
             </div>
