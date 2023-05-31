@@ -128,7 +128,7 @@ class ProfileUpdateForm(forms.ModelForm):
     bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-group', 'rows': 3, 'required': False}), required=False)
     birthdate = forms.DateField(required=False)
     city = forms.CharField(max_length=255, required=False)
-    location = PlainLocationField(based_fields=['city'], zoom=7, blank=True)
+    location = PlainLocationField(based_fields=['city'], zoom=7, blank=True, required=False)
 
     class Meta:
         model = Profile
