@@ -10,7 +10,7 @@
         {% if group.image %}
                         <img src="{{ group.image.url }}" class="rounded-circle me-2" alt="{{ group.name }} image" width="300" height="300">
                       {% else %}
-    <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/group.png" class="rounded-circle me-2">
+    <img src="{% static 'images/group.png' %}" class="rounded-circle me-2">
 {% endif %}
         </div>
         <hr>
@@ -21,7 +21,7 @@
                         {% if group.admin.image %}
                         <img src="{{ group.admin.image.url }}" class="profile-image" width="30" height="30">
                         {% else %}
-                        <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="profile-image" width="30" height="30">
+                        <img src="{% static 'images/Default_image_profile.png' %}" class="profile-image" width="30" height="30">
                         {% endif %}
                         <p class="card-text" style="font-size: 10px;">{% trans "Admin" %}</p>
                     </div>
@@ -56,7 +56,7 @@
           {% if member.image %}
             <img src="{{ member.image.url }}" class="profile-image" width="30" height="30">
           {% else %}
-            <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="profile-image" width="30" height="30">
+            <img src="{% static 'images/Default_image_profile.png' %}" class="profile-image" width="30" height="30">
           {% endif %}
         </div>
         <a href="{% url 'show_profile' member.username %}">{{ member.username }}</a>
@@ -178,7 +178,7 @@
                 {% if post.author.profile.image %}
                   <img src="{{ post.author.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
                 {% else %}
-                  <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="rounded-circle me-2" width="32" height="32">
+                  <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
                 {% endif %}
               </a>
               <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
