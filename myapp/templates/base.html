@@ -73,6 +73,11 @@
   .text-end {
     font-size: 11px;
   }
+        
+        @media (max-width: 767px) {
+  .container.flex-grow-1 {
+    margin-bottom: 60px; /* Adjust this value to add space between content and footer */
+  }
 }
 
     </style>
@@ -226,7 +231,7 @@ function markNotificationAsRead(notificationId) {
     <br>
   <br>
   
-   		<footer class="navbar navbar-expand navbar-light bg-light fixed-bottom" style="top:10px;">
+   		<footer class="navbar navbar-expand navbar-light bg-light fixed-bottom">
             <div class="container">
                 <ul class="navbar-nav">
                     <li class="nav-item">
