@@ -87,7 +87,7 @@
             <div class="container">
             {% if is_arabic %}
 <a class="navbar-brand" href="#" style="color:#fff; font-size:bold;">
-    <img src="{% static 'images/text17.png' %}" style="max-width:250px;" alt="...">
+    <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/text17.png" style="max-width:150px;" alt="...">
 
 </a>
 {% else %}
@@ -206,7 +206,7 @@ function markNotificationAsRead(notificationId) {
                       {% if user.profile.image %}
                         <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
                       {% else %}
-                        <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
+                        <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="rounded-circle me-2" width="32" height="32">
                     {% endif %}
                       {{ user.username }}
                     </a>
