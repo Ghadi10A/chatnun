@@ -46,24 +46,17 @@ def calculate_vwap(ticker):
 
 def train_and_save_model(ticker):
     data = yf.Ticker(ticker).history(period="3y")
-    # Use pandas to preprocess the data
     data['target'] = data['Close'].shift(-1) > data['Close']
     data.dropna(inplace=True)
-    # Check if VWAP column exists
-    # Split the data into training and testing sets
     X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
     y = data['target']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # Train a Random Forest classifier on the training data
     clf = RandomForestClassifier()
     clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = clf.score(X_test, y_pred)
-    # Save the trained model to a pickle file
+    accuracy = clf.score(X_test, y_test)
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
     with open(model_file, 'wb') as f:
         pickle.dump(clf, f)
-    # Evaluate the accuracy of the model on the testing data
     return accuracy
 
 
@@ -74,13 +67,14 @@ def predict_signal(ticker):
     data = yf.Ticker(ticker).history(period="max", interval="1m")
     data = data.dropna()
 
-    # Scale the data
+    if data.empty:
+        return None, None, None, None, None
+
     scaler = StandardScaler()
-    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close']])
-    y = data['Close'].shift(-1) > data['Close']
+    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
 
     # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(scaled_data, data['Close'].shift(-1) > data['Close'], test_size=0.2, random_state=0)
 
     # Train the model on the training set
     model = RandomForestClassifier()
@@ -93,35 +87,29 @@ def predict_signal(ticker):
         scores = cross_val_score(model, X_test, y_test, cv=5)
         accuracy = scores.mean()
 
-    # Make a prediction
-    prediction = model.predict([X[-1]])[0]
-
     # Save the trained model to a pickle file
     with open(model_file, 'wb') as f:
         pickle.dump(model, f)
 
-    # Load the trained model
-    with open(model_file, 'rb') as f:
-        model = pickle.load(f)
-
     # Determine the prediction signal
-    if prediction == True:
-        signal = 'Sell'
-    elif prediction == False:
+    latest_data = yf.Ticker(ticker).history(period="5m").iloc[-1]
+    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume']].values.reshape(1, -1))
+    prediction = model.predict(scaled_latest_data)[0]
+    if prediction == 1:
         signal = 'Buy'
+    elif prediction == 0:
+        signal = 'Sell'
     else:
         signal = 'Neutral'
 
     # Use the trained model to make predictions on the latest data
-    data = yf.Ticker(ticker).history(period="max")
-    X_latest = data[['Open', 'High', 'Low', 'Close']]
+    X_latest = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
     y_pred = model.predict(X_latest)
 
     # Calculate other metrics
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
     close_price = data['Close'][-1]
-    # latest_target = close_price < (latest_close - last_diff)
 
     return close_price, signal, accuracy, last_diff, last_diff_percent
 
