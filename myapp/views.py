@@ -170,7 +170,6 @@ def run_scanner(request, interval):
     return render(request, 'scanner.html', {'form': form, 'results': results, 'interval': interval, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})    
 
 @requires_subscription
-@login_required(login_url='get_started')
 def predict_signals(request):
     new_conversation_id = str(uuid.uuid4())
     form = PredictForm(request.POST)
