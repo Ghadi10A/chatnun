@@ -56,9 +56,8 @@
     <span class="navbar-toggler-icon"></span>
 </button>
 {% if user.is_authenticated %}
-<div class="container">
-    <!-- Your navbar-brand code here -->
-    <ul class="navbar-nav ml-auto">
+
+    <ul class="navbar-nav ml-auto justify-content-md-center" style="margin-left: 5rem;">
       <li class="nav-item {% if request.path == '/' %}active{% else %}gray{% endif %}">
         <a class="nav-link" href="{% url 'home' %}" style="{% if request.path == '/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Home" %}</a>
       </li>
@@ -78,7 +77,6 @@
         </ul>
       </li>
     </ul>
-  </div>
 {% endif %}
             <div class="text-end">
 
@@ -207,12 +205,12 @@ function markNotificationAsRead(notificationId) {
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact_us' %}" style="font-size:11px;">{% trans "Contact Us" %}</a>
                     </li>
-                    <li class="nav-item" style="float:right;">
-   <form class="nav-link" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
+                    <li class="nav-item" style="float:right;font-size:11px;">
+   <form class="nav-link btn-sm" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
             {% csrf_token %}
             <select name="language" onchange="this.form.submit()">
                 {% for code, name in LANGUAGES %}
-                    <option style="font-size:11px;" value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{% trans name %}</option>
+                    <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{% trans name %}</option>
                 {% endfor %}
             </select>
             <noscript><input type="submit" value="{% trans 'Switch' %}"></noscript>
