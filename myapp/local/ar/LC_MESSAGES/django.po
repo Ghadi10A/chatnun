@@ -1503,3 +1503,8 @@ msgstr "خريطة سوق الفوركس"
 #~ msgid "Neutral"
 #~ msgstr "محايد"
 
+#~ msgid "Username"
+#~ msgstr "اسم المستخدم"
+
+#~ msgid "Password"
+#~ msgstr "كلمة المرور"
