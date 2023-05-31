@@ -8,9 +8,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-beta2/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     <title>{% trans "ChatNun | App" %}</title>
@@ -57,30 +56,29 @@
     <span class="navbar-toggler-icon"></span>
 </button>
 {% if user.is_authenticated %}
-<div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar me-lg-auto justify-content-md-center" style="margin-left: 5rem;">
-    <li class="nav-item {% if request.path == '/' %}active{% else %}gray{% endif %}">
+<div class="container">
+    <!-- Your navbar-brand code here -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item {% if request.path == '/' %}active{% else %}gray{% endif %}">
         <a class="nav-link" href="{% url 'home' %}" style="{% if request.path == '/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Home" %}</a>
-    </li>
-    <li class="nav-item {% if request.path == '/predict_signals/' %}active{% else %}gray{% endif %}">
+      </li>
+      <li class="nav-item {% if request.path == '/predict_signals/' %}active{% else %}gray{% endif %}">
         <a class="nav-link" href="{% url 'predict_signals' %}" style="{% if request.path == '/get-signal' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Signal" %}</a>
-    </li>
-    <li class="nav-item {% if request.path == '/run_scanner/' %}active{% else %}gray{% endif %}">
+      </li>
+      <li class="nav-item {% if request.path == '/run_scanner/' %}active{% else %}gray{% endif %}">
         <a class="nav-link" href="{% url 'run_scanner' interval='5m' %}" style="{% if request.path == '/scanner/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Scanner" %}</a>
-    </li>
-    <li class="nav-item dropdown {% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}active{% else %}gray{% endif %}">
-  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="{% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
-    {% trans "ChatBot" %}
-  </a>
-  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-    <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">{% trans "ChatBot" %}</a></li>
-    <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">{% trans "ChatBotTrade" %}</a></li>
-  </ul>
-</li>
-
-</ul>
-
-</div>
+      </li>
+      <li class="nav-item dropdown {% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}active{% else %}gray{% endif %}">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="{% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
+          {% trans "ChatBot" %}
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">{% trans "ChatBot" %}</a></li>
+          <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">{% trans "ChatBotTrade" %}</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 {% endif %}
             <div class="text-end">
 
@@ -209,7 +207,7 @@ function markNotificationAsRead(notificationId) {
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'contact_us' %}" style="font-size:11px;">{% trans "Contact Us" %}</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" style="float:right;">
    <form class="nav-link" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
             {% csrf_token %}
             <select name="language" onchange="this.form.submit()">
