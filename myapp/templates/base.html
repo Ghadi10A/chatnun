@@ -36,7 +36,24 @@
       }
     }
     </script>
+    <style>
+      @media (max-width: 767px) {
+  .navbar-nav {
+    flex-direction: column;
+  }
   
+  .navbar-nav .nav-item {
+    margin-bottom: 10px;
+  }
+  
+  .navbar-nav .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+  }
+}
+
+    </style>
   </head>
   <body>
   	<nav class="navbar navbar-expand-lg navbar-light bg-dark"">
