@@ -124,20 +124,23 @@ class FollowUserForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)    
 
 class ProfileUpdateForm(forms.ModelForm):
-    image = forms.ClearableFileInput(attrs={'class':'form-group', 'accept':'image/*', 'required': False})
-    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-group', 'rows': 3, 'required': False}))
+    image = forms.ClearableFileInput(attrs={'class': 'form-group', 'accept': 'image/*', 'required': False})
+    bio = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-group', 'rows': 3, 'required': False}), required=False)
     birthdate = forms.DateField(required=False)
     city = forms.CharField(max_length=255, required=False)
     location = PlainLocationField(based_fields=['city'], zoom=7, blank=True)
+
     class Meta:
         model = Profile
         fields = ['image', 'bio', 'birthdate', 'city', 'location']
+
     def __init__(self, *args, **kwargs):
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
         self.fields['bio'].initial = self.instance.bio
         self.fields['birthdate'].initial = self.instance.birthdate
         self.fields['city'].initial = self.instance.city
         self.fields['location'].initial = self.instance.location
+
     def save(self, commit=True):
         profile = super(ProfileUpdateForm, self).save(commit=False)
         profile.bio = self.cleaned_data['bio']
@@ -146,7 +149,8 @@ class ProfileUpdateForm(forms.ModelForm):
         profile.location = self.cleaned_data['location']
         if commit:
             profile.save()
-        return profile  
+        return profile
+
 class SubscriptionForm(forms.Form):
     PLAN_CHOICES = [
         ('threeMonths', '3 Months Subscription $9'),
