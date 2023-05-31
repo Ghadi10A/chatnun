@@ -214,7 +214,7 @@ function markNotificationAsRead(notificationId) {
             {% csrf_token %}
             <select name="language" onchange="this.form.submit()">
                 {% for code, name in LANGUAGES %}
-                    <option value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{% trans name %}</option>
+                    <option style="font-size:11px;" value="{{ code }}" {% if code == LANGUAGE_CODE %}selected{% endif %}>{% trans name %}</option>
                 {% endfor %}
             </select>
             <noscript><input type="submit" value="{% trans 'Switch' %}"></noscript>
