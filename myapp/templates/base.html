@@ -85,7 +85,7 @@
   <body>
   	<nav class="navbar navbar-expand-lg navbar-light bg-dark"">
             <div class="container">
-            {% if is_arabic %}
+            {% if LANGUAGE_CODE|is_arabic %}
 <a class="navbar-brand" href="#" style="color:#fff; font-size:bold;">
     <img src="{% static 'images/text17.png' %}" style="max-width:150px;" alt="...">
 
