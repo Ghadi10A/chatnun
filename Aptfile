@@ -13,3 +13,4 @@ pgfortran
 ifort
 ifx
 g95
+gettext
