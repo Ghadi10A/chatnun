@@ -22,7 +22,7 @@
                 {% if conversation.recipient.profile.image %}
                 <img src="{{ conversation.recipient.profile.image.url }}" width="30" height="30" class="rounded-circle mr-2">
                 {% else %}
-                <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" width="30" height="30" class="rounded-circle">
+                <img src="{% static 'images/Default_image_profile.png' %}" width="30" height="30" class="rounded-circle">
                   {% endif %}
                    <span class="text-primary" style="font-size: 11px;">{{ conversation.recipient.username }}</span>
               </a>
