@@ -140,7 +140,7 @@
             <div>
               <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
                 {% if post.author.profile.image %}
-                  <img src="{{ post.user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+                  <img src="{{ post.author.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
                 {% else %}
                   <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="rounded-circle me-2" width="32" height="32">
                 {% endif %}
