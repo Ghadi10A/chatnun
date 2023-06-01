@@ -68,7 +68,7 @@ def predict_signal(ticker):
     y = data['Close'].shift(-1) > data['Close']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
     model = RandomForestClassifier()
-    accuracy = train_and_save_model(ticker)
+    accuracy = model.score(X_test, y_test)
     prediction = model.predict([X[-1]])[0]
     with open(model_file, 'wb') as f:
         pickle.dump(model, f)
