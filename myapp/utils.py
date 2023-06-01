@@ -44,87 +44,53 @@ def calculate_vwap(ticker):
     return data['vwap'][-1]
 def train_and_save_model(ticker):
     data = yf.Ticker(ticker).history(period="3y")
-    # Use pandas to preprocess the data
     data['target'] = data['Close'].shift(-1) > data['Close']
     data.dropna(inplace=True)
-    # Check if VWAP column exists
-    # Split the data into training and testing sets
     X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
     y = data['target']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # Train a Random Forest classifier on the training data
+    scaler = StandardScaler()
+    X_train_scaled = scaler.fit_transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
     clf = RandomForestClassifier()
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = clf.score(X_test, y_test)
-    # Save the trained model to a pickle file
+    clf.fit(X_train_scaled, y_train)
+    accuracy = clf.score(X_test_scaled, y_test)
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    with open(model_file, 'wb') as f:
-        pickle.dump(clf, f)
-    # Evaluate the accuracy of the model on the testing data
+    joblib.dump(clf, model_file)
     return accuracy
-
 
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-
-    # Retrieve financial data for the instrument using yfinance
     data = yf.Ticker(ticker).history(period="max", interval="1m")
     data = data.dropna()
-
-    # Scale the data
     scaler = StandardScaler()
-    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close']])
+    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
     y = data['Close'].shift(-1) > data['Close']
-
-    # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-
-    # Train the model on the training set
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
-
-    # Evaluate the model on the testing set using cross-validation if the testing set has sufficient samples
     if len(X_test) < 5:
         accuracy = 1.0
     else:
         scores = cross_val_score(model, X_test, y_test, cv=5)
         accuracy = scores.mean()
-
-    # Save the trained model to a pickle file
+    prediction = model.predict([X[-1]])[0]
     with open(model_file, 'wb') as f:
         pickle.dump(model, f)
-
-    # Load the trained model
     with open(model_file, 'rb') as f:
         model = pickle.load(f)
-
-    # Use the trained model to make predictions on the latest data
-    latest_data = yf.Ticker(ticker).history(period="max").iloc[-1]
-    # Calculate the VWAP for the latest data
-    latest_data['VWAP'] = (latest_data['Close'] * latest_data['Volume']).cumsum() / latest_data['Volume'].cumsum()
-
-    # Scale the latest data using the same scaler
-    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']].values.reshape(1, -1))
-
-    # Make sure the feature names are consistent
-    scaled_latest_data = pd.DataFrame(scaled_latest_data, columns=['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP'])
-    # Make a prediction
-    prediction = model.predict(scaled_latest_data)[0]
-
-    # Determine the prediction signal
-    if prediction == 1:
-        signal = 'Buy'
-    elif prediction == 0:
+    if prediction == True:
         signal = 'Sell'
+    elif prediction == False:
+        signal = 'Buy'
     else:
         signal = 'Neutral'
-
-    # Calculate other metrics
-    last_diff = latest_data['Close'] - data['Close'].iloc[-2]
-    last_diff_percent = last_diff / data['Close'].iloc[-2] * 100
-    close_price = latest_data['Close']
-
+    data = yf.Ticker(ticker).history(period="max")
+    X_latest = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
+    y_pred = model.predict(X_latest)
+    last_diff = data['Close'][-1] - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
+    close_price = data['Close'][-1]
     return close_price, signal, accuracy, last_diff, last_diff_percent
 
 # def train_and_save_model():
