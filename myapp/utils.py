@@ -100,7 +100,7 @@ def predict_signal(ticker):
         model = pickle.load(f)
 
     # Use the trained model to make predictions on the latest data
-    latest_data = yf.Ticker(ticker).history(period="5m").iloc[-1]
+    latest_data = yf.Ticker(ticker).history(period="max").iloc[-1]
     # Calculate the VWAP for the latest data
     latest_data['VWAP'] = (latest_data['Close'] * latest_data['Volume']).cumsum() / latest_data['Volume'].cumsum()
 
