@@ -107,6 +107,8 @@ def predict_signal(ticker):
     # Scale the latest data using the same scaler
     scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']].values.reshape(1, -1))
 
+    # Make sure the feature names are consistent
+    scaled_latest_data = pd.DataFrame(scaled_latest_data, columns=['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP'])
     # Make a prediction
     prediction = model.predict(scaled_latest_data)[0]
 
