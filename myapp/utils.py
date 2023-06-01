@@ -42,7 +42,6 @@ def calculate_vwap(ticker):
     data = pd.DataFrame(data)
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
-
 def train_and_save_model(ticker):
     data = yf.Ticker(ticker).history(period="3y")
     # Use pandas to preprocess the data
