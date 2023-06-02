@@ -1072,32 +1072,21 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
             prompt = form.cleaned_data['prompt']
             history.append(("You", prompt))
             user_lang = detect(prompt)
-
-            model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'model.pkl')
-            if os.path.exists(model_file):
-                # Load the model from the file
-                model = joblib.load(model_file)
-                completions = model(prompt, n=2, stop=None, temperature=0.5)
-                response = completions.choices[0].text
-            else:
-                # Use OpenAI completions API
-                completions = openai.Completion.create(
-                    engine="text-davinci-002",
-                    prompt=prompt,
-                    max_tokens=4000,
-                    n=2,
-                    stop=None,
-                    temperature=0.5,
-                )
-                response = completions.choices[0].text
-
-                # Save the model as model.pkl
-                model = completions.model  # Assign the model from completions
-
-                # Save the model to the model.pkl file
-                joblib.dump(model, model_file)
-
+            completions = openai.Completion.create(
+                engine="text-davinci-002",
+                prompt=prompt,
+                max_tokens=4000,
+                n=2,
+                stop=None,
+                temperature=0.5,
+            )
+            response = completions.choices[0].text
             response = str(response)
+
+            # Clone the conversation and save the cloned prompt and response
+            cloned_prompt = current_conversation.prompt
+            cloned_response = current_conversation.response
+            # ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=cloned_prompt, response=cloned_response)
 
             # Translate response to user language if necessary
             if user_lang == 'ar':
