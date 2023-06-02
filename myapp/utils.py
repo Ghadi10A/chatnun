@@ -17,6 +17,8 @@ from sklearn.metrics import precision_score
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+from sklearn.experimental import enable_hist_gradient_boosting
+from sklearn.ensemble import HistGradientBoostingClassifier
 from django.core.mail import send_mail
 from .models import Prediction
 import psycopg2
