@@ -48,16 +48,13 @@ def calculate_vwap(ticker):
 
 def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="5d")
-
-    if data.empty:
-        return None, 'No data available'
+    data = yf.Ticker(ticker).history(period="max")
 
     # Calculate the VWAP
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the data
-    data = data.dropna()
+    data.dropna(inplace=True)
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
