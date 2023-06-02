@@ -50,6 +50,10 @@ def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
 
+    # Check if the data is empty
+    if data.empty:
+        return None
+
     # Calculate the VWAP
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
@@ -86,6 +90,7 @@ def train_and_save_model(ticker):
     joblib.dump(scaler, scaler_file)
 
     return accuracy
+
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
