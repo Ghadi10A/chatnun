@@ -14,7 +14,7 @@ from django.db import models
 from .models import User, Profile, Follow, Post, Comment, Message, EmojiReaction, Group, JoinRequest, CommentGroup, EmojiReactionGroup, GroupPost, GroupMessage, Notification, ChatHistory
 from django.shortcuts import render
 from .forms import IntervalForm, PredictForm, SignUpForm, LoginForm, SubscriptionForm, ProfileUpdateForm, PostForm, GroupPostForm, MessageForm, GroupMessageForm, CommentForm, CommentFormGroup, ReactionForm, SearchForm, EmojiReactionFormGroup, ChatbotForm, CreateGroupForm, UpdateGroupForm
-from .utils import calculate_vwap, predict_signal, get_historical_data, get_news_articles
+from .utils import calculate_vwap, train_and_save_model, predict_signal, get_historical_data, get_news_articles
 from .tasks import scanner
 from django.shortcuts import render, redirect, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -176,12 +176,13 @@ def predict_signals(request):
     if request.method == 'POST':
         if form.is_valid():
             ticker = form.cleaned_data['ticker']
-            close_price, signal, accuracy, last_diff, last_diff_percent = predict_signal(ticker)
+            accuracy = train_and_save_model(ticker)
+            close_price, signal, last_diff, last_diff_percent = predict_signal(ticker)
             vwap = calculate_vwap(ticker)
             data = get_historical_data(ticker)
             articles = get_news_articles(ticker)
             # diff, diff_pct, script, div = get_chart_data(ticker)
-            context = {'form': form, 'close_price': round(close_price, 2), 'signal': signal, 'vwap': round(vwap, 2), 'ticker': ticker, 'accuracy': round(accuracy)*100, 'last_diff': round(last_diff, 2), 'last_diff_percent': round(last_diff_percent, 2), 'data': data, 'articles': articles, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES}
+            context = {'form': form, 'close_price': round(close_price, 2), 'signal': signal, 'vwap': round(vwap, 2), 'ticker': ticker, 'accuracy': accuracy, 'last_diff': round(last_diff, 2), 'last_diff_percent': round(last_diff_percent, 2), 'data': data, 'articles': articles, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES}
             return render(request, 'prediction_results.html', context)
     else:
         form = PredictForm()
