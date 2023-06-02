@@ -97,6 +97,9 @@ def predict_signal(ticker):
     # Retrieve the latest data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
 
+    if data.empty:
+        return None, 'No data available', None, None
+
     # Calculate the VWAP for the latest data
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
