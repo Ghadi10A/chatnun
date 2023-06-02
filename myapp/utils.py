@@ -43,6 +43,7 @@ def calculate_vwap(ticker):
     data = pd.DataFrame(data)
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
+
 def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
@@ -69,8 +70,8 @@ def train_and_save_model(ticker):
     X_train = imputer.fit_transform(X_train)
     X_test = imputer.transform(X_test)
 
-    # Fit a random forest classifier to the training data
-    model = RandomForestClassifier()
+    # Fit a histogram gradient boosting classifier to the training data
+    model = HistGradientBoostingClassifier()
     model.fit(X_train, y_train)
 
     # Evaluate the model on the testing data
@@ -83,7 +84,6 @@ def train_and_save_model(ticker):
     joblib.dump(scaler, scaler_file)
 
     return accuracy
-
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
