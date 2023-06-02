@@ -1040,22 +1040,25 @@ def delete_comment_group(request, post_id, comment_id):
 def chatbotTrade(request, post_id=None, conversation_id=None):
     user = request.user
     if not conversation_id:
-        conversation_id = str(uuid.uuid4())  # Generate a new conversation ID if none is provided
+        conversation_id = str(uuid.uuid4()) # Generate a new conversation ID if none is provided
 
     form = ChatbotForm()
+    response = None
     history = []
     saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('-timestamp')
+    # Check if a conversation with the given conversation_id already exists
     current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
 
-    prompt = ""
+    prompt = ""  # Assign an initial value to prompt
 
     if current_conversation:
+        # Conversation already exists, update the existing conversation
         prompt = current_conversation.prompt
         response = current_conversation.response
         current_conversation.save()
     else:
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id,
-                                                          prompt=prompt, response="")
+        # Conversation doesn't exist, create a new conversation
+        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response="")
         prompt = current_conversation.prompt
         response = current_conversation.response
 
@@ -1070,16 +1073,26 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
             user_lang = detect(prompt)
 
             model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'model.pkl')
-            if not os.path.exists(model_file):
-                # Train or load your model here
-                # Example: model = train_model()
-                model = load_model()
-                joblib.dump(model, model_file)
-            else:
+            if os.path.exists(model_file):
+                # Load the model from the file
                 model = joblib.load(model_file)
+                completions = model(prompt, n=2, stop=None, temperature=0.5)
+                response = completions[0]
+            else:
+                # Use OpenAI completions API
+                completions = openai.Completion.create(
+                    engine="text-davinci-002",
+                    prompt=prompt,
+                    max_tokens=4000,
+                    n=2,
+                    stop=None,
+                    temperature=0.5,
+                )
+                response = completions.choices[0].text
 
-            response = model.predict(prompt)
+            response = str(response)
 
+            # Translate response to user language if necessary
             if user_lang == 'ar':
                 translator = Translator()
                 translation = translator.translate(response, dest=user_lang)
@@ -1091,9 +1104,13 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
             current_conversation.response = response
             current_conversation.save()
 
+            # Save the model to the model.pkl file
+            joblib.dump(model, model_file)
+
             return redirect('chatbotTrade', conversation_id=conversation_id)
 
     elif request.method == 'GET' and 'new' in request.GET:
+        # Clear the history list when the new conversation button is clicked
         history = []
         response = None
         form = ChatbotForm()
@@ -1109,7 +1126,9 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
             history.append(('Chatbot', response))
 
     unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
+    # Mark all notifications as read
     notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
+    # Separate notifications by type
     message_notifications = []
     post_notifications = []
     group_message_notifications = []
