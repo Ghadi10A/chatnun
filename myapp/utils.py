@@ -42,7 +42,6 @@ def calculate_vwap(ticker):
     data = pd.DataFrame(data)
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
-
 def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
@@ -68,20 +67,22 @@ def train_and_save_model(ticker):
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
-    # Evaluate the model on the testing data
-    accuracy = model.score(X_test, y_test)
-
-    # Save the trained model
+    # Save the trained model and the scaler
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
     joblib.dump(model, model_file)
+    joblib.dump(scaler, scaler_file)
 
     return accuracy
 
+
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
 
-    # Load the trained model
+    # Load the trained model and the scaler
     model = joblib.load(model_file)
+    scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
@@ -89,8 +90,7 @@ def predict_signal(ticker):
     # Calculate the VWAP for the latest data
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
-    # Pre-process the latest data
-    scaler = StandardScaler()
+    # Pre-process the latest data using the loaded scaler
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     prediction = model.predict(scaled_data)[-1]
 
@@ -107,6 +107,7 @@ def predict_signal(ticker):
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
     return data['Close'][-1], signal, last_diff, last_diff_percent
+
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
