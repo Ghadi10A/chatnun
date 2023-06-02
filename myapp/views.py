@@ -1214,7 +1214,7 @@ def chatbot(request, post_id=None, conversation_id=None):
             current_conversation.response = response
             current_conversation.save()
 
-            return redirect('chatbotTrade', conversation_id=conversation_id)
+            return redirect('chatbot', conversation_id=conversation_id)
 
     elif request.method == 'GET' and 'new' in request.GET:
         # Clear the history list when the new conversation button is clicked
