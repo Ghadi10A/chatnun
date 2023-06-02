@@ -67,6 +67,9 @@ def train_and_save_model(ticker):
     model = RandomForestClassifier()
     model.fit(X_train, y_train)
 
+    # Evaluate the model on the testing data
+    accuracy = model.score(X_test, y_test)
+
     # Save the trained model and the scaler
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
@@ -74,7 +77,6 @@ def train_and_save_model(ticker):
     joblib.dump(scaler, scaler_file)
 
     return accuracy
-
 
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
