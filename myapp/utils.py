@@ -42,52 +42,73 @@ def calculate_vwap(ticker):
     data = pd.DataFrame(data)
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
-def train_and_save_model(ticker):
-    data = yf.Ticker(ticker).history(period="3y")
-    data['target'] = data['Close'].shift(-1) > data['Close']
-    data.dropna(inplace=True)
-    X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
-    y = data['target']
+
+def train_model(ticker):
+    # Load historical data
+    data = yf.Ticker(ticker).history(period="max")
+
+    # Add features to the dataset
+    data['Close_diff'] = data['Close'].diff()
+    data['Close_diff_pct'] = data['Close_diff'] / data['Close'].shift(1)
+    data['Volume_diff'] = data['Volume'].diff()
+    data['Volume_diff_pct'] = data['Volume_diff'] / data['Volume'].shift(1)
+
+    # Create target variable
+    data['Target'] = (data['Close_diff'] > 0).astype(int)
+
+    # Split the data into training and testing sets
+    X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'Close_diff', 'Close_diff_pct', 'Volume_diff', 'Volume_diff_pct']].iloc[1:]
+    y = data['Target'].iloc[1:]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_test_scaled = scaler.transform(X_test)
-    clf = RandomForestClassifier()
-    clf.fit(X_train_scaled, y_train)
-    accuracy = clf.score(X_test_scaled, y_test)
+
+    # Train a Random Forest Classifier on the training data
+    clf = RandomForestClassifier(n_estimators=100, random_state=42)
+    clf.fit(X_train, y_train)
+
+    # Save the trained model to a file
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    joblib.dump(clf, model_file)
-    return accuracy
+    with open(model_file, 'wb') as f:
+        pickle.dump(clf, f)
 
 def predict_signal(ticker):
+    # Load the saved model from a file
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    data = yf.Ticker(ticker).history(period="max", interval="1m")
-    data = data.dropna()
-    scaler = StandardScaler()
-    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
-    y = data['Close'].shift(-1) > data['Close']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
-    model = RandomForestClassifier()
-    accuracy = model.score(X_test, y_test)
-    prediction = model.predict([X[-1]])[0]
-    with open(model_file, 'wb') as f:
-        pickle.dump(model, f)
     with open(model_file, 'rb') as f:
         model = pickle.load(f)
-    if prediction == True:
-        signal = 'Sell'
-    elif prediction == False:
-        signal = 'Buy'
-    else:
-        signal = 'Neutral'
-    data = yf.Ticker(ticker).history(period="max")
-    X_latest = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume']])
-    y_pred = model.predict(X_latest)
-    last_diff = data['Close'][-1] - data['Close'][-2]
-    last_diff_percent = last_diff / data['Close'][-2] * 100
-    close_price = data['Close'][-1]
-    return close_price, signal, accuracy, last_diff, last_diff_percent
 
+    # Get the latest data
+    data = yf.Ticker(ticker).history(period="1d")
+
+    # Add features to the latest data
+    last_close = data['Close'].iloc[0]
+    data['Close_diff'] = last_close - data['Close'].shift(1)
+    data['Close_diff_pct'] = data['Close_diff'] / data['Close'].shift(1)
+    data['Volume_diff'] = data['Volume'].diff()
+    data['Volume_diff_pct'] = data['Volume_diff'] / data['Volume'].shift(1)
+
+    # Use the trained model to make predictions on the latest data
+    X_latest = data[['Open', 'High', 'Low', 'Close', 'Volume', 'Close_diff', 'Close_diff_pct', 'Volume_diff', 'Volume_diff_pct']]
+    y_pred = model.predict(X_latest)
+    accuracy = model.score(X_latest, y_pred)
+
+    # Determine the predicted market signal based on the model's predictions
+    if y_pred[0]:
+        signal = 'buy'
+    else:
+        signal = 'sell'
+
+    # Calculate the difference and percentage difference between the last two closing prices
+    last_diff = last_close - data['Close'].shift(1).iloc[-1]
+    last_diff_percent = last_diff / data['Close'].shift(1).iloc[-1] * 100
+
+    # Format the last_diff value as a string with a '+' or '-' sign
+    if last_diff > 0:
+        last_diff_str = "+{:.2f}".format(last_diff)
+    else:
+        last_diff_str = "{:.2f}".format(last_diff)
+
+    # Return the predicted market signal, accuracy, last_diff value, and last_diff_percent
+    return signal, accuracy, last_diff_str, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
