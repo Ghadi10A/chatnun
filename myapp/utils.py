@@ -110,12 +110,13 @@ def predict_signal(ticker):
     # Define the target variable
     prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
     # Determine the position based on the trend and the prediction
-    if prediction == 1:
+    if np.any(prediction == 1):
         signal = 'Buy'
-    elif prediction == 0:
+    elif np.any(prediction == 0):
         signal = 'Sell'
     else:
         signal = 'Neutral'
+
 
     # Calculate other metrics
     last_diff = data['Close'][-1] - data['Close'][-2]
