@@ -6,6 +6,7 @@ import os
 import pickle
 import emojis
 import openai
+import joblib
 from datetime import timedelta
 from django.http import JsonResponse
 from django.db.models import Count, Prefetch
