@@ -1105,6 +1105,9 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
             current_conversation.response = response
             current_conversation.save()
 
+            # Save the model as model.pkl
+            model = response  # Assign the response to the model variable
+
             # Save the model to the model.pkl file
             joblib.dump(model, model_file)
 
