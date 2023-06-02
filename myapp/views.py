@@ -223,10 +223,15 @@ def user_signup(request):
             user = form.save(commit=False)
             user.is_active = False  # User is not active until they verify their email
             user.save()
+            
+            # Create a profile for the user
+            Profile.objects.create(user=user)
+            
             #send_verification_email(request, user)
             return redirect('home')
     else:
         form = SignUpForm()
+    
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
