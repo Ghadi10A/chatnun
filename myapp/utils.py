@@ -16,6 +16,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import StandardScaler
+from sklearn.impute import SimpleImputer
 from django.core.mail import send_mail
 from .models import Prediction
 import psycopg2
@@ -62,6 +63,11 @@ def train_and_save_model(ticker):
     X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
     y = data['Signal']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Impute missing values in the training and testing data
+    imputer = SimpleImputer(strategy='mean')
+    X_train = imputer.fit_transform(X_train)
+    X_test = imputer.transform(X_test)
 
     # Fit a random forest classifier to the training data
     model = RandomForestClassifier()
