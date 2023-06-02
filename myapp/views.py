@@ -149,7 +149,17 @@ def renew_subscription(request):
         return redirect('choose_plan')
 
     return render(request, 'renew_subscription.html')
+@login_required
+def subscribe_success(request, plan):
+    plan = request.session.get('subscription_plan')
+    if plan not in ('threeMonths', 'sixMonths', 'oneYear'):
+        return redirect('choose_plan')
 
+    return render(request, 'modals/subscribe_success.html', {'plan': plan})
+
+@login_required
+def subscribe_cancel(request):
+    return render(request, 'modals/subscribe_cancel.html')
 @requires_subscription    
 def choose_interval(request, interval):
     form = IntervalForm(initial={'interval': interval})
