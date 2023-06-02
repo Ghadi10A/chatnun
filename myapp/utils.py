@@ -43,72 +43,73 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 
-def train_model(ticker):
-    # Load historical data
-    data = yf.Ticker(ticker).history(period="max")
+def train_and_save_model():
+    # Retrieve the NASDAQ 100 data from Yahoo Finance
+    nasdaq100 = yf.Ticker("^NDX")
+    nasdaq100_data = nasdaq100.history(period="3y")
 
-    # Add features to the dataset
-    data['Close_diff'] = data['Close'].diff()
-    data['Close_diff_pct'] = data['Close_diff'] / data['Close'].shift(1)
-    data['Volume_diff'] = data['Volume'].diff()
-    data['Volume_diff_pct'] = data['Volume_diff'] / data['Volume'].shift(1)
+    # Calculate the VWAP
+    nasdaq100_data['VWAP'] = (nasdaq100_data['Close'] * nasdaq100_data['Volume']).cumsum() / nasdaq100_data['Volume'].cumsum()
 
-    # Create target variable
-    data['Target'] = (data['Close_diff'] > 0).astype(int)
+    # Pre-process the data
+    nasdaq100_data = nasdaq100_data.dropna()
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+
+    # Define the target variable
+    nasdaq100_data['Signal'] = np.where(nasdaq100_data['Close'].shift(-1) > nasdaq100_data['Close'], 1, 0)
 
     # Split the data into training and testing sets
-    X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'Close_diff', 'Close_diff_pct', 'Volume_diff', 'Volume_diff_pct']].iloc[1:]
-    y = data['Target'].iloc[1:]
+    X = nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
+    y = nasdaq100_data['Signal']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Train a Random Forest Classifier on the training data
-    clf = RandomForestClassifier(n_estimators=100, random_state=42)
-    clf.fit(X_train, y_train)
+    # Fit a random forest classifier to the training data
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
 
-    # Save the trained model to a file
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    with open(model_file, 'wb') as f:
-        pickle.dump(clf, f)
+    # Evaluate the model on the testing data
+    accuracy = model.score(X_test, y_test)
 
-def predict_signal(ticker):
-    # Load the saved model from a file
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    with open(model_file, 'rb') as f:
-        model = pickle.load(f)
+    # Save the trained model
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'nasdaq100_model.pkl')
+    joblib.dump(model, model_file)
 
-    # Get the latest data
-    data = yf.Ticker(ticker).history(period="1d")
+    return accuracy
 
-    # Add features to the latest data
-    last_close = data['Close'].iloc[0]
-    data['Close_diff'] = last_close - data['Close'].shift(1)
-    data['Close_diff_pct'] = data['Close_diff'] / data['Close'].shift(1)
-    data['Volume_diff'] = data['Volume'].diff()
-    data['Volume_diff_pct'] = data['Volume_diff'] / data['Volume'].shift(1)
 
-    # Use the trained model to make predictions on the latest data
-    X_latest = data[['Open', 'High', 'Low', 'Close', 'Volume', 'Close_diff', 'Close_diff_pct', 'Volume_diff', 'Volume_diff_pct']]
-    y_pred = model.predict(X_latest)
-    accuracy = model.score(X_latest, y_pred)
+def predict_signal():
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'nasdaq100_model.pkl')
 
-    # Determine the predicted market signal based on the model's predictions
-    if y_pred[0]:
-        signal = 'buy'
+    # Load the trained model
+    model = joblib.load(model_file)
+
+    # Retrieve the latest NASDAQ100 data from Yahoo Finance
+    nasdaq100 = yf.Ticker("^NDX")
+    latest_data = nasdaq100.history(period="max")
+
+    # Calculate the VWAP for the latest data
+    latest_data['VWAP'] = (latest_data['Close'] * latest_data['Volume']).cumsum() / latest_data['Volume'].cumsum()
+
+    # Pre-process the latest data
+    scaler = StandardScaler()
+    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    prediction = model.predict(scaled_latest_data)[0]
+
+    # Determine the position based on the trend and the prediction
+    if prediction == 1:
+        signal = 'Buy'
+    elif prediction == 0:
+        signal = 'Sell'
     else:
-        signal = 'sell'
+        signal = 'Neutral'
 
-    # Calculate the difference and percentage difference between the last two closing prices
-    last_diff = last_close - data['Close'].shift(1).iloc[-1]
-    last_diff_percent = last_diff / data['Close'].shift(1).iloc[-1] * 100
+    # Calculate other metrics
+    last_diff = latest_data['Close'][-1] - latest_data['Close'][-2]
+    last_diff_percent = last_diff / latest_data['Close'][-2] * 100
 
-    # Format the last_diff value as a string with a '+' or '-' sign
-    if last_diff > 0:
-        last_diff_str = "+{:.2f}".format(last_diff)
-    else:
-        last_diff_str = "{:.2f}".format(last_diff)
-
-    # Return the predicted market signal, accuracy, last_diff value, and last_diff_percent
-    return signal, accuracy, last_diff_str, last_diff_percent
+    return latest_data['Close'][-1], signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
