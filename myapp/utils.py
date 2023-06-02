@@ -104,9 +104,11 @@ def predict_signal(ticker):
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the latest data using the loaded scaler
-    scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    prediction = model.predict(scaled_data)[-1]
+    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
+    # Define the target variable
+    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
     # Determine the position based on the trend and the prediction
     if prediction == 1:
         signal = 'Buy'
