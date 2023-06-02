@@ -54,7 +54,7 @@ def train_and_save_model(ticker):
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the data
-    data.dropna(inplace=True)
+    #data.dropna(inplace=True)
     scaler = StandardScaler()
     scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
