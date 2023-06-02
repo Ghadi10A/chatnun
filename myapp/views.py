@@ -1078,7 +1078,7 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
                 # Load the model from the file
                 model = joblib.load(model_file)
                 completions = model(prompt, n=2, stop=None, temperature=0.5)
-                response = completions[0]
+                response = completions.choices[0].text
             else:
                 # Use OpenAI completions API
                 completions = openai.Completion.create(
@@ -1090,6 +1090,12 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
                     temperature=0.5,
                 )
                 response = completions.choices[0].text
+
+                # Save the model as model.pkl
+                model = completions.model  # Assign the model from completions
+
+                # Save the model to the model.pkl file
+                joblib.dump(model, model_file)
 
             response = str(response)
 
