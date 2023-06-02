@@ -43,26 +43,25 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 
-def train_and_save_model():
-    # Retrieve the NASDAQ 100 data from Yahoo Finance
-    nasdaq100 = yf.Ticker("^NDX")
-    nasdaq100_data = nasdaq100.history(period="3y")
+def train_and_save_model(ticker):
+    # Retrieve the data for the specified ticker from Yahoo Finance
+    data = yf.Ticker(ticker).history(period="3y")
 
     # Calculate the VWAP
-    nasdaq100_data['VWAP'] = (nasdaq100_data['Close'] * nasdaq100_data['Volume']).cumsum() / nasdaq100_data['Volume'].cumsum()
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the data
-    nasdaq100_data = nasdaq100_data.dropna()
+    data = data.dropna()
     scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    nasdaq100_data['Signal'] = np.where(nasdaq100_data['Close'].shift(-1) > nasdaq100_data['Close'], 1, 0)
+    data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
 
     # Split the data into training and testing sets
-    X = nasdaq100_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
-    y = nasdaq100_data['Signal']
+    X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
+    y = data['Signal']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
     # Fit a random forest classifier to the training data
@@ -73,29 +72,27 @@ def train_and_save_model():
     accuracy = model.score(X_test, y_test)
 
     # Save the trained model
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'nasdaq100_model.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     joblib.dump(model, model_file)
 
     return accuracy
 
-
-def predict_signal():
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', 'nasdaq100_model.pkl')
+def predict_signal(ticker):
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
 
     # Load the trained model
     model = joblib.load(model_file)
 
-    # Retrieve the latest NASDAQ100 data from Yahoo Finance
-    nasdaq100 = yf.Ticker("^NDX")
-    latest_data = nasdaq100.history(period="max")
+    # Retrieve the latest data for the specified ticker from Yahoo Finance
+    data = yf.Ticker(ticker).history(period="max")
 
     # Calculate the VWAP for the latest data
-    latest_data['VWAP'] = (latest_data['Close'] * latest_data['Volume']).cumsum() / latest_data['Volume'].cumsum()
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the latest data
     scaler = StandardScaler()
-    scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    prediction = model.predict(scaled_latest_data)[0]
+    scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    prediction = model.predict(scaled_data)[-1]
 
     # Determine the position based on the trend and the prediction
     if prediction == 1:
@@ -106,10 +103,10 @@ def predict_signal():
         signal = 'Neutral'
 
     # Calculate other metrics
-    last_diff = latest_data['Close'][-1] - latest_data['Close'][-2]
-    last_diff_percent = last_diff / latest_data['Close'][-2] * 100
+    last_diff = data['Close'][-1] - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
 
-    return latest_data['Close'][-1], signal, last_diff, last_diff_percent
+    return data['Close'][-1], signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
