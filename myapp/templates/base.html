@@ -204,16 +204,16 @@ function markNotificationAsRead(notificationId) {
 </script>
 
                     <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                      {% if user.profile.image %}
-                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+                      {% if request.user.profile.image %}
+                        <img src="{{ request.user.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ request.user.get_full_name }}">
                       {% else %}
                         <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
                     {% endif %}
-                      {{ user.username }}
+                      {{ request.user.username }}
                     </a>
                     <ul class="dropdown-menu">
                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
+                     <li><a class="dropdown-item" href="{% url 'show_profile' username=request.user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
                      <li><a class="dropdown-item" href="{% url 'saved_conversations' %}">{% bs_icon 'chat-dots-fill' %} {% trans "Messages" %}</a></li>
                     <div class="dropdown-divider"></div>
                     <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} {% trans "log out" %}</a></li>
