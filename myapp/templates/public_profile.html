@@ -55,91 +55,87 @@
 <div class="col-md-7">
 
 <div class="container mt-3">
-  <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
-<div class="card-body">
+  
 {% for post in posts %}
   <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-bottom: 6px;">
     <div class="card-body">
-  <div class="d-flex align-items-center justify-content-between">
-            <div>
-              <p class="m-0" style="color: #000;font-size: 11px;">
-                {% trans "Posted" %} {{ post.created_at|timesince }} {% trans "ago" %}
-              </p>
-            </div>
-            <div>
-              <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                {% if post.author.profile.image %}
-                  <img src="{{ post.author.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
-                {% else %}
-                  <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
-                {% endif %}
-              </a>
-              <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
-            </div>
-          </div>
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <p class="m-0" style="color: #000;font-size: 11px;">
+            {% trans "Posted" %} {{ post.created_at|timesince }} {% trans "ago" %}
+          </p>
+        </div>
+        <div>
+          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if post.author.profile.image %}
+              <img src="{{ post.author.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
+            {% else %}
+              <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
+            {% endif %}
+          </a>
+          <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
+        </div>
+      </div>
 
-                    <br>
+      <br>
                     
-          <p class="card-text">{{ post.content }}</p>
-          <div class="text-center">
-          {% if post.image %}
-          <img src="{{ post.image.url }}" class="img-fluid mb-2">
-          {% endif %}
-          {% if post.video %}
-          <video src="{{ post.video.url }}" class="img-fluid mb-2" controls></video>
-          {% endif %}
-          {% if post.sound %}
-          <audio src="{{ post.sound.url }}" class="img-fluid mb-2" controls></audio>
-          {% endif %}
-        </div>
-  
-        </div>
-      </div>
-      <div class="emoji-display">{{ post.get_emoji_display }}</div>
-        <ul class="list-group">
-  {% if post.emoji_reactions.all %}
-    {% regroup post.emoji_reactions.all by emoji as reactions_by_emoji %}
-    {% for group in reactions_by_emoji %}
-      <li class="list-group-item" style="border: none;">
-        <div class="text-center">
-          <span style="font-size: 12px;">
-            {% for reaction in group.list %}
-              {% if forloop.last %}
-                {% if reaction.emoji == 'heart' %}
-                  &#x2764;&#xFE0F; {# Unicode escape sequence for heart emoji #}
-                {% else %}
-                  {{ reaction.get_emoji_display }}
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-            {{ group.list|length }} {% trans "Reactions" %}
-          </span>
-        </div>
-      </li>
-    {% endfor %}
-  {% else %}
-    <li class="list-group-item">
+      <p class="card-text">{{ post.content }}</p>
       <div class="text-center">
-        <span style="font-size: 12px;color: gray;">{% trans "No reactions yet. 0 Reactions" %}</span>
+        {% if post.image %}
+          <img src="{{ post.image.url }}" class="img-fluid mb-2">
+        {% endif %}
+        {% if post.video %}
+          <video src="{{ post.video.url }}" class="img-fluid mb-2" controls></video>
+        {% endif %}
+        {% if post.sound %}
+          <audio src="{{ post.sound.url }}" class="img-fluid mb-2" controls></audio>
+        {% endif %}
       </div>
-    </li>
-  {% endif %}
-</ul>
-
-<br>
-          <div class="card-footer">
-<span style="font-size: 12px;color: gray;"><p class="mb-3 text-center">{{ post.comments.all|length }} {% trans "Comments" %}</p></span>
-          <div class="container-fluid">
-      
-          
-      <div class="text-center"><a href="{% url 'show_post' post_id=post.id %}" class="btn btn-outline-white btn-sm">{% trans "View Post" %}</a></div>
     </div>
-     </div>
+  
+    <div class="emoji-display">{{ post.get_emoji_display }}</div>
+    <ul class="list-group">
+      {% if post.emoji_reactions.all %}
+        {% regroup post.emoji_reactions.all by emoji as reactions_by_emoji %}
+        {% for group in reactions_by_emoji %}
+          <li class="list-group-item" style="border: none;">
+            <div class="text-center">
+              <span style="font-size: 12px;">
+                {% for reaction in group.list %}
+                  {% if forloop.last %}
+                    {% if reaction.emoji == 'heart' %}
+                      &#x2764;&#xFE0F; {# Unicode escape sequence for heart emoji #}
+                    {% else %}
+                      {{ reaction.get_emoji_display }}
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+                {{ group.list|length }} {% trans "Reactions" %}
+              </span>
+            </div>
+          </li>
+        {% endfor %}
+      {% else %}
+        <li class="list-group-item">
+          <div class="text-center">
+            <span style="font-size: 12px;color: gray;">{% trans "No reactions yet. 0 Reactions" %}</span>
+          </div>
+        </li>
+      {% endif %}
+    </ul>
+
+    <br>
+    <div class="card-footer">
+      <span style="font-size: 12px;color: gray;"><p class="mb-3 text-center">{{ post.comments.all|length }} {% trans "Comments" %}</p></span>
+      <div class="container-fluid">
+        <div class="text-center"><a href="{% url 'show_post' post_id=post.id %}" class="btn btn-outline-white btn-sm">{% trans "View Post" %}</a></div>
+      </div>
     </div>
   </div>
-  {% empty %}
+{% empty %}
   <p>{% trans "No posts yet" %}.</p>
-  {% endfor %}
+{% endfor %}
+
 </div>
 </div>
 </div>
