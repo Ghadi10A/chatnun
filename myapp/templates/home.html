@@ -198,7 +198,17 @@
         </div>
       </div>
 
- 
+   <!-- Share buttons -->
+      <div class="share-buttons">
+        <!-- WhatsApp share button -->
+        <a href="whatsapp://send?text={{ post.content }}%20{{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-whatsapp"></i> Share on WhatsApp
+        </a>
+        <!-- Telegram share button -->
+        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i> Share on Telegram
+        </a>
+      </div>
 <!-- Template code - Display total count of heart reactions -->
 <ul>
   {% if post.emoji_reactions.all %}
