@@ -240,7 +240,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'contact@chatnun.com' # Replace with your email address
 EMAIL_HOST_PASSWORD = 'Ghadi03@' # Replace with your email password
-
+EMAIL_USE_OAUTH = True
+EMAIL_CLIENT_ID = '844297491487-6emc7ua3op90mil7so3rbct2uo9sec4c.apps.googleusercontent.com'  # Obtained from the downloaded credentials file
+EMAIL_CLIENT_SECRET = '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'  # Obtained from the downloaded credentials file
+EMAIL_REFRESH_TOKEN = '1//04CvSYqLBFOyrCgYIARAAGAQSNwF-L9IrZTg74zVRefuQPo0qXZTWPK7GC4dWsQa_QXeblSMXHCQT-27RPkeaS9FwpLL5iYZDr84'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 1025
