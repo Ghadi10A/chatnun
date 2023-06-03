@@ -354,7 +354,7 @@ def show_profile(request, username):
         profile = user.profile
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=user)
-    posts = Post.objects.filter(author=request.user.profile if request.user.username == username else user.profile)
+    posts = Post.objects.filter(author=str(request.user.profile) if request.user.username == username else str(user.profile))
     # Get notifications for current user
     notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
     unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
