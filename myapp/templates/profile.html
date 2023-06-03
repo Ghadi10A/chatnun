@@ -10,7 +10,7 @@
       <div class="card-body">
         <div class="text-center">
          {% if user.profile.image %}
-                        <img src="{{ request.user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
                       {% else %}
     <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200">
 {% endif %}
