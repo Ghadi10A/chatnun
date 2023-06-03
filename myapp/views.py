@@ -423,9 +423,9 @@ def show_profile(request, username):
             following = Follow.objects.filter(follower=request.user, following=user)
             if following.exists():
                 is_following = True            
-            return render(request, 'public_profile.html', {'user': user, , 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
+            return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
     else:  # user is not authenticated
-        return render(request, 'public_profile.html', {'user': user, , 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
+        return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
 @login_required
 def create_group(request):
