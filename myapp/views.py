@@ -1521,8 +1521,8 @@ def contact_us(request):
         message = request.POST['message']
 
         # Prepare the email content
-        html_content = render_to_string('email/contact_us.html', {'name': name, 'email': email, 'message': message})
-        text_content = strip_tags(html_content)
+        #html_content = render_to_string('about/contact_us.html', {'name': name, 'email': email, 'message': message})
+        #text_content = strip_tags(html_content)
 
         # Create the EmailMultiAlternatives object
         msg = EmailMultiAlternatives(
@@ -1533,7 +1533,7 @@ def contact_us(request):
         )
 
         # Attach the HTML content
-        msg.attach_alternative(html_content, "text/html")
+        msg.attach_alternative(message, 'plain')
 
         # Send the email
         msg.send()
