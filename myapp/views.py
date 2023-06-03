@@ -50,8 +50,9 @@ from django.utils import translation
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.utils.translation import activate
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -1519,70 +1520,47 @@ def contact_us(request):
         email = request.POST['email']
         message = request.POST['message']
 
-        # Create a multi-part message and set the headers
-        msg = MIMEMultipart()
-        msg['From'] = email
-        msg['To'] = settings.ADMIN_EMAIL
-        msg['Subject'] = f'New message from {name}'
+        # Prepare the email content
+        html_content = render_to_string('email/contact_us.html', {'name': name, 'email': email, 'message': message})
+        text_content = strip_tags(html_content)
 
-        # Add body to the email
-        msg.attach(MIMEText(message, 'plain'))
+        # Create the EmailMultiAlternatives object
+        msg = EmailMultiAlternatives(
+            subject=f'New message from {name}',
+            body=text_content,
+            from_email=email,
+            to=[settings.ADMIN_EMAIL],
+        )
 
-        # Connect to the Google SMTP server
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
-            smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
+        # Attach the HTML content
+        msg.attach_alternative(html_content, "text/html")
 
-            # Login to the SMTP server
-            smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_HOST_PASSWORD)
-
-            # Send the email
-            smtp.sendmail(email, settings.ADMIN_EMAIL, msg.as_string())
+        # Send the email
+        msg.send()
 
         messages.success(request, 'Thank you for contacting us! We will get back to you as soon as possible.')
         return redirect('contact_us')
+
     if request.user.is_authenticated:
-        unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
+        unread_notifications = Notification.objects.filter(user=request.user, is_read=False).order_by('-timestamp')[:10]
         notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
     else:
         unread_notifications = []
-    # Mark all notifications as read
         notifications = []
-    # Separate notifications by type
-    message_notifications = []
-    post_notifications = []
-    group_message_notifications = []
-    group_post_notifications = []
-    emoji_reaction_notifications = []
-    comment_notifications = []
-    emoji_reaction_group_notifications = []
-    comment_group_notifications = []
-    join_request_notifications = []
-    for notification in unread_notifications:
-        if notification.message:
-            message_notifications.append(notification)
-        elif notification.post:
-            post_notifications.append(notification)
-        elif notification.group_post:
-            group_post_notifications.append(notification)     
-        elif notification.group_message:
-            group_message_notifications.append(notification)
-        elif notification.emoji_reaction:
-            emoji_reaction_notifications.append(notification)
-        elif notification.comment:
-            comment_notifications.append(notification)
-        elif notification.emoji_reaction_group:
-            emoji_reaction_group_notifications.append(notification)
-        elif notification.comment_group:
-            comment_group_notifications.append(notification)
-        elif notification.join_request:
-            join_request_notifications.append(notification)
 
+    # Mark all notifications as read
+    for notification in unread_notifications:
         notification.is_read = True
-        notification.save()   
+        notification.save()
+
     new_conversation_id = str(uuid.uuid4())
-    return render(request, 'about/contact_us.html', {'unread_notifications': unread_notifications, 'notifications': notifications, 'message_notifications': message_notifications, 'post_notifications': post_notifications, 'group_message_notifications': group_message_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
+
+    return render(request, 'about/contact_us.html', {
+        'unread_notifications': unread_notifications,
+        'notifications': notifications,
+        'new_conversation_id': new_conversation_id,
+        'LANGUAGES': settings.LANGUAGES
+    })
 @login_required
 def join_group(request, pk):
     new_conversation_id = str(uuid.uuid4())
