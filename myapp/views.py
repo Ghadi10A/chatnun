@@ -354,7 +354,7 @@ def show_profile(request, username):
         profile = user.profile
     except Profile.DoesNotExist:
         profile = Profile.objects.create(user=user)
-    posts = Post.objects.filter(author=request.user.profile if (request.user.username == username) else user.profile)
+    posts = Post.objects.filter(author=request.user.profile)
     # Get notifications for current user
     notifications = Notification.objects.filter(user=request.user).order_by('-timestamp')[:10]
     unread_notifications = Notification.objects.filter(user=request.user, is_read=False)
@@ -422,9 +422,11 @@ def show_profile(request, username):
         else:  # the user is visiting someone else's profile
             following = Follow.objects.filter(follower=request.user, following=user)
             if following.exists():
-                is_following = True            
+                is_following = True  
+            posts = Post.objects.filter(author=user.profile)    
             return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
     else:  # user is not authenticated
+        posts = Post.objects.filter(author=user.profile)
         return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
 @login_required
