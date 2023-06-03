@@ -199,9 +199,10 @@
       </div>
 
    <!-- Share buttons -->
-      <div class="share-buttons">
+      <div class="text-center">
+        <div class="share-buttons" style="padding:6px;>
         <!-- WhatsApp share button -->
-        <a href="whatsapp://send?text={{ post.content }}%20{{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/?text={{ post.content }}%20{{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}" target="_blank" rel="noopener noreferrer" style="color:green;">
           <i class="fab fa-whatsapp"></i> Share on WhatsApp
         </a>
         <!-- Telegram share button -->
