@@ -200,12 +200,9 @@
       <div class="text-center">
         <div class="share-buttons" style="padding:6px;>
         <!-- WhatsApp share button -->
-        <form action="https://wa.me/" method="get" target="_blank" rel="noopener noreferrer">
-          <input type="hidden" name="text" value="{{ post.content }} {{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}">
-          <button type="submit" class="share-button" aria-label="Share on WhatsApp">
-            <i class="fab fa-whatsapp"></i> <span style="font-size: 11px;">Share on WhatsApp</span>
-          </button>
-        </form>
+        <a href="https://wa.me/?text={{ post.content }}%20{{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-whatsapp"></i> <span style="font-size:11px;">Share on WhatsApp</span>
+        </a>
         <!-- Telegram share button -->
         <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-telegram"></i> <span style="font-size:11px;">Share on Telegram</span>
