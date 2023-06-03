@@ -423,10 +423,10 @@ def show_profile(request, username):
             following = Follow.objects.filter(follower=request.user, following=user)
             if following.exists():
                 is_following = True  
-            posts = Post.objects.filter(author=user.profile)    
+            posts = Post.objects.filter(author=user.username)    
             return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
     else:  # user is not authenticated
-        posts = Post.objects.filter(author=user.profile)
+        posts = Post.objects.filter(author=user.username)
         return render(request, 'public_profile.html', {'user': user, 'posts': posts, 'is_following': is_following, 'notifications': notifications, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
 @login_required
