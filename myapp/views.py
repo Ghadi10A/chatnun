@@ -1527,13 +1527,13 @@ def contact_us(request):
         # Create the EmailMultiAlternatives object
         msg = EmailMultiAlternatives(
             subject=f'New message from {name}',
-            body=text_content,
+            body=message,
             from_email=email,
             to=[settings.ADMIN_EMAIL],
         )
 
         # Attach the HTML content
-        msg.attach_alternative(message, 'plain')
+        #msg.attach_alternative(message, 'plain')
 
         # Send the email
         msg.send()
