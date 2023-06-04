@@ -83,26 +83,12 @@ def requires_subscription(view_func):
         else:
             return redirect('choose_plan')
     return wrapper
-def choose_plan(request):
-    if request.method == 'POST':
-        form = SubscriptionForm(request.POST)
-        if form.is_valid():
-            plan = form.cleaned_data.get('plan')
-            if plan in ('threeMonths', 'sixMonths', 'oneYear'):
-                return redirect('subscribe', plan=plan)
-    else:
-        form = SubscriptionForm()
-
-    return render(request, 'modals/choose_plan.html', {'form': form})
-
 def subscribe(request, plan):
     if plan not in ('threeMonths', 'sixMonths', 'oneYear'):
         return redirect('choose_plan')
 
     # Check if user already has an active subscription
     user = request.user
-    # if user.profile.subscription_status == 'active':
-    #     return redirect('renew_subscription')
 
     # Create a dictionary of plan names and their corresponding prices
     plans = {
@@ -124,24 +110,51 @@ def subscribe(request, plan):
         cancel_url='http://localhost:8000/subscribe/cancel/',
     )
 
-    # Store the plan in a session variable
+    # Store the plan and other relevant information in session variables
     request.session['subscription_plan'] = plan
-
-    # Update the user's profile with the subscription plan and end date
-    profile = user.profile
-    if plan == 'threeMonths':
-        profile.subscription_plan = '3m'
-        profile.subscription_end = timezone.now() + timedelta(days=90)
-    elif plan == 'sixMonths':
-        profile.subscription_plan = '6m'
-        profile.subscription_end = timezone.now() + timedelta(days=180)
-    elif plan == 'oneYear':
-        profile.subscription_plan = '1y'
-        profile.subscription_end = timezone.now() + timedelta(days=365)
-    profile.subscription_status = 'active'
-    profile.save()
+    request.session['subscription_session_id'] = session.id
 
     return redirect(session.url)
+
+def subscribe_success(request):
+    # Retrieve the stored subscription plan and session ID from session variables
+    plan = request.session.get('subscription_plan')
+    session_id = request.session.get('subscription_session_id')
+
+    # Verify the payment and session ID with Stripe API
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    if session.payment_status == 'paid':
+        # Payment successful, update subscription status and profile information
+        user = request.user
+        profile = user.profile
+
+        if plan == 'threeMonths':
+            profile.subscription_plan = '3m'
+            profile.subscription_end = timezone.now() + timedelta(days=90)
+        elif plan == 'sixMonths':
+            profile.subscription_plan = '6m'
+            profile.subscription_end = timezone.now() + timedelta(days=180)
+        elif plan == 'oneYear':
+            profile.subscription_plan = '1y'
+            profile.subscription_end = timezone.now() + timedelta(days=365)
+
+        profile.subscription_status = 'active'
+        profile.save()
+
+    # Clear the session variables
+    del request.session['subscription_plan']
+    del request.session['subscription_session_id']
+
+    return render(request, 'subscribe_success.html')
+
+def subscribe_cancel(request):
+    # Clear the session variables
+    del request.session['subscription_plan']
+    del request.session['subscription_session_id']
+
+    return render(request, 'subscribe_cancel.html')
+
 
 def renew_subscription(request):
     # Check if user already has an active subscription
@@ -150,17 +163,7 @@ def renew_subscription(request):
         return redirect('choose_plan')
 
     return render(request, 'renew_subscription.html')
-@login_required
-def subscribe_success(request, plan):
-    plan = request.session.get('subscription_plan')
-    if plan not in ('threeMonths', 'sixMonths', 'oneYear'):
-        return redirect('choose_plan')
 
-    return render(request, 'modals/subscribe_success.html', {'plan': plan})
-
-@login_required
-def subscribe_cancel(request):
-    return render(request, 'modals/subscribe_cancel.html')
 @requires_subscription    
 def choose_interval(request, interval):
     form = IntervalForm(initial={'interval': interval})
