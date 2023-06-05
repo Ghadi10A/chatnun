@@ -204,6 +204,7 @@
       <!-- Share buttons -->
       <div class="text-center">
         <div class="share-buttons">
+          <span style="font-size:11px;">{% trans "Share" %}</span>
         <!-- Telegram share button -->
         <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-telegram"></i>
