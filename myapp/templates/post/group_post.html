@@ -125,20 +125,6 @@
   
         </div>
       </div>
-      <!-- Share buttons -->
-      <div class="text-center">
-        <div class="share-buttons">
-          <span style="font-size:11px;">{% trans "Share" %}</span>
-        <!-- Telegram share button -->
-        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-telegram"></i>
-        </a>
-        <!-- Twitter share button -->
-        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </div>
-      </div>
   <ul class="list-group">
   {% if post.emoji_reactions_group.all %}
     {% regroup post.emoji_reactions_group.all by emoji as reactions_by_emoji %}
@@ -173,6 +159,19 @@
 
 <br>
 <div class="card-footer">
+   <!-- Share buttons -->
+      <div class="text-center">
+        <div class="share-buttons">
+        <!-- Telegram share button -->
+        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <!-- Twitter share button -->
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
+      </div>
   {% if post|has_reacted_group:request.user %}
     <span style="font-size: 12px;color: gray;float: right;margin-bottom: 5px;">{% trans "You've already reacted to this post!" %}</span>
   {% else %}
