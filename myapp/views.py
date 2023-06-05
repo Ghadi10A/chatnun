@@ -83,6 +83,17 @@ def requires_subscription(view_func):
         else:
             return redirect('choose_plan')
     return wrapper
+def choose_plan(request):
+    if request.method == 'POST':
+        form = SubscriptionForm(request.POST)
+        if form.is_valid():
+            plan = form.cleaned_data.get('plan')
+            if plan in ('threeMonths', 'sixMonths', 'oneYear'):
+                return redirect('subscribe', plan=plan)
+    else:
+        form = SubscriptionForm()
+
+    return render(request, 'modals/choose_plan.html', {'form': form})
 def subscribe(request, plan):
     if plan not in ('threeMonths', 'sixMonths', 'oneYear'):
         return redirect('choose_plan')
