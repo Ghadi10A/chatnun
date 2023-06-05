@@ -88,7 +88,7 @@
                 {% if post.author.profile.image %}
                   <img src="{{ post.author.profile.image.url }}" class="rounded-circle me-2" width="32" height="32" alt="{{ user.get_full_name }}">
                 {% else %}
-                  <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" class="rounded-circle me-2" width="32" height="32">
+                  <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
                 {% endif %}
               </a>
               <span class="text-dark fw-bold" style="font-size: 12px;">{{ post.author }}</span>
@@ -113,20 +113,7 @@
         </div>
 
       </div>
-      <!-- Share buttons -->
-      <div class="text-center">
-        <div class="share-buttons">
-       <span style="font-size:11px;">{% trans "Share" %}</span>
-        <!-- Telegram share button -->
-        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-telegram"></i>
-        </a>
-        <!-- Twitter share button -->
-        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </div>
-      </div>
+      
     <ul>
   {% if post.emoji_reactions.all %}
     {% regroup post.emoji_reactions.all by emoji as reactions_by_emoji %}
@@ -159,6 +146,19 @@
 
 
 <div class="card-footer">
+  <!-- Share buttons -->
+      <div class="text-center">
+        <div class="share-buttons">
+        <!-- Telegram share button -->
+        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <!-- Twitter share button -->
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
+      </div>
            {% if post|has_reacted:request.user %}
     <span style="font-size: 12px;color: gray;float: right;margin-bottom: 5px;">{% trans "You've already reacted to this post!" %}</span>
   {% else %}
@@ -218,7 +218,7 @@
           {% if comment.author.profile.image %}
             <img src="{{ comment.author.profile.image.url }}" alt="Profile Image" class="profile-image img-fluid rounded-circle" width="20" height="20">
           {% else %}
-            <img src="https://bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06.s3.amazonaws.com/images/Default_image_profile.png" alt="Default Profile Image" class="profile-image img-fluid rounded-circle" width="20" height="20">
+            <img src="{% static 'images/Default_image_profile.png' %}" alt="Default Profile Image" class="profile-image img-fluid rounded-circle" width="20" height="20">
           {% endif %}
           <div class="comment-info ml-3">
             <span style="color: #000; font-weight: bold; font-size: 14px;">{{ comment.author }}</span>
