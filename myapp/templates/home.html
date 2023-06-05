@@ -150,8 +150,6 @@
 </svg></button>
   </div>
 </form>
-
-
       </div>
         </div>
       {% for post in posts %}
@@ -203,6 +201,11 @@
         <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-telegram"></i>
         </a>
+        <!-- Twitter share button -->
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
       </div>
 <!-- Template code - Display total count of heart reactions -->
 <ul>
@@ -236,11 +239,6 @@
     </li>
   {% endif %}
 </ul>
-
-
-
-
-
 <div class="card-footer">
            {% if post|has_reacted:request.user %}
     <span style="font-size: 12px;color: gray;float: right;margin-bottom: 5px;">{% trans "You've already reacted to this post!" %}</span>
