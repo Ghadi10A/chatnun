@@ -1506,3 +1506,6 @@ msgstr "Mapa de calor del mercado Forex"
 
 #~ msgid "Spanish"
 #~ msgstr "Española"
+
+#~ msgid "Share"
+#~ msgstr "Compartir"
