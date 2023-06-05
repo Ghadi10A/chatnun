@@ -199,10 +199,21 @@
           <audio src="{{ post.sound.url }}" class="img-fluid mb-2" controls></audio>
           {% endif %}
         </div>
-  
         </div>
       </div>
-      
+      <!-- Share buttons -->
+      <div class="text-center">
+        <div class="share-buttons">
+        <!-- Telegram share button -->
+        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <!-- Twitter share button -->
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
+      </div>
   <ul class="list-group">
   {% if post.emoji_reactions_group.all %}
     {% regroup post.emoji_reactions_group.all by emoji as reactions_by_emoji %}
