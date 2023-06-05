@@ -4,7 +4,6 @@
 {% block content %}
 <br>
 <div class="row">
- 
   <div class="col-md-4">
    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
       <div class="card-body">
@@ -128,8 +127,6 @@
     <a class="dropdown-item delete-post-link" href="{% url 'delete_post' post_id=post.id %}">{% trans "Delete" %}</a>
   </div>
 </div>
-
-
 {% endif %}
           <div class="d-flex align-items-center justify-content-between">
             <div>
@@ -165,6 +162,19 @@
         </div>
   
         </div>
+      </div>
+     <!-- Share buttons -->
+      <div class="text-center">
+        <div class="share-buttons">
+        <!-- Telegram share button -->
+        <a href="https://telegram.me/share/url?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-telegram"></i>
+        </a>
+        <!-- Twitter share button -->
+        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </div>
       </div>
       <div class="emoji-display">{{ post.get_emoji_display }}</div>
         <ul class="list-group">
