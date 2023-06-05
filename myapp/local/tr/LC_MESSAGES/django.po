@@ -1472,3 +1472,6 @@ msgstr "Forex piyasası ısı haritası"
 
 #~ msgid "Spanish"
 #~ msgstr "ispanyol"
+
+#~ msgid "Share"
+#~ msgstr "Paylaşmak"
