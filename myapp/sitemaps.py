@@ -9,8 +9,7 @@ class MySitemap(Sitemap):
     def items(self):
         # Return a list of dummy objects to include in the sitemap
         return [
-            MyModel('myapp:index'),
-            MyModel('myapp:about'),
+            MyModel('myapp:home'),
             # Add more dummy objects as needed
         ]
 
