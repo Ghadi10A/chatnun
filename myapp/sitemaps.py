@@ -15,16 +15,10 @@ class MySitemap(Sitemap):
             MyModel('myapp:terms_of_service'),
             MyModel('myapp:privacy_policy'),
             MyModel('myapp:choose_plan'),
-            MyModel('myapp:run_scanner'),
-            MyModel('myapp:predict_signals'),
             MyModel('myapp:user_signup'),
             MyModel('myapp:user_login'),
-            MyModel('myapp:show_profile'),
-            MyModel('myapp:show_post'),
             MyModel('myapp:get_started'),
             MyModel('myapp:chatbotTrade'),
-            MyModel('myapp:chatbot'),
-            MyModel('myapp:chat_group_detail'),
             MyModel('myapp:group_detail'),
             # Add more dummy objects as needed
         ]
