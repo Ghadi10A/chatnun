@@ -35,7 +35,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('', include('myapp.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    path('myapp/', include('myapp.urls', namespace='myapp')),
+    path('myapp/', include(('myapp.urls', 'myapp'), namespace='myapp')),
 ]
 
 # WebSocket URL routing
