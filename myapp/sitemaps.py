@@ -7,8 +7,12 @@ class MyModel:
         
 class MySitemap(Sitemap):
     def items(self):
-        # Return a queryset of objects to include in the sitemap
-        return MyModel.objects.all()
+        # Return a list of dummy objects to include in the sitemap
+        return [
+            MyModel('myapp:index'),
+            MyModel('myapp:about'),
+            # Add more dummy objects as needed
+        ]
 
     def location(self, item):
         # Return the URL for each object
