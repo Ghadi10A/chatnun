@@ -1,6 +1,10 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
+class MyModel:
+    def __init__(self, url_name):
+        self.url_name = url_name
+        
 class MySitemap(Sitemap):
     def items(self):
         # Return a queryset of objects to include in the sitemap
