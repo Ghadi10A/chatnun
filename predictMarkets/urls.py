@@ -23,11 +23,18 @@ from django.conf import settings
 from allauth import urls as allauth_urls
 from myapp import routing
 from myapp import views
+from django.contrib.sitemaps.views import sitemap
+from myapp.sitemaps import MySitemap
+
+sitemaps = {
+    'mymodel': MySitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('myapp.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 # WebSocket URL routing
