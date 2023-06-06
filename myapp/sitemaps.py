@@ -19,7 +19,6 @@ class MySitemap(Sitemap):
             MyModel('myapp:user_login'),
             MyModel('myapp:get_started'),
             MyModel('myapp:chatbotTrade'),
-            MyModel('myapp:group_detail'),
             # Add more dummy objects as needed
         ]
 
