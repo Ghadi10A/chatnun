@@ -27,7 +27,7 @@ from django.contrib.sitemaps.views import sitemap
 from myapp.sitemaps import MySitemap
 
 sitemaps = {
-    'chatnun': MySitemap,
+    'MyModel': MySitemap,
 }
 
 urlpatterns = [
