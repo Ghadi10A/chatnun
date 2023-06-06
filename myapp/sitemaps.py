@@ -9,8 +9,8 @@ class MySitemap(Sitemap):
     def items(self):
         # Return a list of dummy objects to include in the sitemap
         return [
-            ('myapp:index', 'home'),
-            ('myapp:about', 'about-us'),
+            chatnun('myapp:index'),
+            chatnun('myapp:about'),
             # Add more dummy objects as needed
         ]
 
