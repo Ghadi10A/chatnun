@@ -9,3 +9,6 @@ class MySitemap(Sitemap):
     def location(self, item):
         # Return the URL for each object
         return reverse('myapp:detail', args=[item.pk])
+sitemaps = {
+    'chatnun': MySitemap,
+}
