@@ -53,7 +53,7 @@ class Profile(models.Model):
     subscription_status = models.CharField(max_length=10, blank=True, null=True, default='inactive')
 
     def __str__(self):
-        return self.user
+        return str(self.user)
                    
 class Follow(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following', null=True, blank=True)
