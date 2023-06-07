@@ -262,13 +262,14 @@ def user_signup(request):
             user.save()
             Profile.objects.create(user=user)
             send_verification_email(request, user)
-            return redirect('user_login')
+            
+            # Redirect the user to their profile page after successful signup
+            return redirect(reverse('profile', args=[user.username]))
     else:
         form = SignUpForm()
 
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
-
 # @login_required
 # def activate_account(request, uidb64, token):
 #     try:
