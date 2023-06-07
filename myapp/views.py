@@ -34,7 +34,7 @@ from langdetect import detect
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import stripe
@@ -217,8 +217,8 @@ def generate_verification_link(request, user):
     current_site = get_current_site(request)
     uidb64 = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
-    verification_link = reverse('activate_account', kwargs={'uidb64': uidb64, 'token': token})
-    return f"{request.scheme}://{current_site.domain}{verification_link}"
+    verification_link = f"{request.scheme}://{current_site.domain}/activate/{uidb64}/{token}/"
+    return verification_link
 
 # def send_verification_email(request, user):
 #     user = request.user
