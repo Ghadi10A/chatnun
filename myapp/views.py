@@ -279,7 +279,7 @@ def activate_account(request, uidb64, token):
         login(request, user)
         return redirect('home')
     else:
-        return render(request, 'auth/email_verification_sent.html')
+        return render(request, 'auth/email_verification_sent.html') 
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -287,11 +287,13 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None:
+            if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
+            if not request.user.is_active:
+                return render(request, 'auth/email_verification_sent.html')    
             else:
-                messages.error(request, 'The username/password combination is incorrect.')
+                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
