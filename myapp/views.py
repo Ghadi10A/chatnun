@@ -262,7 +262,7 @@ def user_signup(request):
             user.save()
             Profile.objects.create(user=user)
             send_verification_email(request, user)
-            return redirect('verification_email_sent')
+            return redirect('user_login')
     else:
         form = SignUpForm()
 
