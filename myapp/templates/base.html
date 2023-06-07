@@ -214,7 +214,7 @@ function markNotificationAsRead(notificationId) {
                     </a>
                     <ul class="dropdown-menu">
                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="{% url 'show_profile' username=request.user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
+                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
                      <li><a class="dropdown-item" href="{% url 'saved_conversations' %}">{% bs_icon 'chat-dots-fill' %} {% trans "Messages" %}</a></li>
                     <div class="dropdown-divider"></div>
                     <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} {% trans "log out" %}</a></li>
