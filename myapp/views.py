@@ -215,7 +215,7 @@ def predict_signals(request):
     return render(request, 'predict_signal.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 def generate_verification_link(request, user):
     current_site = get_current_site(request)
-    uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
     verification_link = f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
     return verification_link
