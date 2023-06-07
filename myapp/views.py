@@ -232,35 +232,26 @@ def generate_verification_link(request, user):
 #     )
 #     return render(request, 'auth/email_verification_sent.html') 
 def send_verification_email(request, user):
-    verification_link = generate_verification_link(request, user)
-    subject = 'Verify your email'
-    message = f"Click the following link to verify your email: {verification_link}"
-    from_email = settings.EMAIL_HOST_USER
-    to_email = user.email
-
-    # Send the email
-    send_mail(subject, message, from_email, [to_email], html_message=render_to_string('auth/email_verification_sent.html', {'verification_link': verification_link}))
+    current_site = get_current_site(request)
+    mail_subject = 'Verify your email'
+    message = render_to_string('auth/email_verification_sent.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': default_token_generator.make_token(user),
+    })
+    email = EmailMultiAlternatives(mail_subject, message, from_email=settings.DEFAULT_FROM_EMAIL, to=[user.email])
+    email.send()
 
 def verification_email_sent(request):
     user = request.user
-    verification_link = generate_verification_link(request, user)
-
-    # Send the email
-    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
-
+    send_verification_email(request, user)
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
 
-@login_required
 def verification_email_resend(request):
     user = request.user
-    
-    verification_link = generate_verification_link(request, user)
-    
-    # Send the email
-    send_mail('Verify your email', '', settings.EMAIL_HOST_USER, [user.email], html_message=render_to_string('auth/account_activated.html', {'user': user, 'verification_link': verification_link}))
-
+    send_verification_email(request, user)
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
-
 
 def user_signup(request):
     if request.method == 'POST':
@@ -269,19 +260,15 @@ def user_signup(request):
             user = form.save(commit=False)
             user.is_active = False  # User is not active until they verify their email
             user.save()
-            
-            # Create a profile for the user
             Profile.objects.create(user=user)
-            
-            #send_verification_email(request, user)
             send_verification_email(request, user)
-            return render(request, 'auth/email_verification_sent.html')
+            return redirect('verification_email_sent')
     else:
         form = SignUpForm()
-    
+
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
-     
+
 # @login_required
 # def activate_account(request, uidb64, token):
 #     try:
