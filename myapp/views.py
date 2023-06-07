@@ -277,7 +277,7 @@ def activate_account(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return redirect('home')
+        return render(request, 'auth/account_activated.html')
     else:
         return render(request, 'auth/email_verification_sent.html') 
 def user_login(request):
