@@ -12,8 +12,14 @@ class UserAdminCustom(UserAdmin):
         ('Subscription', {'fields': ('profile.subscription_plan', 'profile.subscription_end',
                                      'profile.subscription_status')}),
     )
+    
+    def __str__(self):
+        return self.username
 
+# Unregister the default UserAdmin
 admin.site.unregister(User)
+
+# Register the UserAdminCustom
 admin.site.register(User, UserAdminCustom)
 admin.site.register(Profile)
 admin.site.register(Post)
