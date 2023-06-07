@@ -241,7 +241,6 @@ def send_verification_email(request, user):
 
 def verification_email_sent(request):
     user = request.user
-    send_verification_email(request, user)
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
 
 def verification_email_resend(request):
