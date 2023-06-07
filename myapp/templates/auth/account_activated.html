@@ -7,13 +7,9 @@
         <div class="card-header">{% trans "Account Activated" %}</div>
 
         <div class="card-body">
-         <h1>{% trans "Verify your email" %}</h1>
-			<p>{% trans "Dear" %} {{ user.username }},</p>
-			<p>{% trans "Please click on the following link to verify your email address" %}:</p>
-			<p><a href="{{ verification_link }}">{{ verification_link }}</a></p>
-			<p>{% trans "If you did not request this verification, please ignore this email" %}.</p>
-			<p>{% trans "Thank you for using our service" %}.</p>
-        </div>      	
+         <h2>Account Activated</h2>
+	  <p>Your account has been successfully activated.</p>
+	  <p>You can now <a href="{% url 'user_login' %}">proceed to the login page</a>.</p>
     </div>
     </div>
 </div>
