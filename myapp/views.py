@@ -259,7 +259,7 @@ def user_signup(request):
             send_verification_email(request, user)
             
             # Redirect the user to their profile page after successful signup
-            return redirect('user_login')
+            return redirect('verification_email_sent')
     else:
         form = SignUpForm()
 
