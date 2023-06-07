@@ -266,21 +266,21 @@ def user_signup(request):
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
-# @login_required
-# def activate_account(request, uidb64, token):
-#     try:
-#         uid = urlsafe_base64_decode(uidb64).decode()
-#         user = User.objects.get(pk=uid)
-#     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
+@login_required
+def activate_account(request, uidb64, token):
+    try:
+         uid = urlsafe_base64_decode(uidb64).decode()
+         user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
 
-#     if user is not None and default_token_generator.check_token(user, token):
-#         user.is_active = True
-#         user.save()
-#         login(request, user)
-#         return redirect('home')
-#     else:
-#         return render(request, 'auth/email_verification_sent.html') 
+     if user is not None and default_token_generator.check_token(user, token):
+         user.is_active = True
+         user.save()
+         login(request, user)
+         return redirect('home')
+     else:
+         return render(request, 'auth/email_verification_sent.html') 
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
