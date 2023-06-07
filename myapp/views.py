@@ -215,9 +215,10 @@ def predict_signals(request):
     return render(request, 'predict_signal.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 def generate_verification_link(request, user):
     current_site = get_current_site(request)
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    uidb64 = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
-    return f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
+    verification_link = reverse('activate_account', kwargs={'uidb64': uidb64, 'token': token})
+    return f"{request.scheme}://{current_site.domain}{verification_link}"
 
 # def send_verification_email(request, user):
 #     user = request.user
@@ -290,16 +291,15 @@ def user_login(request):
             if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
-            elif user is not None and not user.is_active:
-                return redirect('verification_email_sent')
+            if not request.user.is_active:
+                return render(request, 'auth/email_verification_sent.html')    
             else:
-                messages.error(request, 'The username/password combination is incorrect.')
+                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
-
 
 def user_logout(request):
     logout(request)
