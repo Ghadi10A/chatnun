@@ -259,8 +259,6 @@ def user_signup(request):
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
-
-@login_required
 def activate_account(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
@@ -289,7 +287,7 @@ def user_login(request):
                     login(request, user)
                     return redirect('home')
                 else:
-                    messages.error(request, 'Your account is inactive. Please verify your email.')
+                    return redirect('verification_email_sent')
             else:
                 messages.error(request, 'Invalid username or password.')
         else:
