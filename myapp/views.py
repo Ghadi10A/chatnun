@@ -220,7 +220,6 @@ def generate_verification_link(request, user):
     verification_link = f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
     return verification_link
 
-
 def send_verification_email(request, user):
     current_site = get_current_site(request)
     mail_subject = 'Verify your email'
@@ -258,8 +257,7 @@ def user_signup(request):
         form = SignUpForm()
 
     new_conversation_id = str(uuid.uuid4())
-    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id,
-                                                 'LANGUAGES': settings.LANGUAGES})
+    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
 
 @login_required
@@ -286,18 +284,20 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
-            if user is not None and user.is_active:
-                login(request, user)
-                return redirect('home')
-            if not user.is_active:
-                return render(request, 'auth/email_verification_sent.html')
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    return redirect('home')
+                else:
+                    messages.error(request, 'Your account is inactive. Please verify your email.')
             else:
-                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
+                messages.error(request, 'Invalid username or password.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
+
 def user_logout(request):
     logout(request)
     return redirect('user_login')    
