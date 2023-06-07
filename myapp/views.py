@@ -216,24 +216,12 @@ def predict_signals(request):
 def generate_verification_link(request, user):
     current_site = get_current_site(request)
     uid = urlsafe_base64_encode(force_bytes(user.pk))
-    token = default_token_generator.make_token(user)
+    token = account_activation_token.make_token(user)
     verification_link = f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
     return verification_link
 
-# def send_verification_email(request, user):
-#     user = request.user
-#     verification_link = generate_verification_link(request, user)
-#     message = render_to_string('auth/email_verification_sent.html', {'user': user, 'verification_link': verification_link})
-#     send_mail(
-#         subject='Verify your email',
-#         message='',
-#         from_email=None,
-#         recipient_list=[user.email],
-#         html_message=message,
-#     )
-#     return render(request, 'auth/email_verification_sent.html') 
+
 def send_verification_email(request, user):
-    user = request.user
     current_site = get_current_site(request)
     mail_subject = 'Verify your email'
     verification_link = generate_verification_link(request, user)
@@ -241,14 +229,18 @@ def send_verification_email(request, user):
     email = EmailMultiAlternatives(mail_subject, message, from_email=settings.DEFAULT_FROM_EMAIL, to=[user.email])
     email.send()
 
+
 def verification_email_sent(request):
     user = request.user
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+
 
 def verification_email_resend(request):
     user = request.user
     send_verification_email(request, user)
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
+
+
 def user_signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -257,31 +249,36 @@ def user_signup(request):
             user.is_active = False  # User is not active until they verify their email
             user.save()
             Profile.objects.create(user=user)
+
             send_verification_email(request, user)
-         
-            # Redirect the user to their profile page after successful signup
+
+            # Redirect the user to the verification sent page
             return redirect('verification_email_sent')
     else:
         form = SignUpForm()
 
     new_conversation_id = str(uuid.uuid4())
-    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
+    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id,
+                                                 'LANGUAGES': settings.LANGUAGES})
+
 
 @login_required
 def activate_account(request, uidb64, token):
     try:
-        uid = urlsafe_base64_decode(uidb64).decode()
+        uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
-    if user is not None and default_token_generator.check_token(user, token):
+    if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
         return render(request, 'auth/account_activated.html')
     else:
-        return render(request, 'auth/email_verification_sent.html') 
+        return render(request, 'auth/email_verification_sent.html')
+
+
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -292,8 +289,8 @@ def user_login(request):
             if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
-            if not request.user.is_active:
-                return render(request, 'auth/email_verification_sent.html')    
+            if not user.is_active:
+                return render(request, 'auth/email_verification_sent.html')
             else:
                 messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
         else:
@@ -301,7 +298,6 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
-
 def user_logout(request):
     logout(request)
     return redirect('user_login')    
