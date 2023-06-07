@@ -231,26 +231,6 @@ def generate_verification_link(request, user):
 #         html_message=message,
 #     )
 #     return render(request, 'auth/email_verification_sent.html') 
-def user_signup(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False  # User is not active until they verify their email
-            user.save()
-            
-            # Create a profile for the user
-            Profile.objects.create(user=user)
-            
-            #send_verification_email(request, user)
-            send_verification_email(request, user)
-            return render(request, 'auth/email_verification_sent.html')
-    else:
-        form = SignUpForm()
-    
-    new_conversation_id = str(uuid.uuid4())
-    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
-
 def send_verification_email(request, user):
     verification_link = generate_verification_link(request, user)
     subject = 'Verify your email'
@@ -282,6 +262,25 @@ def verification_email_resend(request):
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
 
 
+def user_signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False  # User is not active until they verify their email
+            user.save()
+            
+            # Create a profile for the user
+            Profile.objects.create(user=user)
+            
+            #send_verification_email(request, user)
+            send_verification_email(request, user)
+            return render(request, 'auth/email_verification_sent.html')
+    else:
+        form = SignUpForm()
+    
+    new_conversation_id = str(uuid.uuid4())
+    return render(request, 'auth/signup.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
      
 # @login_required
 # def activate_account(request, uidb64, token):
