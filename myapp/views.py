@@ -215,9 +215,11 @@ def predict_signals(request):
     return render(request, 'predict_signal.html', {'form': form, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 def generate_verification_link(request, user):
     current_site = get_current_site(request)
-    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    uid = urlsafe_base64_encode(force_bytes(user.pk)).decode()
     token = default_token_generator.make_token(user)
-    return f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
+    verification_link = f"{request.scheme}://{current_site.domain}/activate/{uid}/{token}/"
+    return verification_link
+
 # def send_verification_email(request, user):
 #     user = request.user
 #     verification_link = generate_verification_link(request, user)
@@ -231,6 +233,7 @@ def generate_verification_link(request, user):
 #     )
 #     return render(request, 'auth/email_verification_sent.html') 
 def send_verification_email(request, user):
+    user = request.user
     current_site = get_current_site(request)
     mail_subject = 'Verify your email'
     verification_link = generate_verification_link(request, user)
@@ -255,9 +258,9 @@ def user_signup(request):
             user.save()
             Profile.objects.create(user=user)
             send_verification_email(request, user)
-            
+         
             # Redirect the user to their profile page after successful signup
-            return render(request, 'auth/email_verification_sent.html')
+            return redirect('verification_email_sent')
     else:
         form = SignUpForm()
 
