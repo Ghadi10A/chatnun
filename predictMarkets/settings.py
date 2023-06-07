@@ -275,7 +275,7 @@ LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
 'map.provider': 'openstreetmap',
 }
-
+AUTH_USER_MODEL = 'myapp.User'
 ADMIN_EMAIL = 'contact@chatnun.com'
 LANGUAGE_COOKIE_NAME = 'django_language'
 
