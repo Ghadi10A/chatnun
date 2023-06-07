@@ -33,7 +33,7 @@ from asgiref.sync import async_to_sync
 from langdetect import detect
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -228,17 +228,14 @@ def send_verification_email(request, user):
     email = EmailMultiAlternatives(mail_subject, message, from_email=settings.DEFAULT_FROM_EMAIL, to=[user.email])
     email.send()
 
-
 def verification_email_sent(request):
     user = request.user
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
-
 
 def verification_email_resend(request):
     user = request.user
     send_verification_email(request, user)
     return render(request, 'auth/email_verification_sent.html', {'verification_sent': True, 'user': user})
-
 
 def user_signup(request):
     if request.method == 'POST':
