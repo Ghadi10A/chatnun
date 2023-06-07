@@ -234,12 +234,8 @@ def generate_verification_link(request, user):
 def send_verification_email(request, user):
     current_site = get_current_site(request)
     mail_subject = 'Verify your email'
-    message = render_to_string('auth/email_verification_sent.html', {
-        'user': user,
-        'domain': current_site.domain,
-        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': default_token_generator.make_token(user),
-    })
+    verification_link = generate_verification_link(request, user)
+    message = f"Click the following link to verify your email: {verification_link}"
     email = EmailMultiAlternatives(mail_subject, message, from_email=settings.DEFAULT_FROM_EMAIL, to=[user.email])
     email.send()
 
