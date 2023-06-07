@@ -290,15 +290,16 @@ def user_login(request):
             if user is not None and user.is_active:
                 login(request, user)
                 return redirect('home')
-            if not request.user.is_active:
-                return render(request, 'auth/email_verification_sent.html')    
+            elif user is not None and not user.is_active:
+                return redirect('verification_email_sent')
             else:
-                messages.error(request, 'Your account is inactive or the username/password combination is incorrect.')
+                messages.error(request, 'The username/password combination is incorrect.')
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
+
 
 def user_logout(request):
     logout(request)
