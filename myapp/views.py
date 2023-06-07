@@ -243,7 +243,8 @@ def user_signup(request):
             Profile.objects.create(user=user)
             
             #send_verification_email(request, user)
-            return redirect('home')
+            send_verification_email(request, user)
+            return render(request, 'auth/email_verification_sent.html')
     else:
         form = SignUpForm()
     
