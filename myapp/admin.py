@@ -12,6 +12,8 @@ class UserAdminCustom(UserAdmin):
         ('Subscription', {'fields': ('profile.subscription_plan', 'profile.subscription_end',
                                      'profile.subscription_status')}),
     )
+
+admin.site.unregister(User)
 admin.site.register(User, UserAdminCustom)
 admin.site.register(Profile)
 admin.site.register(Post)
