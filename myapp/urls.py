@@ -8,6 +8,7 @@ urlpatterns = [
     path('get-signal', views.predict_signals, name='predict_signals'),
     path('accounts/profile/<str:username>', include('django.contrib.auth.urls')),
     path('signup/', views.user_signup, name='user_signup'),
+    path('activate/<str:uidb64>/<str:token>/', views.activate_account, name='activate_account'),
     path('login/', views.user_login, name='user_login'),
     path('choose-plan/', views.choose_plan, name='choose_plan'),
     path('subscribe/<str:plan>/', views.subscribe, name='subscribe'),
