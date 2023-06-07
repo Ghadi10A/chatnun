@@ -36,6 +36,8 @@ class User(AbstractUser):
     user_permissions = models.ManyToManyField(Permission, related_name='custom_permissions')  
     is_active = models.BooleanField(default=False)
     is_connected = models.BooleanField(default=False)
+    def __str__(self):
+        return self.username
 
 from django.contrib.auth.models import User
 class Profile(models.Model):
