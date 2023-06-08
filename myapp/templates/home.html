@@ -235,7 +235,7 @@
         <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-twitter"></i>
         </a>
-    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&quote={{ post.content }}" target="_blank" rel="noopener noreferrer">
+    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-facebook"></i>
 </a>
 
