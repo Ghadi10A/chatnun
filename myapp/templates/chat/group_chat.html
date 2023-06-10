@@ -52,13 +52,28 @@
   }
 
   .float-right {
-  float: right;
-}
+    float: right;
+  }
 
-.float-left {
-  float: left;
-}
+  .float-left {
+    float: left;
+  }
 
+  /* Media query for screens with max-width 767px */
+  @media (max-width: 767px) {
+    .col-md-4 {
+      width: 100%;
+    }
+
+    .col-md-8 {
+      width: 100%;
+    }
+
+    .float-right,
+    .float-left {
+      float: none;
+    }
+  }
 </style>
 <div class="container ">
   <div class="row">
