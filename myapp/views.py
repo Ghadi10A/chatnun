@@ -19,6 +19,7 @@ from .utils import calculate_vwap, train_and_save_model, predict_signal, get_his
 from .tasks import scanner
 from django.shortcuts import render, redirect, redirect
 from django.contrib.auth import authenticate, login, logout
+from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.models import User
@@ -290,7 +291,11 @@ def user_login(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
-    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
+    # Add social account login options
+    google_login_url = SocialAccount.get_provider('google').get_login_url(request)
+    microsoft_login_url = SocialAccount.get_provider('microsoft').get_login_url(request)    
+    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES, 'google_login_url': google_login_url,
+        'microsoft_login_url': microsoft_login_url})
 
 def user_logout(request):
     logout(request)
