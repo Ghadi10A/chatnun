@@ -3,6 +3,36 @@
 {% load static %}
 {% block content %}
 <style type="text/css">
+  @media (max-width: 767px) {
+label {
+display: none;
+}
+
+#chat-log li {
+flex-direction: column;
+margin-bottom: 10px;
+}
+
+#chat-log li:nth-child(even) {
+flex-direction: column;
+}
+
+#chat-log li .message-content {
+max-width: 100%;
+padding: 10px;
+}
+
+#chat-log li .profile-image {
+margin-right: 0;
+margin-left: 0;
+margin-bottom: 10px;
+}
+
+.float-right,
+.float-left {
+float: none;
+}
+}
   label {
     display: none;
   }
