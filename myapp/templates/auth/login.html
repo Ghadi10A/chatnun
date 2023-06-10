@@ -4,6 +4,57 @@
 {% load socialaccount %}
 {% providers_media_js %}
 {% block content %}
+<style>
+  /* CSS styles for screens with max-width: 767px */
+  @media (max-width: 767px) {
+    /* Add your responsive styles here */
+    .row.justify-content-center {
+      /* Example style */
+      margin-top: 10px;
+    }
+
+    .text-center {
+      /* Example style */
+      text-align: center;
+    }
+
+    #loading {
+      /* Example style */
+      display: block;
+    }
+
+    .col-md-7 {
+      /* Example style */
+      width: 100%;
+    }
+
+    .alert {
+      /* Example style */
+      font-size: 14px;
+    }
+
+    .text-center.mb-3 {
+      /* Example style */
+      margin-bottom: 5px;
+    }
+
+    .form-group {
+      /* Example style */
+      margin-bottom: 10px;
+    }
+
+    .btn-primary.btn-block {
+      /* Example style */
+      font-size: 16px;
+    }
+
+    .btn.btn-success.btn-sm,
+    .btn.btn-warning.btn-sm {
+      /* Example style */
+      font-size: 14px;
+    }
+  }
+</style>
 <div class="row justify-content-center mt-5">
     <div class="text-center">
         <div id="loading" class="spinner-border" style="display: none;></div>
