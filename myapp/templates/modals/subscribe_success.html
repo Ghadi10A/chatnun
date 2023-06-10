@@ -2,6 +2,47 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
+<style>
+@media (max-width: 767px) {
+  .card {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  }
+
+  .text-center {
+    margin-bottom: 1rem;
+  }
+
+  .rounded-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .container {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.8rem;
+  }
+
+  .btn {
+    margin: 10px;
+  }
+
+  .card-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .card-body p {
+    font-size: 0.9rem;
+  }
+}
+</style>
 <div class="row">
   <div class="col-md-4">
    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
