@@ -40,7 +40,29 @@
     </script>
     <style>
       @media (max-width: 767px) {
-        
+        .navbar-nav li {
+    margin-bottom: 10px;
+  }
+  
+  .nav-link {
+    font-size: 11px;
+  }
+  
+  .navbar-text {
+    font-size: 11px;
+  }
+  
+  .navbar-text::after {
+    content: "\00a9 2023 All Rights Reserved";
+  }
+  
+  .navbar-text::before {
+    content: "Chatnun";
+  }
+  
+  .fixed-bottom {
+    padding: 10px;
+  }
   .navbar-nav {
     flex-direction: column;
   }
