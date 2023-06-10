@@ -2,7 +2,34 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
+            <style>
+        /* Add your CSS styles here for the max-width: 767px breakpoint */
+        @media (max-width: 767px) {
+            .jumbotron {
+                padding: 20px;
+            }
 
+            .jumbotron .container {
+                padding: 0;
+            }
+
+            .carousel-item img {
+                height: auto;
+            }
+
+            .carousel-caption {
+                padding: 10px;
+            }
+
+            .lead {
+                font-size: 16px;
+            }
+
+            .card {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
     <div class="jumbotron text-center">
        <div class="text-center">
         <div id="loading" class="spinner-border" style="display: none;float: right;"></div>
