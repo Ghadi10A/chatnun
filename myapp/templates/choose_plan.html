@@ -1,6 +1,41 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+@media (max-width: 767px) {
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .col-md-4 {
+    margin-bottom: 30px;
+  }
+
+  .card-header {
+    padding: 0.5rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+
+  .card-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .list-unstyled {
+    font-size: 0.9rem;
+  }
+
+  .btn-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+}
+</style>
+
 <div class="container">
   <h1 class="mt-5 mb-3">{% trans "Choose a Plan" %}</h1>
   <p class="lead">{% trans "Select a subscription plan to activate your account" %}</p>
