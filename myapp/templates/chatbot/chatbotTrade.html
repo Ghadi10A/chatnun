@@ -1,7 +1,50 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block content %}
+    <style>
+      @media (max-width: 767px) {
+  .card {
+    box-shadow: none;
+  }
 
+  .card-body {
+    padding: 10px;
+  }
+
+  .order-3 {
+    order: 3;
+  }
+
+  #loading {
+    display: none;
+  }
+
+  .list-group-item {
+    margin-bottom: 10px;
+    background-color: #007aaf !important;
+    color: #fff !important;
+  }
+
+  .list-group-item p {
+    margin-bottom: 0;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  #chat-input {
+    margin-bottom: 10px;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
+}
+
+      
+</style>
 <div class="row">
   <div class="col-md-7">
     
