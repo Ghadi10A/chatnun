@@ -3,6 +3,69 @@
 {% load static %}
 {% load emoji_reactions_tags %}
 {% block content %}
+<style>
+      @media (max-width: 767px) {
+  /* CSS styles for screens with maximum width of 767px */
+
+  /* Adjust the card layout */
+  .col-lg-4 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  .col-lg-8 {
+    width: 100%;
+  }
+
+  /* Center the user profile image */
+  .text-center img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Reduce the font size for post details */
+  .card-body p {
+    font-size: 12px;
+  }
+
+  /* Adjust the width of the search form elements */
+  .order-1,
+  .order-2,
+  .order-3 {
+    width: 100%;
+  }
+
+  /* Center the loading spinner */
+  .text-center div#loading {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Adjust the width of the post form elements */
+  .col-4 {
+    width: 100%;
+  }
+
+  /* Adjust the width of the share buttons */
+  .share-buttons {
+    width: 100%;
+  }
+
+  /* Center the emoji picker buttons */
+  #emoji-picker-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Adjust the width of the comment form elements */
+  #comment-form-{{ post.id }} input[type="text"] {
+    width: 100%;
+  }
+}
+
+</style>
 <!-- Main section -->
 <section class="main-section py-3">
   <div class="container-fluid">
