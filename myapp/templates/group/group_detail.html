@@ -3,6 +3,94 @@
 {% load static %}
 {% load emoji_reactions_tags %}
 {% block content %}
+<style>
+        @media (max-width: 767px) {
+  .col-md-4 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .col-md-7 {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .profile-image {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .card-text {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .card-subtitle {
+    font-size: 12px;
+  }
+  
+  .list-group-item {
+    padding: 8px;
+  }
+  
+  .spinner-border {
+    width: 20px;
+    height: 20px;
+    margin-top: 5px;
+  }
+  
+  .card-footer {
+    padding: 8px;
+  }
+  
+  .card-footer .btn {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .share-buttons {
+    float: none;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  .share-buttons a {
+    margin-right: 5px;
+  }
+  
+  .share-buttons i {
+    font-size: 16px;
+  }
+  
+  #emoji-picker-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+  .emoji-picker-item {
+    font-size: 16px;
+    padding: 4px 8px;
+    margin: 4px;
+  }
+  
+  .emoji-picker-item:hover {
+    background-color: #e9ecef;
+  }
+}
+
+</style>
   <div class="row">
     <div class="col-md-4">
       <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
