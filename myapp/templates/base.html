@@ -47,6 +47,10 @@
         .navbar-text {
           font-size:11px;
         }
+      
+      .nav-link {
+          font-size:9px;
+        }
       @media (max-width: 767px) {
         .nav-link {
           font-size:9px;
@@ -65,14 +69,6 @@
   
   .navbar-text {
     font-size: 9px;
-  }
-  
-  .navbar-text::after {
-    content: "\00a9 2023 All Rights Reserved";
-  }
-  
-  .navbar-text::before {
-    content: "Chatnun";
   }
   
   .fixed-bottom {
@@ -281,7 +277,7 @@ function markNotificationAsRead(notificationId) {
                         <a class="nav-link" href="{% url 'terms_of_service' %}">{% trans "Terms of Use" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'privacy_policy' %}"{% trans "Privacy Policy" %}</a>
+                        <a class="nav-link" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'about_us' %}">{% trans "About Us" %}</a>
