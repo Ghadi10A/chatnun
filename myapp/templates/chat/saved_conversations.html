@@ -2,6 +2,43 @@
 {% load i18n %}
 {% load static %}
 {% block content %}
+<style>
+  @media (max-width: 767px) {
+    .container {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .col-md-4,
+    .col-md-8 {
+      padding-left: 0;
+      padding-right: 0;
+      margin-bottom: 30px;
+    }
+    .list-group-item {
+      padding: 10px;
+    }
+    .card {
+      margin-bottom: 30px;
+    }
+    .card-body {
+      padding: 15px;
+    }
+    .rounded-circle {
+      width: 20px;
+      height: 20px;
+    }
+    .mr-2 {
+      margin-right: 5px;
+    }
+    .float-right {
+      float: right;
+    }
+    .badge {
+      font-size: 12px;
+      padding: 3px 6px;
+    }
+  }
+</style>
 <div class="container ">
   
   <div class="row">
