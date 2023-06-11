@@ -48,12 +48,14 @@ from sendgrid.helpers.mail import Mail, Email, Content
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from django.utils import translation
+from django.utils.translation import gettext as _
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.utils.translation import activate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
+from django.db import IntegrityError
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -1053,32 +1055,31 @@ def delete_comment_group(request, post_id, comment_id):
 
 @login_required(login_url='login')
 def chatbotTrade(request, post_id=None, conversation_id=None):
-    user = request.user
+    if post_id is not None:
+        post = get_object_or_404(Post, id=post_id)
+    else:
+        post = None
+        
+    # Generate a new conversation ID if none is provided
     if not conversation_id:
-        conversation_id = str(uuid.uuid4()) # Generate a new conversation ID if none is provided
-
+        conversation_id = str(uuid.uuid4()) 
+    
+    # Get the user's followers
+    following = request.user.following.values_list('following__id', flat=True)    
+    
+    # Get all posts by the user and their followers
+    posts = Post.objects.filter(Q(author=request.user) | Q(author__in=following)).order_by('-created_at')    
     form = ChatbotForm()
     response = None
     history = []
-    saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('-timestamp')
-    # Check if a conversation with the given conversation_id already exists
-    current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
-
-    prompt = ""  # Assign an initial value to prompt
-
-    if current_conversation:
-        # Conversation already exists, update the existing conversation
-        prompt = current_conversation.prompt
-        response = current_conversation.response
-        current_conversation.save()
-    else:
-        # Conversation doesn't exist, create a new conversation
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response="")
-        prompt = current_conversation.prompt
-        response = current_conversation.response
-
-    history.append(("User", prompt))
-    history.append(("Chatbot", response))
+    user = request.user
+    saved_chats = ChatHistory.objects.filter(user=request.user).order_by('timestamp')[:4]
+    chats = ChatHistory.objects.filter(user=request.user, conversation_id=conversation_id).order_by('timestamp')
+    # Check for prompt parameter in GET request
+    prompt = request.GET.get('prompt')
+    if prompt:
+        form = ChatbotForm(initial={'prompt': prompt})
+        history.append(('User', prompt))
 
     if request.method == 'POST':
         form = ChatbotForm(request.POST)
@@ -1095,30 +1096,25 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
                 temperature=0.5,
             )
             response = completions.choices[0].text
-            response = str(response)
-
-            # Clone the conversation and save the cloned prompt and response
-            cloned_prompt = current_conversation.prompt
-            cloned_response = current_conversation.response
-            # ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=cloned_prompt, response=cloned_response)
-
-            # Translate response to user language if necessary
-            if user_lang == 'ar':
-                translator = Translator()
-                translation = translator.translate(response, dest=user_lang)
-                response = translation.text
-
-            history.append(("You", prompt))
+            if user_lang != 'en':
+                translated_response = _(response)
+                response = str(translated_response)
             history.append(("Chatbot", response))
-            current_conversation.prompt = prompt
-            current_conversation.response = response
-            current_conversation.save()
 
-            # Save the model as model.pkl
-            model = response  # Assign the response to the model variable
-
-            # Save the model to the model.pkl file
-            joblib.dump(model, model_file)
+            # Try to create a new ChatHistory record
+            try:
+                chat_history = ChatHistory.objects.create(
+                    user=user,
+                    prompt=prompt,
+                    response=response,
+                    conversation_id=conversation_id
+                )
+            except IntegrityError:
+                # If a duplicate conversation ID is detected, update the existing record
+                chat_history = ChatHistory.objects.get(conversation_id=conversation_id)
+                chat_history.prompt = prompt
+                chat_history.response = response
+                chat_history.save()
 
             return redirect('chatbotTrade', conversation_id=conversation_id)
 
@@ -1174,32 +1170,31 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
     })
 @login_required(login_url='user_login')
 def chatbot(request, post_id=None, conversation_id=None):
-    user = request.user
+    if post_id is not None:
+        post = get_object_or_404(Post, id=post_id)
+    else:
+        post = None
+        
+    # Generate a new conversation ID if none is provided
     if not conversation_id:
-        conversation_id = str(uuid.uuid4()) # Generate a new conversation ID if none is provided
-
+        conversation_id = str(uuid.uuid4()) 
+    
+    # Get the user's followers
+    following = request.user.following.values_list('following__id', flat=True)    
+    
+    # Get all posts by the user and their followers
+    posts = Post.objects.filter(Q(author=request.user) | Q(author__in=following)).order_by('-created_at')    
     form = ChatbotForm()
     response = None
     history = []
-    saved_chats = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).order_by('-timestamp')
-    # Check if a conversation with the given conversation_id already exists
-    current_conversation = ChatHistory.objects.filter(user=user, conversation_id=conversation_id).first()
-
-    prompt = ""  # Assign an initial value to prompt
-
-    if current_conversation:
-        # Conversation already exists, update the existing conversation
-        prompt = current_conversation.prompt
-        response = current_conversation.response
-        current_conversation.save()
-    else:
-        # Conversation doesn't exist, create a new conversation
-        current_conversation = ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=prompt, response="")
-        prompt = current_conversation.prompt
-        response = current_conversation.response
-
-    history.append(("User", prompt))
-    history.append(("Chatbot", response))
+    user = request.user
+    saved_chats = ChatHistory.objects.filter(user=request.user).order_by('timestamp')[:4]
+    chats = ChatHistory.objects.filter(user=request.user, conversation_id=conversation_id).order_by('timestamp')
+    # Check for prompt parameter in GET request
+    prompt = request.GET.get('prompt')
+    if prompt:
+        form = ChatbotForm(initial={'prompt': prompt})
+        history.append(('User', prompt))
 
     if request.method == 'POST':
         form = ChatbotForm(request.POST)
@@ -1216,24 +1211,25 @@ def chatbot(request, post_id=None, conversation_id=None):
                 temperature=0.5,
             )
             response = completions.choices[0].text
-            response = str(response)
-
-            # Clone the conversation and save the cloned prompt and response
-            cloned_prompt = current_conversation.prompt
-            cloned_response = current_conversation.response
-            # ChatHistory.objects.create(user=user, conversation_id=conversation_id, prompt=cloned_prompt, response=cloned_response)
-
-            # Translate response to user language if necessary
-            if user_lang == 'ar':
-                translator = Translator()
-                translation = translator.translate(response, dest=user_lang)
-                response = translation.text
-
-            history.append(("You", prompt))
+            if user_lang != 'en':
+                translated_response = _(response)
+                response = str(translated_response)
             history.append(("Chatbot", response))
-            current_conversation.prompt = prompt
-            current_conversation.response = response
-            current_conversation.save()
+
+            # Try to create a new ChatHistory record
+            try:
+                chat_history = ChatHistory.objects.create(
+                    user=user,
+                    prompt=prompt,
+                    response=response,
+                    conversation_id=conversation_id
+                )
+            except IntegrityError:
+                # If a duplicate conversation ID is detected, update the existing record
+                chat_history = ChatHistory.objects.get(conversation_id=conversation_id)
+                chat_history.prompt = prompt
+                chat_history.response = response
+                chat_history.save()
 
             return redirect('chatbot', conversation_id=conversation_id)
 
