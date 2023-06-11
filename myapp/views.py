@@ -56,6 +56,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import IntegrityError
+from allauth.socialaccount.providers.registry import providers
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -293,11 +294,19 @@ def user_login(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
+
     # Add social account login options
-    google_login_url = SocialAccount.get_provider('google').get_login_url(request)
-    microsoft_login_url = SocialAccount.get_provider('microsoft').get_login_url(request)    
-    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES, 'google_login_url': google_login_url,
-        'microsoft_login_url': microsoft_login_url})
+    google_provider = providers.get_provider('google')
+    google_login_url = google_provider.get_login_url(request)
+    microsoft_provider = providers.get_provider('microsoft')
+    microsoft_login_url = microsoft_provider.get_login_url(request)
+
+    return render(request, 'auth/login.html', {
+        'form': form,
+        'LANGUAGES': settings.LANGUAGES,
+        'google_login_url': google_login_url,
+        'microsoft_login_url': microsoft_login_url
+    })
 
 def user_logout(request):
     logout(request)
