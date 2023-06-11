@@ -1,29 +1,53 @@
 {% extends 'base.html' %}
 {% load i18n %}
-{% load static %}
 {% block content %}
-<style type="text/css">
-    label {
-        display: none;
-    }
+    <style>
+      @media (max-width: 767px) {
+  .card {
+    box-shadow: none;
+  }
 
-    @media (max-width: 767px) {
-        .col-md-7 {
-            flex: 100%;
-            max-width: 100%;
-        }
-        .col-md-4 {
-            flex: 100%;
-            max-width: 100%;
-        }
-    }
+  .card-body {
+    padding: 10px;
+  }
+
+  .order-3 {
+    order: 3;
+  }
+
+  #loading {
+    display: none;
+  }
+
+  .list-group-item {
+    margin-bottom: 10px;
+    background-color: #fff !important;
+    color: #fff !important;
+  }
+
+  .list-group-item p {
+    margin-bottom: 0;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  #chat-input {
+    margin-bottom: 10px;
+  }
+
+  .btn-block {
+    display: block;
+    width: 100%;
+  }
+}
+
+      
 </style>
 <div class="row">
   <div class="col-md-7">
-
-            <div class="text-center" style="float: right;">
-                <div id="loading" class="spinner-border" style="display: none;"></div>
-      </div>
+            <div class="text-center" style="float: right;"><div id="loading" class="spinner-border" style="display: none;"></div></div>
     <script type="text/javascript">
           function showLoadingSpinner() {
       $("#loading").show();
@@ -35,59 +59,66 @@
 
   hideLoadingSpinner();
 </script>
-
-   
     <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
       <div class="card-body">
         
-                    <h3 class="card-title">{% trans "Chatbot" %}</h3>
-                </div>
-                <div class="card-body chat-body">
-                    {% for message in history %}
-                        <p class="message-{{ message.0|lower }}">
-                            <strong>{{ message.0 }}:</strong> {{ message.1 }}
-                        </p>
-                    {% endfor %}
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <form method="post" id="chat-form" onclick="scrollToBottom()">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary btn-sm w-100" onclick="showLoadingSpinner()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+        {% if saved_chats %}
+<ul class="list-group">
+    <h4>{% trans "Saved Conversations" %}</h4>
+    <hr>
+    {% for chat in saved_chats %}
+    <li class="list-group-item bg-primary text-white" style="margin-bottom: 10px;background-color: #007aaf !important;color: #fff !important;">
+        <p>{{ chat.timestamp|date:"F d, Y H:i" }}</p>
+        <br>
+        <strong style="font-weight: bold;">{% trans "You" %}:</strong> {{ chat.prompt }}
+        <br>
+        <strong style="font-weight: bold;">{% trans "Chatbot" %}:</strong> {{ chat.response }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+        <br>
+  
+        <form method="post" id="chat-form" onclick="scrollToBottom()">
+          {% csrf_token %}
+          <div class="form-group" id="chat-input" autocomplete="off">
+          {{ form.prompt }}
+        </div>
+        <br>
+          <button type="submit" class="btn btn-primary btn-sm w-100" onclick="showLoadingSpinner()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
   <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
 </svg></button>
-                    </form>
-                </div>
-            </div>
-        </div>
-</div>
-        <div class="col-md-4">
-            <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-top: 6px;">
-                <div class="card-header">
-                    <h3 class="card-title">{% trans "Saved Conversations" %}</h3>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group">
-                        {% for chat in saved_chats %}
-                            {% if chat.conversation_id %}
-                                <li class="list-group-item">
-                                    <div class="item">
-                                        <a href="{% url 'chatbot' conversation_id=chat.conversation_id %}">{{ chat.conversation_id }}</a>
-                                        <p class="text-right text-muted">{{ chat.timestamp|date:'Y-m-d H:i:s' }}</p>
-                                        <a class="btn btn-danger btn-sm" href="{% url 'delete_chat' timestamp=chat.timestamp conversation_id=chat.conversation_id %}">{% trans "Delete" %}</a>
-                                    </div>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+        </form>
+      </div>
     </div>
+  </div>
+  <div class="col-md-4">
+   <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);margin-top: 6px;">
+      <div class="card-body">
+        <h5 class="card-title">{% trans "Saved Conversations" %}</h5>
+          <a class="btn btn-primary btn-block btn-sm" id="start-new-conversation" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">{% trans "Start New Conversation" %}</a>
+        <br>
+        <br>
+        <ul class="list-group">
+          {% for chat in saved_chats %}
+    {% if chat.conversation_id %}
+        <li class="list-group-item">
+            <div class="item">
+                <a href="{% url 'chatbotTrade' conversation_id=chat.conversation_id %}">{{ chat.conversation_id }}</a>
+                <p class="text-right text-muted">{{ chat.timestamp|date:'Y-m-d H:i:s' }}</p>
+                <a class="btn btn-danger btn-sm" href="{% url 'delete_chat' timestamp=chat.timestamp conversation_id=chat.conversation_id %}">{% trans "Delete" %}</a>
+            </div>
+        </li>
+    {% endif %}
+{% endfor %}
+
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
+<br>
+<br>
 {% endblock %}
 {% block script %}
 
@@ -102,6 +133,7 @@ function scrollToBottom() {
 window.onload = function() {
   scrollToBottom();
 };
+
 
     document.getElementById('chat-form').addEventListener('submit', function(event) {
         event.preventDefault();
