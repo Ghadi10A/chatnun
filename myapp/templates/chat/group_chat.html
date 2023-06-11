@@ -132,7 +132,7 @@
               <span style="font-size: 11px;font-family: bold;">{{ message.sender }}</span>
             </div>
             <div class="col-md-8 {% if message.sender == group.admin %}float-right{% else %}float-left{% endif %}">
-              <div class="card {% if message.sender == user %}bg-dark{% else %}bg-primary{% endif %}">
+              <div class="card {% if message.sender == user %}bg-secondary{% else %}bg-secondary{% endif %}">
                 <div class="card-body text-white">
                   {{ message.message }}
                 </div>
