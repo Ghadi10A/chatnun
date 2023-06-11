@@ -156,8 +156,8 @@ AUTHENTICATION_BACKENDS = (
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '691697894973-33buj89dqi001sd9e2v0f4hvouko1hqp.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': '844297491487-6emc7ua3op90mil7so3rbct2uo9sec4c.apps.googleusercontent.com',
+            'secret': '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',
             'key': ''
         },
         'SCOPE': [
@@ -171,7 +171,7 @@ SOCIALACCOUNT_PROVIDERS = {
     'microsoft': {
         'APP': {
             'client_id': '6c07376d-c35b-4141-9893-91c8ba379b6a',
-            'secret': 'aLd8Q~w4cgoeCq~HIxy5jTH5gtEmB-x9DU3IDcfw',
+            'secret': '4ed2492f-e883-49a8-83c3-58886320e432',
             'tenant': 'common',  # Use 'common' for multi-tenant apps
         },
         'SCOPE': [
