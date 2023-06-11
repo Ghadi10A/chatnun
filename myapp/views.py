@@ -56,7 +56,6 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import IntegrityError
-from allauth.socialaccount import providers
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -291,12 +290,8 @@ def user_login(request):
         else:
             messages.error(request, 'Please correct the errors below.')
     else:
-        form = LoginForm()
-    # Add social account login options
-    google_login_url = providers.registry.by_id('google').get_login_url(request)
-    microsoft_login_url = providers.registry.by_id('microsoft').get_login_url(request)  
-    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES, 'google_login_url': google_login_url,
-        'microsoft_login_url': microsoft_login_url})
+        form = LoginForm() 
+    return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
 
 def user_logout(request):
     logout(request)
