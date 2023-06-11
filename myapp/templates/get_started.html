@@ -59,7 +59,9 @@
   </div>
   <div class="carousel-inner"> 
     <div class="carousel-item active">
-      <img src="{% static 'images/images.jpeg' %}" class="d-block w-100" style="width: 100%;height: 500px; /* Set a fixed height for all images */object-fit: cover;">
+<div class="d-block w-100" style="width: 100%; height: 500px; /* Set a fixed height for the container */ background-image: linear-gradient(to bottom, rgba(112,112,112, 0.52), rgba(69,69,69, 0.73)); background-size: cover; background-position: center;">
+    <img src="{% static 'images/images.jpeg' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Image">
+
       <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
   padding: 20px;
   color: #fff;
@@ -67,9 +69,13 @@
         <h5>{% trans "Predict Markets with Machine Learning" %}</h5>
         <p>{% trans "Our app uses advanced machine learning algorithms to provide accurate market predictions" %}.</p>
       </div>
+            </div>
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/down.jpeg' %}" class="d-block w-100" style="width: 100%;height: 500px; /* Set a fixed height for all images */object-fit: cover;">
+      <div class="d-block w-100" style="width: 100%; height: 500px; /* Set a fixed height for the container */ background-image: linear-gradient(to bottom, rgba(112,112,112, 0.52), rgba(69,69,69, 0.73)); background-size: cover; background-position: center;">
+    <img src="{% static 'images/images.jpeg' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Image">
+
+
       <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
   padding: 20px;
   color: #fff;
@@ -77,9 +83,13 @@
         <h5>{% trans "Real-time Scanners" %}</h5>
         <p>{% trans "Our app includes real-time scanners to keep you up-to-date on market trends" %}.</p>
       </div>
+                </div>
     </div>
     <div class="carousel-item">
-      <img src="{% static 'images/images.jpg' %}" class="d-block w-100" style="width: 100%;height: 500px;">
+     <div class="d-block w-100" style="width: 100%; height: 500px; /* Set a fixed height for the container */ background-image: linear-gradient(to bottom, rgba(112,112,112, 0.52), rgba(69,69,69, 0.73)); background-size: cover; background-position: center;">
+    <img src="{% static 'images/images.jpeg' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Image">
+
+
       <div class="carousel-caption d-none d-md-block" style="background-color: rgba(0,0,0,0.5);
   padding: 20px;
   color: #fff;
