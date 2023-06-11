@@ -44,13 +44,10 @@
         width: 100%;
         z-index: 1000;
 }  
-        .navbar-text {
+       #footer-link {
           font-size:11px;
         }
       
-      .nav-link {
-          font-size:11px;
-        }
       @media (max-width: 767px) {
         .nav-link {
           font-size:8px;
@@ -274,18 +271,18 @@ function markNotificationAsRead(notificationId) {
             <div class="container">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'terms_of_service' %}">{% trans "Terms of Use" %}</a>
+                        <a class="nav-link" id="footer-link" href="{% url 'terms_of_service' %}">{% trans "Terms of Use" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
+                        <a class="nav-link" id="footer-link" href="{% url 'privacy_policy' %}">{% trans "Privacy Policy" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about_us' %}">{% trans "About Us" %}</a>
+                        <a class="nav-link" id="footer-link" href="{% url 'about_us' %}">{% trans "About Us" %}</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'contact_us' %}">{% trans "Contact Us" %}</a>
+                        <a class="nav-link" id="footer-link" href="{% url 'contact_us' %}">{% trans "Contact Us" %}</a>
                     </li>
-                    <li class="nav-item" style="float:right;font-size:11px;">
+                    <li class="nav-item" id="footer-link" style="float:right;font-size:11px;">
    <form class="nav-link btn-sm" method="post" action="{% url 'switch_language' LANGUAGE_CODE %}">
             {% csrf_token %}
             <select name="language" onchange="this.form.submit()">
@@ -298,7 +295,7 @@ function markNotificationAsRead(notificationId) {
 
                   </li>
                 </ul>
-                <span class="navbar-text ml-auto">{% trans "Chatnun" %}&copy; {% trans "2023 All Rights Reserved" %}</span>
+                <span class="navbar-text ml-auto"  id="footer-link">{% trans "Chatnun" %}&copy; {% trans "2023 All Rights Reserved" %}</span>
             </div>
         </footer>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
