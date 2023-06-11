@@ -56,7 +56,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import IntegrityError
-from allauth.socialaccount.models import SocialApp
+from allauth.socialaccount import providers
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -273,8 +273,6 @@ def activate_account(request, uidb64, token):
         return render(request, 'auth/account_activated.html')
     else:
         return render(request, 'auth/email_verification_sent.html')
-
-
 def user_login(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -294,17 +292,11 @@ def user_login(request):
             messages.error(request, 'Please correct the errors below.')
     else:
         form = LoginForm()
-
-    # Get the Google SocialApp instance
-    google_provider = SocialApp.objects.get(provider='google')
-    google_login_url = google_provider.get_login_url(request)
-
-    # Get the Microsoft SocialApp instance
-    microsoft_provider = SocialApp.objects.get(provider='microsoft')
-    microsoft_login_url = microsoft_provider.get_login_url(request)
-    
+    # Add social account login options
+    google_login_url = providers.registry.by_id('google').get_login_url(request)
+    microsoft_login_url = providers.registry.by_id('microsoft').get_login_url(request)  
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES, 'google_login_url': google_login_url,
-                                               'microsoft_login_url': microsoft_login_url})
+        'microsoft_login_url': microsoft_login_url})
 
 def user_logout(request):
     logout(request)
