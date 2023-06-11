@@ -79,7 +79,7 @@
 {% endif %}
         <br>
   
-        <form method="post" id="chat-form" onclick="scrollToBottom()">
+        <form method="post" onsubmit="scrollToBottom()" id="message-form">
           {% csrf_token %}
           <div class="form-group" id="chat-input" autocomplete="off">
           {{ form.prompt }}
@@ -124,8 +124,9 @@
 
       <script>
 
+
 function scrollToBottom() {
-  var container = document.getElementById("chat-form");
+  var container = document.getElementById("message-form");
   window.scrollTo(-1, document.body.scrollHeight);
 
 }
@@ -133,6 +134,7 @@ function scrollToBottom() {
 window.onload = function() {
   scrollToBottom();
 };
+
 
 
     document.getElementById('chat-form').addEventListener('submit', function(event) {
