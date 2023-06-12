@@ -146,12 +146,14 @@ margin-bottom: 50px;
             <li class="list-group-item" style="border: none;">
               <div class="row mb-3">
                 <div class="col-md-4">
+                  <a href="{% url 'show_profile' username=message.sender.username %}">
                   {% if message.sender.profile.image %}
                   <img src="{{ message.sender.profile.image.url }}" width="30" height="30" class="rounded-circle">
                   {% else %}
                   <img src="{% static 'images/Default_image_profile.png' %}" width="30" height="30" class="rounded-circle">
                   {% endif %}
                   <span style="font-size: 11px;font-family: bold;">{{ message.sender }}</span>
+                  <a href="{% url 'show_profile' username=message.sender.username %}">
                 </div>
                 <div class="col-md-8 {% if message.sender == user %}float-right{% else %}float-left{% endif %}">
                   <div class="card {% if message.sender == user %}bg-secondary{% else %}bg-secondary{% endif %}">
@@ -198,4 +200,3 @@ window.onload = function() {
   </div>
 </div>
 {% endblock %}
-
