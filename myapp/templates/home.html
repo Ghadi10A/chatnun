@@ -310,6 +310,10 @@
     <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-facebook"></i>
 </a>
+<!-- Reddit share button -->
+<a href="https://www.reddit.com/submit?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
+  <i class="fab fa-reddit"></i>
+</a>
 
       </div>
            {% if post|has_reacted:request.user %}
