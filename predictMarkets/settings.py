@@ -171,8 +171,8 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'microsoft': {
         'APP': {
-            'client_id': '6c07376d-c35b-4141-9893-91c8ba379b6a',
-            'secret': 'aLd8Q~w4cgoeCq~HIxy5jTH5gtEmB-x9DU3IDcfw',
+            'client_id': '44ee508c-1d72-4fe6-9ec3-e8e3ac96baf2',
+            'secret': '0Ng8Q~H6uKeh06WW56-xHUKcTB0bCQyc6eU.OauO',
             'tenant': 'common',  # Use 'common' for multi-tenant apps
         },
         'SCOPE': [
