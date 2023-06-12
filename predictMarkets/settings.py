@@ -148,11 +148,12 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+SITE_ID = 1
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', 
     'allauth.account.auth_backends.AuthenticationBackend', # default auth backend
 )
+LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -186,7 +187,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
-# SITE_ID = 1
+# 
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
