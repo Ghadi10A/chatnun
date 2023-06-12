@@ -158,7 +158,7 @@
       </ul>
     </div>
     <div class="card-footer">
-      <form method="post" id="chat-form" onsubmit="scrollToBottom()">
+      <form method="post" id="chat-form" onsubmit="scrollToBottom()"> 
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-outline-primary btn-sm" id="message-send-button"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
