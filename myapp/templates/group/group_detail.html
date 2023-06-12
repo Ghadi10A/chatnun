@@ -329,7 +329,7 @@
   <i class="fab fa-facebook"></i>
 </a>
            <!-- Reddit share button -->
-<a href="https://www.reddit.com/submit?url={{ request.build_absolute_uri }}{% url 'show_post' post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
+<a href="https://www.reddit.com/submit?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-reddit" style="color: #FF5700;"></i>
 </a>
       </div>
