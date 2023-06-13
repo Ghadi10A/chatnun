@@ -49,28 +49,21 @@
   <br>
   <div class="col-md-7">
     <div class="text-center mb-3">
+      <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
+        <div class="card-body">
       <h1>{% trans "Sign up" %}</h1>
             <form method="post" action="{% url 'user_signup' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    
-    <!-- Add a CSS class to the password confirmation field -->
-    <div class="form-group">
-        <label for="{{ form.confirm_password.id_for_label }}">{{ form.confirm_password.label }}</label>
-        <input type="password" name="{{ form.confirm_password.name }}" class="form-control" id="{{ form.confirm_password.id_for_label }}" style="width: 100%;" required>
-        {% if form.confirm_password.help_text %}
-            <small class="form-text text-muted">{{ form.confirm_password.help_text }}</small>
-        {% endif %}
-    </div>
-    
-    <span class="text-success">
-        {% trans "*By Register You Accept our Terms and Policies" %}
-    </span>
-    <br>
-    <br>
-    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
-</form>
-
+		    {% csrf_token %}
+		    {{ form.as_p }}
+		    <span class="text-success">
+		    		{% trans "*By Register You Accept our Terms and Policies" %}
+		    </span>
+		    <br>
+		    <br>
+		    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
+		</form>
+        </div>
+      </div>
     </div>
   </div>
 </div>
