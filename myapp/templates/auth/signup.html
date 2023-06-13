@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load i18n %}
+
 {% block content %}
 <style type="text/css">
   .helptext {
@@ -27,16 +28,6 @@
       margin-top: 10px;
     }
   }
-  
-  /* Custom styles for the form */
-  .form-field {
-    margin-bottom: 10px;
-  }
-
-  /* Adjust password confirmation field width */
-  input#id_password2 {
-    width: 100%;
-  }
 </style>
 <div class="row justify-content-center mt-5">
   <div class="jumbotron text-center">
@@ -59,30 +50,31 @@
   <div class="col-md-7">
     <div class="text-center mb-3">
       <h1>{% trans "Sign up" %}</h1>
+
       <form method="post" action="{% url 'user_signup' %}">
         {% csrf_token %}
-        <div class="form-field">
-          {{ form.username.label_tag }}
+        <div class="form-group">
+          <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
           {{ form.username }}
         </div>
-        <div class="form-field">
-          {{ form.first_name.label_tag }}
-          {{ form.first_name }}
-        </div>
-        <div class="form-field">
-          {{ form.last_name.label_tag }}
-          {{ form.last_name }}
-        </div>
-        <div class="form-field">
-          {{ form.email.label_tag }}
+        <div class="form-group">
+          <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
           {{ form.email }}
         </div>
-        <div class="form-field">
-          {{ form.password1.label_tag }}
+        <div class="form-group">
+          <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
+          {{ form.first_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
+          {{ form.last_name }}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
           {{ form.password1 }}
         </div>
-        <div class="form-field">
-          {{ form.password2.label_tag }}
+        <div class="form-group">
+          <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
           {{ form.password2 }}
         </div>
         <span class="text-success">
@@ -90,7 +82,9 @@
         </span>
         <br>
         <br>
-        <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
+        <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">
+          {% trans "Sign up" %}
+        </button>
       </form>
     </div>
   </div>
