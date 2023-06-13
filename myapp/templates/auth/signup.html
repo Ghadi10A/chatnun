@@ -6,48 +6,51 @@
 {% block content %}
 
 <style type="text/css">
-    input[type="text"],
-    input[type="password"],
-    input[type="email"],
-    select {
-        width: 40%;
-    }
+	input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+ width:40%;
+}
+label {
+    font-size: 11px;
+  }
+label[for="id_password2"] {
+ font-size:8px;
+
+}
+label[for="id_email"] {
+ padding-right:9px;
+
+}
+  .helptext {
+    display: none;
+  }
+	li {
+	display:none;	
+	}
+	footer li {
+            display: block;
+        }
+  
+  /* Styles for small screens */
+  @media (max-width: 767px) {
     label {
-        font-size: 11px;
+      font-size: 8px;
     }
-    label[for="id_password2"] {
-        font-size: 8px;
+    .jumbotron {
+      padding: 10px;
     }
-    label[for="id_email"] {
-        padding-right: 9px;
+    .col-md-7 {
+      padding: 0;
     }
-    .helptext {
-        display: none;
+    .text-center.mb-3 h1 {
+      font-size: 24px;
     }
-    li {
-        display: none;
+    button[type="submit"] {
+      margin-top: 10px;
     }
-    footer li {
-        display: block;
-    }
-    /* Styles for small screens */
-    @media (max-width: 767px) {
-        label {
-            font-size: 8px;
-        }
-        .jumbotron {
-            padding: 10px;
-        }
-        .col-md-7 {
-            padding: 0;
-        }
-        .text-center.mb-3 h1 {
-            font-size: 24px;
-        }
-        button[type="submit"] {
-            margin-top: 10px;
-        }
-    }
+  }
 </style>
 
 <div class="row justify-content-center mt-5">
