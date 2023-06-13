@@ -87,7 +87,16 @@ label[for="id_email"] {
                         <br>
                         <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
                     </form>
-
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+				  var label = document.querySelector('label[for="id_password2"]');
+				  label.innerHTML = label.innerHTML.replace(" ", "<br>");
+				});	
+				document.addEventListener("DOMContentLoaded", function() {
+				  var emailLabel = document.querySelector('label[for="id_email"]');
+				  emailLabel.style.marginLeft = "6px";
+				});
+			</script>
                     <div class="text-center mt-3">
                         <a href="{% provider_login_url 'google' %}" class="btn btn-danger btn-sm">
                             <i class="fab fa-google"></i> {% trans "Sign up with Google" %}
