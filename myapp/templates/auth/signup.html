@@ -7,15 +7,11 @@
 input[type="password"],
 input[type="email"],
 select {
- width:39%;
+ width:42%;
 }
 label {
-    font-size: 10px;
+    font-size: 12px;
   }
-label[for="id_password2"] {
- font-size:4px;
-
-}
 label[for="id_email"] {
  font-size:12px;
 
@@ -84,6 +80,11 @@ label[for="id_email"] {
 		    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
 		</form>
 		<script>
+			document.addEventListener("DOMContentLoaded", function() {
+  var label = document.querySelector('label[for="id_password2"]');
+  label.innerHTML = label.innerHTML.replace(" ", "<br>");
+});
+
 	var passwordInput = document.getElementById("id_password2");
 passwordInput.placeholder = "Enter password confirmation";
 	
