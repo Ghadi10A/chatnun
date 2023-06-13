@@ -81,12 +81,12 @@ label[for="id_email"] {
                     <form method="post" action="{% url 'user_signup' %}">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <span class="text-success" style="font-size:11px;margin-left:39px;">
+                        <span class="text-success" style="font-size:11px;margin-left:40px;">
                             {% trans "*By Register You Accept our Terms and Policies" %}
                         </span>
                         <br>
                         <br>
-                        <div class="text-center"><button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()" style="margin-left:39px;">{% trans "Sign up" %}</button></div>
+                        <div class="text-center"><button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()" style="margin-left:40px;">{% trans "Sign up" %}</button></div>
                     </form>
 			<script>
 				document.addEventListener("DOMContentLoaded", function() {
