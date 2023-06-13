@@ -1,11 +1,7 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% block content %}
-<script>
-	var passwordInput = document.getElementById("id_password2");
-passwordInput.placeholder = "Enter password confirmation";
-	
-</script>
+
 <style type="text/css">
 	
 label[for="id_password2"] {
@@ -78,6 +74,11 @@ label[for="id_password2"] {
 		    <br>
 		    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
 		</form>
+		<script>
+	var passwordInput = document.getElementById("id_password2");
+passwordInput.placeholder = "Enter password confirmation";
+	
+</script>
 		</div>
 		   </div>
   </div>
