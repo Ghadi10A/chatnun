@@ -3,9 +3,9 @@
 {% block content %}
 <style type="text/css">
 	
-	label[for="id_password2"] {
-    white-space: pre-line;
-  /* Add any additional styling as needed */
+label[for="id_password2"]::after {
+  content: '\A';
+  white-space: pre;
 }
   .helptext {
     display: none;
