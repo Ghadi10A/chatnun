@@ -27,42 +27,74 @@
       margin-top: 10px;
     }
   }
+  
+  /* Custom styles for the form */
+  .form-field {
+    margin-bottom: 10px;
+  }
+
+  /* Adjust password confirmation field width */
+  input#id_password2 {
+    width: 100%;
+  }
 </style>
 <div class="row justify-content-center mt-5">
-	 <div class="jumbotron text-center">
-       <div class="text-center">
-        <div id="loading" class="spinner-border" style="display: none;"></div>
-      </div>
-      <script type="text/javascript">
-        function showLoadingSpinner() {
-          $("#loading").show();
-        }
+  <div class="jumbotron text-center">
+    <div class="text-center">
+      <div id="loading" class="spinner-border" style="display: none;"></div>
+    </div>
+    <script type="text/javascript">
+      function showLoadingSpinner() {
+        $("#loading").show();
+      }
 
-        function hideLoadingSpinner() {
-          $("#loading").hide();
-        }
+      function hideLoadingSpinner() {
+        $("#loading").hide();
+      }
 
-        hideLoadingSpinner();
-      </script>
-      
+      hideLoadingSpinner();
+    </script>
   </div>
   <br>
-    <div class="col-md-7">
-        <div class="text-center mb-3"><h1>{% trans "Sign up" %}</h1>
-
-		<form method="post" action="{% url 'user_signup' %}">
-		    {% csrf_token %}
-		    {{ form.as_p }}
-		    <span class="text-success">
-		    		{% trans "*By Register You Accept our Terms and Policies" %}
-		    </span>
-		    <br>
-		    <br>
-		    <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
-		</form>
+  <div class="col-md-7">
+    <div class="text-center mb-3">
+      <h1>{% trans "Sign up" %}</h1>
+      <form method="post" action="{% url 'user_signup' %}">
+        {% csrf_token %}
+        <div class="form-field">
+          {{ form.username.label_tag }}
+          {{ form.username }}
+        </div>
+        <div class="form-field">
+          {{ form.first_name.label_tag }}
+          {{ form.first_name }}
+        </div>
+        <div class="form-field">
+          {{ form.last_name.label_tag }}
+          {{ form.last_name }}
+        </div>
+        <div class="form-field">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+        </div>
+        <div class="form-field">
+          {{ form.password1.label_tag }}
+          {{ form.password1 }}
+        </div>
+        <div class="form-field">
+          {{ form.password2.label_tag }}
+          {{ form.password2 }}
+        </div>
+        <span class="text-success">
+          {% trans "*By Register You Accept our Terms and Policies" %}
+        </span>
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary btn-sm" onclick="showLoadingSpinner()">{% trans "Sign up" %}</button>
+      </form>
+    </div>
   </div>
-	</div>
 </div>
 <br>
-<br>		
+<br>
 {% endblock %}
