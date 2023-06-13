@@ -56,6 +56,8 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import IntegrityError
+from allauth.account.utils import complete_signup
+from allauth.socialaccount.models import SocialAccount
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -292,7 +294,31 @@ def user_login(request):
     else:
         form = LoginForm() 
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
+def social_signup(request, provider):
+    # Retrieve the social account associated with the user
+    social_account = SocialAccount.objects.filter(provider=provider, user=request.user).first()
 
+    if social_account:
+        # Social account already exists, complete the sign-up process
+        complete_signup(request, social_account.user, None)
+
+        # Redirect the user to the desired page after sign-up
+        return redirect('home')
+
+    # Social account doesn't exist, redirect to the regular sign-up page
+    return redirect('user_signup')
+def social_login(request, provider):
+    social_account = SocialAccount.objects.filter(provider=provider, user=request.user).first()
+
+    if social_account:
+        # Social account exists, log in the user
+        login(request, social_account.user)
+
+        # Redirect the user to the desired page after login
+        return redirect('home')
+
+    # Social account doesn't exist, redirect to the regular login page
+    return redirect('user_login')
 def user_logout(request):
     logout(request)
     return redirect('user_login')    
