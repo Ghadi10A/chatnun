@@ -247,7 +247,7 @@ padding-bottom: 8px;
   <i class="fab fa-reddit" style="color: #FF5700;"></i>
 </a>
 <!-- LinkedIn share button -->
-<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
+<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|slice:'0:-1' }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&title={{ post.content }}&summary={{ post.content }}&source=Chatnun%20App" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-linkedin" style="color: #0e76a8;"></i>
 </a>
 
