@@ -53,9 +53,11 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.utils.translation import activate
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db import IntegrityError
+from django.contrib.auth.forms import PasswordResetForm
+from django.urls import reverse
+
 
 openai.api_key = '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'
 model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
@@ -293,6 +295,65 @@ def user_login(request):
         form = LoginForm() 
     return render(request, 'auth/login.html', {'form': form, 'LANGUAGES': settings.LANGUAGES})
 
+def forgot_password(request):
+    if request.method == 'POST': 
+        form = PasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            associated_users = User.objects.filter(email=email)
+            
+            if associated_users.exists():
+                for user in associated_users:
+                    # Generate reset password token
+                    token = default_token_generator.make_token(user)
+                    
+                    # Build reset password URL
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    reset_password_url = reverse('reset_password', kwargs={'uidb64': uid, 'token': token})
+                    reset_password_url = request.build_absolute_uri(reset_password_url)
+                    
+                    # Render email template
+                    mail_subject = 'Reset your password'
+                    message = render_to_string('auth/reset_password_email.html', {
+                        'user': user,
+                        'reset_password_url': reset_password_url,
+                    })
+                    
+                    # Send email
+                    send_mail(mail_subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+                
+                messages.success(request, 'A password reset link has been sent to your email.')
+            else:
+                messages.error(request, 'No user associated with this email.')
+            
+            return redirect('forgot_password')
+    else:
+        form = PasswordResetForm()
+    
+    return render(request, 'auth/forgot_password.html', {'form': form})
+
+
+def reset_password(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        if request.method == 'POST':
+            form = SetPasswordForm(user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Your password has been reset successfully.')
+                return redirect('user_login')
+        else:
+            form = SetPasswordForm(user)
+        
+        return render(request, 'auth/reset_password.html', {'form': form, 'uidb64': uidb64, 'token': token})
+    else:
+        messages.error(request, 'Invalid reset password link.')
+        return redirect('user_login')
 def user_logout(request):
     logout(request)
     return redirect('user_login')    
