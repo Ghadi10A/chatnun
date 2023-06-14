@@ -105,6 +105,9 @@
             {{ form.as_p }}
             <button type="submit" class="btn btn-primary btn-block" onclick="showLoadingSpinner()">{% trans "Log in" %}</button>
         </form>
+         <p class="text-center mt-3">
+        <a href="{% url 'forgot_password' %}">{% trans "Forgot Password?" %}</a>
+        </p>                                                                                                           
         <br>
         <p>{% trans "Or" %}</p>
         <p>{% trans "sign in with" %}:</p>
