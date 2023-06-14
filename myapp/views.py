@@ -705,7 +705,7 @@ def home(request, post_id=None):
     new_conversation_id = str(uuid.uuid4())                   
     return render(request, 'home.html', {'form_post': form_post, 'search_form': search_form, 'form_comment': form_comment, 'form_reaction': form_reaction, 'posts': posts, 'reactions': reactions, 'notifications': notifications, 'unread_notifications': unread_notifications, 'message_notifications': message_notifications, 'post_notifications': post_notifications, 'group_message_notifications': group_message_notifications, 'group_post_notifications': group_post_notifications, 'comments': comments, 'emoji_reactions': emoji_reactions, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES}) 
 
-@login_required
+@login_required(login_url='get_started')
 def show_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
@@ -1109,7 +1109,7 @@ def delete_comment_group(request, post_id, comment_id):
         return JsonResponse({'html': html})
     return render(request, 'modals/delete_comment.html', data)
 
-@login_required(login_url='login')
+@login_required(login_url='get_started')
 def chatbotTrade(request, post_id=None, conversation_id=None):
     if post_id is not None:
         post = get_object_or_404(Post, id=post_id)
@@ -1224,7 +1224,7 @@ def chatbotTrade(request, post_id=None, conversation_id=None):
         'new_conversation_id': new_conversation_id,
         'LANGUAGES': settings.LANGUAGES
     })
-@login_required(login_url='user_login')
+@login_required(login_url='get_started')
 def chatbot(request, post_id=None, conversation_id=None):
     if post_id is not None:
         post = get_object_or_404(Post, id=post_id)
@@ -1455,7 +1455,7 @@ def message_thread(request, username):
     new_conversation_id = str(uuid.uuid4())
     return render(request, 'chat/message_thread.html', {'unread_messages': unread_messages, 'recipient': recipient, 'messages': conversations, 'form': form, 'sender': sender, 'notifications': notifications, 'messages_received':messages_received, 'unread_notifications': unread_notifications, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES})
 
-@login_required
+@login_required(login_url='get_started')
 def chat_group_detail(request, name, pk):
     User = get_user_model()
     user = request.user
@@ -1655,7 +1655,7 @@ def leave_group(request, pk):
     else:
         messages.warning(request, 'You are not a member of this group.')
     return redirect('groups:group_detail', pk=pk)      
-@login_required
+@login_required(login_url='get_started')
 def group_detail(request, name, pk, post_id=None):
     if post_id is not None:
         post = get_object_or_404(GroupPost, id=post_id)
@@ -1981,7 +1981,7 @@ def saved_conversations(request):
         'new_conversation_id': new_conversation_id,
         'LANGUAGES': settings.LANGUAGES,
     })
-@login_required    
+@login_required(login_url='get_started')   
 def show_group_post(request, group_name, post_id):
     posts = GroupPost.objects.all()
     # Retrieve all comments for the post with the given post_id
