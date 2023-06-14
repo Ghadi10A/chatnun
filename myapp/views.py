@@ -57,6 +57,7 @@ from django.utils.html import strip_tags
 from django.db import IntegrityError
 from django.contrib.auth.forms import PasswordResetForm
 from django.urls import reverse
+from django.contrib.auth.forms import SetPasswordForm
 
 
 openai.api_key = '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'
