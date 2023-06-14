@@ -242,9 +242,13 @@ padding-bottom: 8px;
           <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&text={{ post.content }}" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-facebook"></i>
                      <!-- Reddit share button -->
+  </a>               
 <a href="https://www.reddit.com/submit?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
   <i class="fab fa-reddit" style="color: #FF5700;"></i>
 </a>
+<!-- LinkedIn share button -->
+<a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}{% url 'show_group_post' group_name=group.name post_id=post.id %}&title={{ post.content }}" target="_blank" rel="noopener noreferrer">
+  <i class="fab fa-linkedin" style="color: #0e76a8;"></i>
 </a>
 
       </div>
