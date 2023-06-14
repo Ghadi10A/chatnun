@@ -1,6 +1,7 @@
 from django.urls import include, path, re_path
 from django.views.generic.base import RedirectView
 from . import views
+from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -10,6 +11,12 @@ urlpatterns = [
     path('signup/', views.user_signup, name='user_signup'),
     path('activate/<str:uidb64>/<str:token>/', views.activate_account, name='activate_account'),
     path('login/', views.user_login, name='user_login'),
+    path('forgot-password/', views.forgot_password, name='forgot_password'),
+    path('reset-password/<str:uidb64>/<str:token>/', views.reset_password, name='reset_password'),
+    path('password-reset/', auth_views.PasswordResetView.as_view(template_name='auth/password_reset.html', email_template_name='auth/password_reset_email.html', subject_template_name='auth/password_reset_subject.txt', success_url='/password-reset/done/'), name='password_reset'),
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='auth/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<str:uidb64>/<str:token>/', auth_views.PasswordResetConfirmView.as_view(template_name='auth/password_reset_confirm.html', success_url='/reset/done/'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='auth/password_reset_complete.html'), name='password_reset_complete'),
     path('choose-plan/', views.choose_plan, name='choose_plan'),
     path('subscribe/<str:plan>/', views.subscribe, name='subscribe'),
     path('renew-subscription/', views.renew_subscription, name='renew_subscription'),
