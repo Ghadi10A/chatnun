@@ -4,6 +4,37 @@
 {% block content %} 
 <style>
 @media (max-width: 767px) {
+  .card {
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  }
+
+  #news-ticker {
+    background: #eee;
+    height: 66px;
+  }
+
+  #news-ticker ul {
+    margin-top: 20px;
+  }
+
+  .tradingview-widget-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .tradingview-widget-container__widget,
+  .tradingview-widget-container .tradingview-widget-container__widget {
+    width: 100%;
+  }
+
+  .tradingview-widget-container .tradingview-widget-container__widget,
+  .tradingview-widget-container #tradingview_speedometer,
+  .tradingview-widget-container #tradingview_5a5e5 {
+    height: auto !important;
+    min-height: 300px;
+  }
   .col-md-4 {
     width: 100%;
     margin-top:30px;
