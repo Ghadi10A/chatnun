@@ -6,7 +6,6 @@ def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
         'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
-        'GOLD',
         ]
 
     # Initialize an empty list to store the results for each ticker
@@ -20,14 +19,6 @@ def scanner(request, interval=''):
                 symbol=ticker,
                 screener="forex",
                 exchange="FX_IDC",
-                interval=interval
-            )
-        elif ticker in ['GOLD']:
-            # Get the real-time data for the commodity ticker using tradingview_ta
-            handler = TA_Handler(
-                symbol=ticker,
-                screener="america",
-                exchange="NYMEX",
                 interval=interval
             )
         else:
