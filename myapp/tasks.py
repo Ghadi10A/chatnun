@@ -5,7 +5,8 @@ from django.shortcuts import render
 def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
-    'MCX:GOLD1!', 'AMEX:OIL', 'BITSTAMP:BTCUSD', 'SHE:GAS', 'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+        'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+        'MCX:GOLD1!', 'AMEX:OIL', 'BITSTAMP:BTCUSD', 'Gaz'
     ]
 
     # Initialize an empty list to store the results for each ticker
@@ -21,6 +22,38 @@ def scanner(request, interval=''):
                 exchange="FX_IDC",
                 interval=interval
             )
+        elif ticker == 'MCX:GOLD1!':
+            # Get the real-time data for Gold using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="FOREXCOM",
+                interval=interval
+            )
+        elif ticker == 'AMEX:OIL':
+            # Get the real-time data for Oil using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="FOREXCOM",
+                interval=interval
+            )
+        elif ticker == 'BITSTAMP:BTCUSD':
+            # Get the real-time data for Bitcoin using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BITSTAMP",
+                interval=interval
+            )
+        elif ticker == 'Gaz':
+            # Get the real-time data for Gaz using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="YOUR_EXCHANGE",
+                interval=interval
+            )
         else:
             # Get the real-time data for the stock ticker using tradingview_ta
             handler = TA_Handler(
@@ -31,11 +64,9 @@ def scanner(request, interval=''):
             )
 
         # Calculate the Chandelier Exit using the tradingview_ta library
-        
-
         # Determine the predicted market signal based on the Chandelier Exit value
-
         # Calculate the price returns and margin
+
         analysis_summary = handler.get_analysis().summary
         oscillators = handler.get_analysis().oscillators
         moving_averages = handler.get_analysis().moving_averages
