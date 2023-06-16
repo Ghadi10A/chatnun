@@ -48,7 +48,7 @@ def calculate_vwap(ticker):
 
 def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="max").interval("1m")
+    data = yf.Ticker(ticker).history(period="max")
 
     # Calculate the VWAP
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
@@ -97,7 +97,7 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="5m")
+    data = yf.Ticker(ticker).history(period="max")
 
     if data.empty:
         return None, 'No data available', None, None
