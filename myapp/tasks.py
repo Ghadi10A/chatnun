@@ -38,14 +38,6 @@ def scanner(request, interval=''):
                 exchange="BITSTAMP",
                 interval=interval
             )
-        elif ticker == 'GAZ':
-            # Get the real-time data for Gaz ticker using tradingview_ta
-            handler = TA_Handler(
-                symbol=ticker,
-                screener="crypto",
-                exchange="BINANCE",
-                interval=interval
-            )
         else:
             # Get the real-time data for the stock ticker using tradingview_ta
             handler = TA_Handler(
