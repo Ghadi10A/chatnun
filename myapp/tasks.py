@@ -13,46 +13,47 @@ def scanner(request, interval=''):
     results = []
 
     # Loop through each ticker and retrieve the real-time data using tradingview_ta
-    if ticker in ['EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP']:
-    # Get the real-time data for the forex ticker using tradingview_ta
-        handler = TA_Handler(
-            symbol=ticker,
-            screener="forex",
-            exchange="FX_IDC",
-            interval=interval
-        )
-    elif ticker in ['GOLD', 'OIL']:
-        # Get the real-time data for the commodity ticker using tradingview_ta
-        handler = TA_Handler(
-            symbol=ticker,
-            screener="america",
-            exchange="NYMEX",
-            interval=interval
-        )
-    elif ticker == 'BTCUSD':
-        # Get the real-time data for Bitcoin ticker using tradingview_ta
-        handler = TA_Handler(
-            symbol=ticker,
-            screener="crypto",
-            exchange="BITSTAMP",
-            interval=interval
-        )
-    elif ticker == 'GAZ':
-        # Get the real-time data for Gaz ticker using tradingview_ta
-        handler = TA_Handler(
-            symbol=ticker,
-            screener="crypto",
-            exchange="BINANCE",
-            interval=interval
-        )
-    else:
-        # Get the real-time data for the stock ticker using tradingview_ta
-        handler = TA_Handler(
-            symbol=ticker,
-            screener="america",
-            exchange="NASDAQ",
-            interval=interval
-        )
+    for ticker in tickers:
+        if ticker in ['EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP']:
+        # Get the real-time data for the forex ticker using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="forex",
+                exchange="FX_IDC",
+                interval=interval
+            )
+        elif ticker in ['GOLD', 'OIL']:
+            # Get the real-time data for the commodity ticker using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="america",
+                exchange="NYMEX",
+                interval=interval
+            )
+        elif ticker == 'BTCUSD':
+            # Get the real-time data for Bitcoin ticker using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BITSTAMP",
+                interval=interval
+            )
+        elif ticker == 'GAZ':
+            # Get the real-time data for Gaz ticker using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BINANCE",
+                interval=interval
+            )
+        else:
+            # Get the real-time data for the stock ticker using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="america",
+                exchange="NASDAQ",
+                interval=interval
+            )
 
         # Calculate the Chandelier Exit using the tradingview_ta library
         # Determine the predicted market signal based on the Chandelier Exit value
