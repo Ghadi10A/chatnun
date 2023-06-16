@@ -22,20 +22,12 @@ def scanner(request, interval=''):
                 exchange="FX_IDC",
                 interval=interval
             )
-        elif ticker in ['GOLD', 'OIL']:
+        elif ticker in ['GOLD']:
             # Get the real-time data for the commodity ticker using tradingview_ta
             handler = TA_Handler(
                 symbol=ticker,
                 screener="america",
                 exchange="NYMEX",
-                interval=interval
-            )
-        elif ticker == 'BTCUSD':
-            # Get the real-time data for Bitcoin ticker using tradingview_ta
-            handler = TA_Handler(
-                symbol=ticker,
-                screener="crypto",
-                exchange="BITSTAMP",
                 interval=interval
             )
         else:
