@@ -21,7 +21,7 @@ def scanner(request, interval=''):
                 exchange="FX_IDC",
                 interval=interval
             )
-        elif ticker in ['GOLD', 'OIL']:
+        elif ticker in ['MCX:GOLD1!', 'AMEX:OIL']:
             # Get the real-time data for the commodity ticker using tradingview_ta
             handler = TA_Handler(
                 symbol=ticker,
