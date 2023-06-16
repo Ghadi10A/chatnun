@@ -5,7 +5,7 @@ from django.shortcuts import render
 def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
-    'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+    'GOLD1!', 'OIL', 'BTCUSD', 'GAZ', 'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
     ]
 
     # Initialize an empty list to store the results for each ticker
