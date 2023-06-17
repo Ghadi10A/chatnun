@@ -192,7 +192,9 @@
         <div class="card mb-4" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
           
           <div class="card-body">
-                <div class="text-center">
+                {% if user != request.user %}
+                <div class="text-center" style="margin-bottom:5px;">
+                      
                 {% if user.profile.image %}
                         <img src="{{ user.profile.image.url }}" class="rounded me-2" width="80" height="80" alt="{{ user.get_full_name }}">
                       {% else %}
@@ -207,6 +209,7 @@
               <i class="bi bi-circle text-secondary"></i>
             {% endif %}
             <button class="btn btn-primary btn-sm" style="font-size:11px;">Follow</button>
+                {% endif %}
           </div>
         </div>
       </div>
