@@ -190,8 +190,13 @@
     {% for user in users %}
       <div class="col-lg-4 mb-4">
         <div class="card">
-          <img src="{{ user.profile.image.url }}" class="card-img-top" alt="{{ user.get_full_name }}">
+          <!--<img src="{{ user.profile.image.url }}" class="card-img-top" alt="{{ user.get_full_name }}">-->
           <div class="card-body">
+                {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
+                      {% else %}
+    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
+{% endif %}
             <h5 class="card-title">{{ user.get_full_name }}</h5>
             <p class="card-text">{{ user.profile.city }}</p>
             {% if user.is_connected %}
