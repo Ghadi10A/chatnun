@@ -190,7 +190,7 @@
     {% for user in users %}
       <div class="col-lg-4 mb-4">
         <div class="card">
-          <!--<img src="{{ user.profile.image.url }}" class="card-img-top" alt="{{ user.get_full_name }}">-->
+          
           <div class="card-body">
                 {% if user.profile.image %}
                         <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="200" height="200" alt="{{ user.get_full_name }}">
