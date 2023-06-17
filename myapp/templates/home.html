@@ -199,14 +199,14 @@
     <img src="{% static 'images/Default_image_profile.png' %}" class="rounded me-2" width="80" height="80" alt="Default Profile Image">
 {% endif %}
                 </div>          
-            <h5 class="card-title">{{ user.get_full_name }}</h5>
-            <p class="card-text">{{ user.profile.city }}</p>
+            <h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5>
+            <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
             {% if user.is_connected %}
               <i class="bi bi-check-circle-fill text-success"></i>
             {% else %}
               <i class="bi bi-circle text-secondary"></i>
             {% endif %}
-            <button class="btn btn-primary btn-sm">Follow</button>
+            <button class="btn btn-primary btn-sm" style="font-size:11px;">Follow</button>
           </div>
         </div>
       </div>
