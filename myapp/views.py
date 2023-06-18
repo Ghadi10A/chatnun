@@ -703,7 +703,7 @@ def home(request, post_id=None):
         notification.is_read = True
         notification.save()      
     new_conversation_id = str(uuid.uuid4())
-    users = User.objects.all()
+    users = User.objects.select_related('profile').all()
     return render(request, 'home.html', {'form_post': form_post, 'search_form': search_form, 'form_comment': form_comment, 'form_reaction': form_reaction, 'posts': posts, 'reactions': reactions, 'notifications': notifications, 'unread_notifications': unread_notifications, 'message_notifications': message_notifications, 'post_notifications': post_notifications, 'group_message_notifications': group_message_notifications, 'group_post_notifications': group_post_notifications, 'comments': comments, 'emoji_reactions': emoji_reactions, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES, 'users': users}) 
 
 @login_required(login_url='get_started')
