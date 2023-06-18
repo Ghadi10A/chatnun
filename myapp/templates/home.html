@@ -235,7 +235,7 @@
   </script>
 </div>
 <!-- TradingView Widget END -->  
-<div class="row text-center" style="margin-bottom:0;">
+<div class="row text-center mb-0" style="margin-bottom:0;">
     {% for user in users %}
       {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
         <div class="col-lg-4 mb-4">
@@ -254,7 +254,7 @@
                   <div class="text-center">
                 <a href="{% url 'show_profile' username=user.username %}" style="text-decoration:none;"><h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5></a>
                 <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
-                {% if user.is_authenticated %}
+                {% if user.is_connected %}
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-dot text-success" viewBox="0 0 16 16">
   <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
 </svg>
