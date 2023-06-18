@@ -235,7 +235,7 @@
   </script>
 </div>
 <!-- TradingView Widget END -->  
-
+<div class="row">
     {% for user in users %}
       {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
         <div class="col-lg-4 mb-4">
@@ -251,7 +251,7 @@
                 </div>
                 <h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5>
                 <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
-                {% if user.is_authenticated %}
+                {% if user.is_connected %}
                 <i class="bi bi-dot text-success"></i>
               {% else %}
                 <i class="bi bi-dot text-secondary"></i>
@@ -263,7 +263,7 @@
         </div>
       {% endif %}
     {% endfor %}
-
+</div>
    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
 <!--           <div class="card-header">
             <h5>Share Something</h5>
