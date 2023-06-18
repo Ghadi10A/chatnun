@@ -236,6 +236,7 @@
 </div>
 <!-- TradingView Widget END -->  
 <div class="row" style="margin-bottom:0;">
+      <div class="text-center">
     {% for user in users %}
       {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
         <div class="col-lg-4 mb-4">
@@ -274,6 +275,7 @@
         </div>
       {% endif %}
     {% endfor %}
+      </div>        
 </div>
    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
 <!--           <div class="card-header">
