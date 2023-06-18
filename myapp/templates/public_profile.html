@@ -99,13 +99,13 @@
         {% if is_following %}
           <form method="post" action="{% url 'unfollow' username=user.username %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-danger">{% trans "Unfollow" %}</button></form>
+            <button type="submit" class="btn btn-danger btn-sm">{% trans "Unfollow" %}</button></form>
             <br>
             <a href="{% url 'message_thread' username=user.username %}">{% trans "Send Message" %}</a>
              {% else %}
           <form method="post" action="{% url 'follow' username=user.username %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">{% trans "Follow" %}</button>
+            <button type="submit" class="btn btn-primary btn-sm">{% trans "Follow" %}</button>
           </form>
           <br>
           <a href="{% url 'message_thread' username=user.username %}">{% trans "Send Message" %}</a>
