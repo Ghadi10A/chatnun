@@ -235,7 +235,7 @@
   </script>
 </div>
 <!-- TradingView Widget END -->  
-<div class="row" style="margin-bottom:-10px;">
+<div class="row" style="margin-bottom:0;">
     {% for user in users %}
       {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
         <div class="col-lg-4 mb-4">
@@ -252,15 +252,18 @@
                 <h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5>
                 <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
                 {% if user.is_connected %}
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot text-success" viewBox="0 0 16 16">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-dot text-success" viewBox="0 0 32 32">
   <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
 </svg>
               {% else %}
-                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dot text-secondary" viewBox="0 0 16 16">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-dot text-secondary" viewBox="0 0 32 32">
   <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
 </svg>
               {% endif %}
-              <button class="btn btn-primary btn-sm" style="font-size: 11px;">Follow</button>
+              <form method="post" action="{% url 'follow' username=user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-sm">{% trans "Follow" %}</button>
+          </form>
             {% endif %}
             </div>
           </div>
