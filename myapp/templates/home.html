@@ -153,7 +153,7 @@
   {% for user in users %}
     {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
       <div class="col-lg-4 mb-4">
-        <div class="card mb-4" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75); width: 130px;height:100%;">
+        <div class="card mb-4" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75); width: 140px;height:100%;">
           <div class="card-body">
             {% if user != request.user %}
               <div class="text-center mb-2">
