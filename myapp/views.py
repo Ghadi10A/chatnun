@@ -704,7 +704,9 @@ def home(request, post_id=None):
         notification.save()      
     new_conversation_id = str(uuid.uuid4())
     users = User.objects.exclude(id=request.user.id)  # Exclude the current user
-    current_user = request.user
+    following_users = request.user.following.all()  # Get the users that the current user is following
+
+    users = users.exclude(id__in=following_users.values_list('id', flat=True))  # Exclude the following users
 
     for user in users:
         if user.is_authenticated:
