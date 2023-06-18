@@ -243,7 +243,7 @@
             <div class="card-body">
               {% if user != request.user %}
                 <div class="text-center" style="margin-bottom:5px;">
-                  <a href="{% url 'show_profile' username=user.username %}">
+                  <a href="{% url 'show_profile' username=user.username %}" style="text-decoration:none;">
                   {% if user.profile.image %}
                     <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="80" height="80" alt="{{ user.get_full_name }}">
                   {% else %}
@@ -251,7 +251,7 @@
                   {% endif %}
                   </a>
                 </div>
-                <a href="{% url 'show_profile' username=user.username %}"><h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5></a>
+                <a href="{% url 'show_profile' username=user.username %}" style="text-decoration:none;"><h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5></a>
                 <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
                 {% if user.is_connected %}
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-dot text-success" viewBox="0 0 32 32">
