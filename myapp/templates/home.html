@@ -235,7 +235,6 @@
   </script>
 </div>
 <!-- TradingView Widget END -->  
-<div class="container">
   <div class="row">
     {% for user in users %}
       {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
@@ -245,9 +244,9 @@
               {% if user != request.user %}
                 <div class="text-center" style="margin-bottom:5px;">
                   {% if user.profile.image %}
-                    <img src="{{ user.profile.image.url }}" class="rounded me-2" width="80" height="80" alt="{{ user.get_full_name }}">
+                    <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="80" height="80" alt="{{ user.get_full_name }}">
                   {% else %}
-                    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded me-2" width="80" height="80" alt="Default Profile Image">
+                    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="80" height="80" alt="Default Profile Image">
                   {% endif %}
                 </div>
                 <h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5>
@@ -265,7 +264,6 @@
       {% endif %}
     {% endfor %}
   </div>
-</div>
 
    <div class="card" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);">
 <!--           <div class="card-header">
