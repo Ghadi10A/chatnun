@@ -147,6 +147,48 @@
     </ul>
   </div>
 </div>
+ <div class="text-center mb-0" style="margin-top:6px;">
+    {% for user in users %}
+      {% if user.profile.image or user.get_full_name or user.profile.city or user.is_connected %}
+        <div class="col-lg-4 mb-4">
+          <div class="card mb-4" style="box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);width:200px;height:220px;">
+            <div class="card-body">
+              {% if user != request.user %}
+                <div class="text-center" style="margin-bottom:5px;">
+                  <a href="{% url 'show_profile' username=user.username %}" style="text-decoration:none;">
+                  {% if user.profile.image %}
+                    <img src="{{ user.profile.image.url }}" class="rounded-circle me-2" width="70" height="70" alt="{{ user.get_full_name }}">
+                  {% else %}
+                    <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="70" height="70" alt="Default Profile Image">
+                  {% endif %}
+                  </a>
+                </div>
+                  <div class="text-center">
+                <a href="{% url 'show_profile' username=user.username %}" style="text-decoration:none;"><h5 class="card-title" style="font-size:11px;">{{ user.get_full_name }}</h5></a>
+                <p class="card-text" style="font-size:11px;">{{ user.profile.city }}</p>
+                {% if user.is_connected %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-dot text-success" viewBox="0 0 16 16">
+  <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+</svg>
+
+              {% else %}
+                   <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-dot text-secondary" viewBox="0 0 16 16">
+  <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/>
+</svg>
+
+              {% endif %}
+              <form method="post" action="{% url 'follow' username=user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary btn-sm" style="font-size:11px;">{% trans "Follow" %}</button>
+          </form>
+            {% endif %}
+                  </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}     
+</div>           
 <br>
       </div>
       <!-- Right section -->
