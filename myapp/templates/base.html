@@ -281,7 +281,7 @@ function markNotificationAsRead(notificationId) {
                       {% else %}
                         <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="32" height="32">
                     {% endif %}
-                      {{ request.user.username }}
+                     <span style="font-size:11px;">{{ request.user.username }}</span> 
                     </a>
                     <ul class="dropdown-menu">
                     <li><hr class="dropdown-divider"></li>
