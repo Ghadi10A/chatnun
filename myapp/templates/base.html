@@ -175,9 +175,9 @@ footer li {
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">
-             {% trans "ChatBot" %}</a></li>
+            <span style="font-size:11px;"> {% trans "ChatBot" %}</span></a></li>
             <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">
-              {% trans "ChatBotTrade" %}</a></li>
+            <span style="font-size:11px;"> {% trans "ChatBotTrade" %}</span></a></li>
           </ul>
         </li>
       </ul>
