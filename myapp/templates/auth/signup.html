@@ -80,7 +80,7 @@ label[for="id_email"] {
 
                     <form method="post" action="{% url 'user_signup' %}">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        {{ form.as_p }} 
                         <span class="text-success" style="font-size:11px;margin-left:40px;">
                             {% trans "*By Register You Accept our Terms and Policies" %}
                         </span>
