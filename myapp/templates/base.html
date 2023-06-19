@@ -147,21 +147,26 @@ footer li {
 
     <ul class="navbar-nav ml-auto">
         <li class="nav-item {% if request.path == '/' %}active{% else %}gray{% endif %}">
-          <a class="nav-link" href="{% url 'home' %}" style="{% if request.path == '/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Home" %}</a>
+          <a class="nav-link" href="{% url 'home' %}" style="{% if request.path == '/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
+            <i class="bi bi-house-fill"></i> {% trans "Home" %}</a>
         </li>
         <li class="nav-item {% if request.path == '/predict_signals/' %}active{% else %}gray{% endif %}">
-          <a class="nav-link" href="{% url 'predict_signals' %}" style="{% if request.path == '/get-signal' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Signal" %}</a>
+          <a class="nav-link" href="{% url 'predict_signals' %}" style="{% if request.path == '/get-signal' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
+            <i class="bi bi-graph-up"></i> {% trans "Signal" %}</a>
         </li>
         <li class="nav-item {% if request.path == '/run_scanner/' %}active{% else %}gray{% endif %}">
-          <a class="nav-link" href="{% url 'run_scanner' interval='5m' %}" style="{% if request.path == '/scanner/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">{% trans "Scanner" %}</a>
+          <a class="nav-link" href="{% url 'run_scanner' interval='5m' %}" style="{% if request.path == '/scanner/' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
+          <i class="bi bi-currency-exchange"></i>  {% trans "Scanner" %}</a>
         </li>
         <li class="nav-item dropdown {% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}active{% else %}gray{% endif %}">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="{% if request.resolver_match.url_name == 'chatbotTrade' or request.resolver_match.url_name == 'chatbot' %}color:#fff; font-weight:bold;{% else %}color:gray;{% endif %}">
-            {% trans "ChatBot" %}
+            <i class="bi bi-robot"></i> {% trans "ChatBot" %}
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">{% trans "ChatBot" %}</a></li>
-            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">{% trans "ChatBotTrade" %}</a></li>
+            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbot' %}active{% endif %}" href="{% url 'chatbot' conversation_id=new_conversation_id %}">
+             <i class="bi bi-chat"></i> {% trans "ChatBot" %}</a></li>
+            <li><a class="dropdown-item {% if request.resolver_match.url_name == 'chatbotTrade' %}active{% endif %}" href="{% url 'chatbotTrade' conversation_id=new_conversation_id %}">
+            <i class="bi bi-cash-stack"></i>  {% trans "ChatBotTrade" %}</a></li>
           </ul>
         </li>
       </ul>
