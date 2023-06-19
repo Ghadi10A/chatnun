@@ -46,9 +46,10 @@
     .dropdown-menu[dir="rtl"] {
         float: right;
     }
-      .text-dark[dir="rtl"]  {
-            margin-right:10px;
-      }
+      /* Add margin-right to the span when dir is rtl */
+    [dir="rtl"] .text-dark.fw-bold {
+        margin-right: 10px;
+    }
       .navbar {
   position: fixed;
         width: 100%;
