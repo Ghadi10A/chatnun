@@ -285,16 +285,16 @@ function markNotificationAsRead(notificationId) {
                     </a>
                     <ul class="dropdown-menu">
                     <li><hr class="dropdown-divider"></li>
-                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} {% trans "Account" %}</a></li>
-                     <li><a class="dropdown-item" href="{% url 'saved_conversations' %}">{% bs_icon 'chat-dots-fill' %} {% trans "Messages" %}</a></li>
+                     <li><a class="dropdown-item" href="{% url 'show_profile' username=user.username %}">{% bs_icon 'person-fill' %} <span style="font-size:11px;">{% trans "Account" %}</span></a></li>
+                     <li><a class="dropdown-item" href="{% url 'saved_conversations' %}">{% bs_icon 'chat-dots-fill' %} <span style="font-size:11px;">{% trans "Messages" %}</span></a></li>
                     <div class="dropdown-divider"></div>
-                    <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} {% trans "log out" %}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'logout' %}">{% bs_icon 'power' %} <span style="font-size:11px;">{% trans "log out" %}</span></a></li>
                     </ul>
                         </div>
                     </div>
                 {% else %}
-                    <a type="button" class="btn btn-outline-light me-2" href="{% url 'user_login' %}">{% trans "Log in" %}</a>
-                    <a type="button" class="btn btn-outline-success me-2" href="{% url 'user_signup' %}">{% trans "Sign up" %}</a>
+                    <a type="button" class="btn btn-outline-light me-2 btn-sm" href="{% url 'user_login' %}">{% trans "Log in" %}</a>
+                    <a type="button" class="btn btn-outline-success me-2 btn-sm" href="{% url 'user_signup' %}">{% trans "Sign up" %}</a>
                 {% endif %}
             </div>
         </div>
