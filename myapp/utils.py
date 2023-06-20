@@ -87,29 +87,28 @@ def train_and_save_model(ticker):
 
     return accuracy
 def predict_signal(ticker):
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
-    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
+    model_file = 'models/' + ticker + '_model.pkl'
+    scaler_file = 'models/' + ticker + '_scaler.pkl'
 
     # Load the trained model and the scaler
     model = joblib.load(model_file)
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    ticker_data = yf.Ticker(ticker)
-    current_price = ticker_data.info['regularMarketPrice']
+    data = yf.Ticker(ticker).history(period="1mo")
+
+    if data.empty:
+        return None, 'No data available', None, None
 
     # Calculate the VWAP for the latest data
-    historical_data = ticker_data.history(period="max")
-    if historical_data.empty:
-        return None, 'No data available', None, None
-    historical_data['VWAP'] = (historical_data['Close'] * historical_data['Volume']).cumsum() / historical_data['Volume'].cumsum()
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the latest data using the loaded scaler
-    scaled_data = scaler.transform(historical_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    historical_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+    scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    prediction = model.predict(historical_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
 
     # Determine the position based on the trend and the prediction
     if np.any(prediction == 1):
@@ -120,10 +119,10 @@ def predict_signal(ticker):
         signal = 'Neutral'
 
     # Calculate other metrics
-    last_diff = current_price - historical_data['Close'].iloc[-1]
-    last_diff_percent = last_diff / historical_data['Close'].iloc[-1] * 100
+    last_diff = data['Close'][-1] - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
 
-    return current_price, signal, last_diff, last_diff_percent
+    return data['Close'][-1], signal, last_diff, last_diff_percent
 
 # def train_and_save_model():
 #     # Load the stock data
