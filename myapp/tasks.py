@@ -25,11 +25,11 @@ def scanner(request, interval=''):
         elif ticker == 'GOLD':
             # Get the real-time data for GOLD using tradingview_ta
             handler = TA_Handler(
-                symbol=ticker,
+                symbol="GC1!",
                 screener="america",
-                exchange="PRECIOUSMETALS",
+                exchange="COMEX",
                 interval=interval
-            )    
+            )
         elif ticker == 'BTCUSD':
             # Get the real-time data for Bitcoin using tradingview_ta
             handler = TA_Handler(
