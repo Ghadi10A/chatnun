@@ -107,23 +107,20 @@ def predict_signal(ticker):
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
-    # Define the target variable
-    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-
-    # Determine the position based on the trend and the prediction
-    if np.any(prediction == 1):
+    # Predict the signal using the loaded model
+    predictions = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    signal = 'Neutral'
+    if np.any(predictions == 1):
         signal = 'Buy'
-    elif np.any(prediction == 0):
+    elif np.any(predictions == 0):
         signal = 'Sell'
-    else:
-        signal = 'Neutral'
 
-    # Calculate other metrics
-    last_diff = data['Close'].iloc[-1] - data['Close'].iloc[-2]
+    # Get the latest close price and calculate the last difference
+    close_price = data['Close'].iloc[-1]
+    last_diff = close_price - data['Close'].iloc[-2]
     last_diff_percent = (last_diff / data['Close'].iloc[-2]) * 100
 
-    return data['Close'].iloc[-1], signal, last_diff, last_diff_percent
-
+    return close_price, signal, last_diff, last_diff_percent
 
 # def train_and_save_model():
 #     # Load the stock data
