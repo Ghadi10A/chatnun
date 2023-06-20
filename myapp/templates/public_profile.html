@@ -79,23 +79,24 @@
     <img src="{% static 'images/Default_image_profile.png' %}" class="rounded-circle me-2" width="200" height="200" alt="Default Profile Image">
 {% endif %}
             </div>
+            <br>
   <div class="col-md-9">
     <h2 style="font-size:18px;">{{ user.get_full_name }}</h2>
-    <p><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
+    <p style="font-size:11px;"><strong>{% trans "Username" %}:</strong> {{ user.username }}</p>
     {% if user.profile.bio %}
-      <p><strong>{% trans "Bio" %}:</strong> {{ user.profile.bio }}</p>
+      <p style="font-size:11px;"><strong>{% trans "Bio" %}:</strong> {{ user.profile.bio }}</p>
     {% endif %}
     {% if user.profile.birthdate %}
-      <p><strong>{% trans "Birthdate" %}:</strong> {{ user.profile.birthdate }}</p>
+      <p style="font-size:11px;"><strong>{% trans "Birthdate" %}:</strong> {{ user.profile.birthdate }}</p>
     {% endif %}
     {% if user.profile.city %}
-      <p><strong>{% trans "City" %}:</strong> {{ user.profile.city }}</p>
+      <p style="font-size:11px;"><strong>{% trans "City" %}:</strong> {{ user.profile.city }}</p>
     {% endif %}
     {% if user.profile.location %}
-      <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
+      <p style="font-size:11px;"><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
     {% endif %}
-    <p><strong>{% trans "Followers" %}:</strong> {{ user.followers.all|length }}</p>
-    <p><strong>{% trans "Following" %}:</strong> {{ user.following.all|length }}</p>
+    <p style="font-size:11px;"><strong>{% trans "Followers" %}:</strong> {{ user.followers.all|length }}</p>
+    <p style="font-size:11px;"><strong>{% trans "Following" %}:</strong> {{ user.following.all|length }}</p>
     {% if request.user.is_authenticated %}
       {% if request.user != user %}
         {% if is_following %}
