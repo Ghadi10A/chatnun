@@ -5,8 +5,8 @@ from django.shortcuts import render
 def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
-        'GOLD', 'OIL', 'BTCUSD', 'ETHUSD', 'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
-          # Add GOLD, OIL, Bitcoin, and Ethereum
+        'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+        'GOLD', 'OIL', 'BTCUSD', 'ETHUSD',  # Add GOLD, OIL, Bitcoin, and Ethereum
     ]
 
     # Initialize an empty list to store the results for each ticker
@@ -21,7 +21,7 @@ def scanner(request, interval=''):
                 screener="forex",
                 exchange="FX_IDC",
                 interval=interval
-            )
+            ) 
         elif ticker == 'GOLD':
             # Get the real-time data for GOLD using tradingview_ta
             handler = TA_Handler(
