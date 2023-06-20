@@ -86,8 +86,6 @@ def train_and_save_model(ticker):
     joblib.dump(scaler, scaler_file)
 
     return accuracy
-
-
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
@@ -122,10 +120,9 @@ def predict_signal(ticker):
 
     # Calculate other metrics
     last_diff = data['Close'][-1] - data['Close'][-2]
-    last_diff_percent = last_diff / data['Close'][-2] * 100
+    last_diff_percent = (last_diff / data['Close'][-2]) * 100
 
     return data['Close'][-1], signal, last_diff, last_diff_percent
-
 
 # def train_and_save_model():
 #     # Load the stock data
