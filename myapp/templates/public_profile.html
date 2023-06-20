@@ -94,6 +94,8 @@
     {% if user.profile.location %}
       <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
     {% endif %}
+    <p><strong>{% trans "Followers" %}:</strong> {{ user.followers.all|length }}</p>
+    <p><strong>{% trans "Following" %}:</strong> {{ user.following.all|length }}</p>
     {% if request.user.is_authenticated %}
       {% if request.user != user %}
         {% if is_following %}
