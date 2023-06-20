@@ -44,7 +44,7 @@ def calculate_vwap(ticker):
     # Use pandas to calculate the VWAP
     data = pd.DataFrame(data)
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
-    return data['vwap'].iloc[-1]
+    return data['vwap'][-1]
 
 def train_and_save_model(ticker):
     # Retrieve the data for the specified ticker from Yahoo Finance
@@ -76,8 +76,8 @@ def train_and_save_model(ticker):
     model = HistGradientBoostingClassifier()
     model.fit(X_train, y_train)
 
-    # Evaluate the model on the training data
-    accuracy = model.score(X_train, y_train)
+    # Evaluate the model on the testing data
+    accuracy = model.score(X_test, y_test)
 
     # Save the trained model and the scaler
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
@@ -106,11 +106,11 @@ def predict_signal(ticker):
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
     # Pre-process the latest data using the loaded scaler
-    scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    prediction = model.predict(scaled_data[-1:])
+    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
     # Determine the position based on the trend and the prediction
     if np.any(prediction == 1):
         signal = 'Buy'
@@ -119,11 +119,12 @@ def predict_signal(ticker):
     else:
         signal = 'Neutral'
 
-    # Calculate other metrics
-    last_diff = data['Close'].iloc[-1] - data['Close'].iloc[-2]
-    last_diff_percent = last_diff / data['Close'].iloc[-2] * 100
 
-    return data['Close'].iloc[-1], signal, last_diff, last_diff_percent
+    # Calculate other metrics
+    last_diff = data['Close'][-1] - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
+
+    return data['Close'][-1], signal, last_diff, last_diff_percent
 
 # def train_and_save_model():
 #     # Load the stock data
