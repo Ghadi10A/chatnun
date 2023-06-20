@@ -87,15 +87,15 @@ def train_and_save_model(ticker):
 
     return accuracy
 def predict_signal(ticker):
-    model_file = 'models/' + ticker + '_model.pkl'
-    scaler_file = 'models/' + ticker + '_scaler.pkl'
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
 
     # Load the trained model and the scaler
     model = joblib.load(model_file)
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="1mo")
+    data = yf.Ticker(ticker).history(period="max")
 
     if data.empty:
         return None, 'No data available', None, None
@@ -123,7 +123,6 @@ def predict_signal(ticker):
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
     return data['Close'][-1], signal, last_diff, last_diff_percent
-
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
