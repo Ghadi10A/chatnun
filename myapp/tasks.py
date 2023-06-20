@@ -6,7 +6,7 @@ def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
         'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
-        'GOLD', 'OIL', 'BTCUSD', 'ETHUSD',  # Add GOLD, OIL, Bitcoin, and Ethereum
+        'GOLD', 'OIL', 'BTCUSD',  # Add GOLD, OIL, Bitcoin, and Ethereum
     ]
 
     # Initialize an empty list to store the results for each ticker
@@ -40,14 +40,6 @@ def scanner(request, interval=''):
             )
         elif ticker == 'BTCUSD':
             # Get the real-time data for Bitcoin using tradingview_ta
-            handler = TA_Handler(
-                symbol=ticker,
-                screener="crypto",
-                exchange="BINANCE",
-                interval=interval
-            )
-        elif ticker == 'ETHUSD':
-            # Get the real-time data for Ethereum using tradingview_ta
             handler = TA_Handler(
                 symbol=ticker,
                 screener="crypto",
