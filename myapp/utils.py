@@ -127,7 +127,6 @@ def predict_signal(ticker):
 
     return data['Close'][-1], signal, last_diff, last_diff_percent
 
-
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
