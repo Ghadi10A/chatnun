@@ -5,8 +5,9 @@ from django.shortcuts import render
 def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
-        'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
-        ]
+        'GOLD', 'OIL', 'BTCUSD', 'ETHUSD', 'NDX', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+          # Add GOLD, OIL, Bitcoin, and Ethereum
+    ]
 
     # Initialize an empty list to store the results for each ticker
     results = []
@@ -14,13 +15,45 @@ def scanner(request, interval=''):
     # Loop through each ticker and retrieve the real-time data using tradingview_ta
     for ticker in tickers:
         if ticker in ['EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP']:
-        # Get the real-time data for the forex ticker using tradingview_ta
+            # Get the real-time data for the forex ticker using tradingview_ta
             handler = TA_Handler(
                 symbol=ticker,
                 screener="forex",
                 exchange="FX_IDC",
                 interval=interval
-            ) 
+            )
+        elif ticker == 'GOLD':
+            # Get the real-time data for GOLD using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="america",
+                exchange="PRECIOUSMETALS",
+                interval=interval
+            )
+        elif ticker == 'OIL':
+            # Get the real-time data for OIL using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="america",
+                exchange="NYMEX",
+                interval=interval
+            )
+        elif ticker == 'BTCUSD':
+            # Get the real-time data for Bitcoin using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BINANCE",
+                interval=interval
+            )
+        elif ticker == 'ETHUSD':
+            # Get the real-time data for Ethereum using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BINANCE",
+                interval=interval
+            )
         else:
             # Get the real-time data for the stock ticker using tradingview_ta
             handler = TA_Handler(
