@@ -118,14 +118,12 @@ def predict_signal(ticker):
     else:
         signal = 'Neutral'
 
-    # Inverse transform the last_diff using the scaler
-    last_diff_scaled = data['Close'][-1] - data['Close'][-2]
-    last_diff = scaler.inverse_transform([[0, 0, 0, last_diff_scaled, 0, 0]])[0, 3]
+    # Calculate other metrics
+    last_diff = data['Close'].iloc[-1] - data['Close'].iloc[-2]
+    last_diff_percent = (last_diff / data['Close'].iloc[-2]) * 100
 
-    # Calculate the last_diff_percent
-    last_diff_percent = last_diff / data['Close'][-2] * 100
+    return data['Close'].iloc[-1], signal, last_diff, last_diff_percent
 
-    return data['Close'][-1], signal, last_diff, last_diff_percent
 
 # def train_and_save_model():
 #     # Load the stock data
