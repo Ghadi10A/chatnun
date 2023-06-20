@@ -94,6 +94,10 @@
     {% if user.profile.location %}
       <p><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
     {% endif %}
+     {% if request.user.username == user.username %}
+      <p><strong>{% trans "Followers" %}:</strong> {{ user.followers.count }}</p>
+      <p><strong>{% trans "Following" %}:</strong> {{ user.following.count }}</p>
+    {% endif %}
     <br>
 
     <button type="button" class="btn btn-primary btn-sm w-100" data-bs-toggle="modal" data-bs-target="#profileModal" style="margin: 10px;">
