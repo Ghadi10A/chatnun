@@ -27,7 +27,7 @@ def scanner(request, interval=''):
             handler = TA_Handler(
                 symbol="XAUUSD",
                 screener="forex",
-                exchange="OANDA",
+                exchange="FX_IDC",
                 interval=interval
             )
         elif ticker == 'BTCUSD':
