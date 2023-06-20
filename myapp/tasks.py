@@ -5,7 +5,7 @@ from django.shortcuts import render
 def scanner(request, interval=''):
     # Set the list of tickers you want to scan
     tickers = [
-        'NDX', 'BTCUSD', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP',
+        'NDX', 'BTCUSD', 'AAPL', 'GOOG', 'AMZN', 'TSLA', 'EURUSD', 'USDGBP', 'USDAUD', 'USDNZD', 'EURJPY', 'GBPJPY', 'EURGBP', 'ETHUSD',
           # Add GOLD, OIL, Bitcoin, and Ethereum
     ]
 
@@ -24,6 +24,14 @@ def scanner(request, interval=''):
             ) 
         elif ticker == 'BTCUSD':
             # Get the real-time data for Bitcoin using tradingview_ta
+            handler = TA_Handler(
+                symbol=ticker,
+                screener="crypto",
+                exchange="BINANCE",
+                interval=interval
+            )
+        elif ticker == 'ETHUSD':
+            # Get the real-time data for Ethereum using tradingview_ta
             handler = TA_Handler(
                 symbol=ticker,
                 screener="crypto",
