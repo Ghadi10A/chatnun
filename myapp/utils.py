@@ -97,8 +97,7 @@ def predict_signal(ticker):
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
-    # Calculate the ticker's close price
-    close_price = data['Close'][-1]
+    
     if data.empty:
         return None, 'No data available', None, None
 
@@ -110,21 +109,23 @@ def predict_signal(ticker):
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
+    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, -1)
     
-    # Determine the position based on the trend and the prediction
+    # Determine the position based on the prediction
     if np.any(prediction == 1):
         signal = 'Buy'
-    elif np.any(prediction == 0):
+    elif np.any(prediction == -1):
         signal = 'Sell'
     else:
         signal = 'Neutral'
 
     # Calculate other metrics
-    last_diff = data['Close'][-1] - data['Close'][-2]
-    last_diff_percent = last_diff / data['Close'][-2] * 100
+    close_price = data['Close'][-1]
+    last_diff = close_price - data['Close'][-2]
+    last_diff_percent = (last_diff / data['Close'][-2]) * 100
 
     return close_price, signal, last_diff, last_diff_percent
+
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
