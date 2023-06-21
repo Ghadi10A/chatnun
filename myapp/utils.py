@@ -111,9 +111,9 @@ def predict_signal(ticker):
     prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
     
     # Determine the position based on the prediction
-    if prediction == 1:
+    if np.any(prediction == 1):
         signal = 'Buy'
-    elif prediction == 0:
+    elif np.any(prediction == 0):
         signal = 'Sell'
     else:
         signal = 'Neutral'
