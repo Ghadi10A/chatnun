@@ -145,7 +145,7 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="1d")
+    data = yf.Ticker(ticker).history(period="max")
 
     if data.empty:
         return None, 'No data available', None, None
