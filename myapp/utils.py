@@ -86,56 +86,7 @@ def train_and_save_model(ticker):
     joblib.dump(scaler, scaler_file)
 
     return accuracy
-def calculate_vwap(ticker):
-    # Retrieve financial data for the instrument using yfinance
-    data = yf.Ticker(ticker).history(period="max")
-    # Use pandas to calculate the VWAP
-    data = pd.DataFrame(data)
-    data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
-    return data['vwap'][-1]
-
-def train_and_save_model(ticker):
-    # Retrieve the data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="max")
-
-    # Calculate the VWAP
-    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
-
-    # Pre-process the data
-    #data.dropna(inplace=True)
-    scaler = StandardScaler()
-    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
-
-    # Define the target variable
-    data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
-
-    # Split the data into training and testing sets
-    X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
-    y = data['Signal']
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Impute missing values in the training and testing data
-    imputer = SimpleImputer(strategy='mean')
-    X_train = imputer.fit_transform(X_train)
-    X_test = imputer.transform(X_test)
-
-    # Fit a histogram gradient boosting classifier to the training data
-    model = HistGradientBoostingClassifier()
-    model.fit(X_train, y_train)
-
-    # Evaluate the model on the testing data
-    accuracy = model.score(X_test, y_test)
-
-    # Save the trained model and the scaler
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
-    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
-    joblib.dump(model, model_file)
-    joblib.dump(scaler, scaler_file)
-
-    return accuracy
-
-
+    
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
@@ -146,7 +97,8 @@ def predict_signal(ticker):
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
-
+    # Calculate the ticker's close price
+    close_price = data['Close'][-1]
     if data.empty:
         return None, 'No data available', None, None
 
@@ -172,7 +124,7 @@ def predict_signal(ticker):
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
-    return data['Close'][-1], signal, last_diff, last_diff_percent
+    return close_price, signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
