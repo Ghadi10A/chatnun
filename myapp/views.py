@@ -214,7 +214,7 @@ def predict_signals(request):
             data = get_historical_data(ticker)
             articles = get_news_articles(ticker)
             # diff, diff_pct, script, div = get_chart_data(ticker)
-            context = {'form': form, 'close_price': close_price, 'signal': signal, 'vwap': round(vwap, 2), 'ticker': ticker, 'accuracy': round(accuracy)*100, 'last_diff': round(last_diff, 2), 'last_diff_percent': round(last_diff_percent, 2), 'data': data, 'articles': articles, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES}
+            context = {'form': form, 'close_price': round(close_price, 2), 'signal': signal, 'vwap': round(vwap, 2), 'ticker': ticker, 'accuracy': round(accuracy)*100, 'last_diff': round(last_diff, 2), 'last_diff_percent': round(last_diff_percent, 2), 'data': data, 'articles': articles, 'new_conversation_id': new_conversation_id, 'LANGUAGES': settings.LANGUAGES}
             return render(request, 'prediction_results.html', context)
     else:
         form = PredictForm()
