@@ -208,7 +208,7 @@ def predict_signals(request):
     if request.method == 'POST':
         if form.is_valid():
             ticker = form.cleaned_data['ticker']
-            accuracy = train_and_save_model(ticker)
+            accuracy = train_and_save_model(ticker) 
             close_price, signal, last_diff, last_diff_percent = predict_signal(ticker)
             vwap = calculate_vwap(ticker)
             data = get_historical_data(ticker)
