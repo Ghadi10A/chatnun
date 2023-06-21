@@ -108,20 +108,19 @@ def predict_signal(ticker):
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, -1)
+    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
     
     # Determine the position based on the prediction
-    if np.any(prediction == 1):
+    if prediction == 1:
         signal = 'Buy'
-    elif np.any(prediction == -1):
+    elif prediction == 0:
         signal = 'Sell'
     else:
         signal = 'Neutral'
 
     # Calculate other metrics
-    
-    last_diff = close_price - data['Close'][-2]
-    last_diff_percent = (last_diff / data['Close'][-2]) * 100
+    last_diff = data['Close'][-1] - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
 
     return close_price, signal, last_diff, last_diff_percent
 
