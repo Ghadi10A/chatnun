@@ -97,7 +97,7 @@ def predict_signal(ticker):
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
     data = yf.Ticker(ticker).history(period="max")
-    
+    close_price = data['Close'][-1]
     if data.empty:
         return None, 'No data available', None, None
 
@@ -120,7 +120,6 @@ def predict_signal(ticker):
         signal = 'Neutral'
 
     # Calculate other metrics
-    close_price = data['Close'][-1]
     last_diff = close_price - data['Close'][-2]
     last_diff_percent = (last_diff / data['Close'][-2]) * 100
 
