@@ -51,6 +51,10 @@
     {% if user.profile.location %}
       <p style="font-size:11px;"><strong>{% trans "Location" %}:</strong> {{ user.profile.location }}</p>
     {% endif %}
+    {% if request.user.username == user.username %}
+      <p style="font-size:11px;"><strong>{% trans "Followers" %}:</strong> {{ user.followers.all|length }}</p>
+      <p style="font-size:11px;"><strong>{% trans "Following" %}:</strong> {{ user.following.all|length }}</p>
+    {% endif %}
       </div>
     </div>
   </div>
