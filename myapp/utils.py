@@ -145,7 +145,7 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="max")
+    data = yf.Ticker(ticker).history(period="1d")
 
     if data.empty:
         return None, 'No data available', None, None
@@ -172,7 +172,7 @@ def predict_signal(ticker):
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
-    return data['Close'], signal, last_diff, last_diff_percent
+    return data['Close'][-1], signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
