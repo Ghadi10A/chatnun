@@ -108,11 +108,11 @@ def predict_signal(ticker):
     # Define the target variable
     data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
 
-    # Use the model to make a prediction on the latest data
+    # Use the trained model to make a prediction on the latest data
     latest_data = data.iloc[-1]
     scaled_latest_data = scaler.transform(latest_data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']].values.reshape(1, -1))
     prediction = model.predict(scaled_latest_data)[0]
-
+    
     # Determine the position based on the prediction
     if prediction == 1:
         signal = 'Buy'
@@ -125,7 +125,7 @@ def predict_signal(ticker):
     last_diff = close_price - data['Close'][-2]
     last_diff_percent = (last_diff / data['Close'][-2]) * 100
 
-    return close_price, signal, last_diff, last_diff_percent    
+    return close_price, signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
