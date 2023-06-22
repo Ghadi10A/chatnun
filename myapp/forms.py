@@ -69,8 +69,6 @@ class PredictForm(forms.Form):
     ('COBALT', 'Cobalt ETF'),
     ('BABA', 'Alibaba'),
     ('MSFT', 'Microsoft'),
-    ('NFLX', 'Netflix'),
-    ('FB', 'Facebook'),
     ('TWTR', 'Twitter'),
     ('SNAP', 'Snap Inc'),
     ('PYPL', 'PayPal'),
@@ -80,12 +78,7 @@ class PredictForm(forms.Form):
     ('BAC', 'Bank of America'),
     ('C', 'Citigroup'),
     ('WFC', 'Wells Fargo'),
-    ('JNJ', 'Johnson & Johnson'),
-    ('PFE', 'Pfizer'),
-    ('MRK', 'Merck & Co.'),
-    ('NKE', 'Nike'),
     ('SBUX', 'Starbucks'),
-    ('MCD', 'McDonalds'),
     )
     
     ticker = forms.ChoiceField(choices=TICKER_CHOICES, label="")
