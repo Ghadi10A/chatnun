@@ -95,7 +95,7 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="max")
+    data = yf.Ticker(ticker).history(period="3d")
     close_price = data['Close'][-1]
     if data.empty:
         return None, 'No data available', None, None
@@ -112,10 +112,10 @@ def predict_signal(ticker):
     data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, -1)
     
     # Determine the position based on the prediction
-    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    if -1 in prediction:
+    prediction = model.predict(scaled_data)[0]
+    if prediction == 1:
         signal = 'Sell'
-    elif 1 in prediction:
+    elif prediction == 0:
         signal = 'Buy'
     else:
         signal = 'Neutral'
