@@ -80,15 +80,15 @@ def train_and_save_model(ticker):
     accuracy = model.score(X_test, y_test)
 
     # Save the trained model and the scaler
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
-    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'scaler.pkl')
     joblib.dump(model, model_file)
     joblib.dump(scaler, scaler_file)
 
     return accuracy
 def predict_signal(ticker):
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
-    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'scaler.pkl')
 
     # Load the trained model and the scaler
     model = joblib.load(model_file)
@@ -107,9 +107,9 @@ def predict_signal(ticker):
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
-    # Define the target variable based on gold falling logic
+    # Define the target variable based on NASDAQ 100 logic
     data['Next_Close'] = data['Close'].shift(-1)
-    data['Target'] = np.where(data['Next_Close'] < data['Close'], -1, 1)
+    data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, -1)
     
     # Determine the position based on the prediction
     prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
@@ -120,7 +120,7 @@ def predict_signal(ticker):
     else:
         signal = 'Neutral'
 
-    # Calculate other metrics based on gold falling logic
+    # Calculate other metrics based on NASDAQ 100 logic
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
