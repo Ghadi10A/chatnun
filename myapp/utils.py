@@ -95,7 +95,7 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="3d")
+    data = yf.Ticker(ticker).history(period="max")
     close_price = data['Close'][-1]
     if data.empty:
         return None, 'No data available', None, None
@@ -107,20 +107,20 @@ def predict_signal(ticker):
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
-    # Define the target variable based on NASDAQ 100 logic
+    # Define the target variable based on gold falling logic
     data['Next_Close'] = data['Close'].shift(-1)
-    data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, -1)
+    data['Target'] = np.where(data['Next_Close'] < data['Close'], -1, 1)
     
     # Determine the position based on the prediction
     prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    if 1 in prediction:
-        signal = 'Buy'
-    elif -1 in prediction:
+    if -1 in prediction:
         signal = 'Sell'
+    elif 1 in prediction:
+        signal = 'Buy'
     else:
         signal = 'Neutral'
 
-    # Calculate other metrics based on NASDAQ 100 logic
+    # Calculate other metrics based on gold falling logic
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
 
