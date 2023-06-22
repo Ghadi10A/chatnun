@@ -87,34 +87,37 @@ def train_and_save_model(ticker):
 
     return accuracy
 def predict_signal(ticker):
-    # Retrieve the historical data for the specified ticker
-    data = yf.download(tickers=ticker, period="1d")
-    
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
+
+    # Load the trained model and the scaler
+    model = joblib.load(model_file)
+    scaler = joblib.load(scaler_file)
+
+    # Retrieve the latest data for the specified ticker from Yahoo Finance
+    data = yf.Ticker(ticker).history(period="1d")
     if data.empty:
         return None, 'No data available', None, None
 
-    # Calculate the VWAP for the latest data
-    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
-
     # Pre-process the latest data using the loaded scaler
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+    latest_data = pd.DataFrame(scaled_data, columns=['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP'])
 
-    # Define the target variable
-    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    # Make a prediction on the latest data
+    prediction = model.predict(latest_data)[0]
 
     # Determine the position based on the prediction
-    if np.any(prediction == 1):
+    if prediction == 1:
         signal = 'Buy'
-    elif np.any(prediction == 0):
+    elif prediction == 0:
         signal = 'Sell'
     else:
         signal = 'Neutral'
 
     # Calculate other metrics
-    close_price = data['Close'][-1]
-    last_diff = close_price - data['Close'][-2]
-    last_diff_percent = last_diff / data['Close'][-2] * 100
+    close_price = data['Close'].iloc[-1]
+    last_diff = close_price - data['Close'].iloc[-2]
+    last_diff_percent = last_diff / data['Close'].iloc[-2] * 100
 
     return close_price, signal, last_diff, last_diff_percent
 # def train_and_save_model():
