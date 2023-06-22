@@ -95,7 +95,9 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="1d")  # Fetch only the latest day's data
+    data = yf.Ticker(ticker).history(period="1d") 
+    close_price = data['Close'].iloc[-1]
+    # Fetch only the latest day's data
     if data.empty:
         return None, 'No data available', None, None
 
@@ -118,7 +120,6 @@ def predict_signal(ticker):
         signal = 'Neutral'
 
     # Calculate other metrics
-    close_price = data['Close'].iloc[-1]
     last_diff = close_price - data['Close'].iloc[-2]
     last_diff_percent = last_diff / data['Close'].iloc[-2] * 100
 
