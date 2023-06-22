@@ -95,21 +95,24 @@ def predict_signal(ticker):
     scaler = joblib.load(scaler_file)
 
     # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="1d")
+    data = yf.Ticker(ticker).history(period="1d")  # Fetch only the latest day's data
     if data.empty:
         return None, 'No data available', None, None
 
+    # Calculate the VWAP for the latest data
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
+
     # Pre-process the latest data using the loaded scaler
     scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
-    latest_data = pd.DataFrame(scaled_data, columns=['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP'])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
-    # Make a prediction on the latest data
-    prediction = model.predict(latest_data)[0]
+    # Make predictions using the loaded model
+    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
 
     # Determine the position based on the prediction
-    if prediction == 1:
+    if np.any(prediction == 1):
         signal = 'Buy'
-    elif prediction == 0:
+    elif np.any(prediction == 0):
         signal = 'Sell'
     else:
         signal = 'Neutral'
