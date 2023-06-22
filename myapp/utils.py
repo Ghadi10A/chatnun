@@ -87,22 +87,11 @@ def train_and_save_model(ticker):
 
     return accuracy
 def predict_signal(ticker):
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_model.pkl')
-    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'{ticker}_scaler.pkl')
-
-    # Load the trained model and the scaler
-    model = joblib.load(model_file)
-    scaler = joblib.load(scaler_file)
-
-    # Retrieve the latest data for the specified ticker from Yahoo Finance
-    data = yf.Ticker(ticker).history(period="1d")
+    # Retrieve the historical data for the specified ticker
+    data = yf.download(tickers=ticker, period="1d")
+    
     if data.empty:
         return None, 'No data available', None, None
-
-    close_price = data['Close'].iloc[-1]
-    prev_close_price = data['Close'].iloc[-2]
-    last_diff = close_price - prev_close_price
-    last_diff_percent = (last_diff / prev_close_price) * 100
 
     # Calculate the VWAP for the latest data
     data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
@@ -112,7 +101,7 @@ def predict_signal(ticker):
     data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
     # Define the target variable
-    prediction = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
+    prediction = model.predict(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
 
     # Determine the position based on the prediction
     if np.any(prediction == 1):
@@ -122,9 +111,12 @@ def predict_signal(ticker):
     else:
         signal = 'Neutral'
 
+    # Calculate other metrics
+    close_price = data['Close'][-1]
+    last_diff = close_price - data['Close'][-2]
+    last_diff_percent = last_diff / data['Close'][-2] * 100
+
     return close_price, signal, last_diff, last_diff_percent
-
-
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
