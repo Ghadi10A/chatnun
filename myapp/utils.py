@@ -109,14 +109,14 @@ def predict_signal(ticker):
 
     # Define the target variable based on NASDAQ 100 logic
     data['Next_Close'] = data['Close'].shift(-1)
-    data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, -1)
+    data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, 0)
     
     # Determine the position based on the prediction
     prediction = model.predict(scaled_data)[0]
     if prediction == 1:
-        signal = 'Sell'
-    elif prediction == 0:
         signal = 'Buy'
+    elif prediction == 0:
+        signal = 'Sell'
     else:
         signal = 'Neutral'
 
