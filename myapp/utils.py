@@ -46,28 +46,45 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 def train_and_save_model(ticker):
-    data = yf.Ticker(ticker).history(period="max")
-    # Use pandas to preprocess the data
-    data['target'] = data['Close'].shift(-1) > data['Close']
-    data.dropna(inplace=True)
-    # Check if VWAP column exists
+    # Retrieve the data for the specified ticker from Yahoo Finance
+    data = yf.Ticker(ticker).history(period="4y")
+
+    # Calculate the VWAP
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
+
+    # Pre-process the data
+    #data.dropna(inplace=True)
+    scaler = StandardScaler()
+    scaled_data = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
+
+    # Define the target variable
+    data['Signal'] = np.where(data['Close'].shift(-1) > data['Close'], 1, 0)
+
     # Split the data into training and testing sets
-    X = data[['Open', 'High', 'Low', 'Close', 'Volume']]
-    y = data['target']
+    X = data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']]
+    y = data['Signal']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    # Train a Random Forest classifier on the training data
-    clf = RandomForestClassifier()
-    clf.fit(X_train, y_train)
-    y_pred = clf.predict(X_test)
-    accuracy = clf.score(X_test, y_pred)
-    # Save the trained model to a pickle file
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
-    with open(model_file, 'wb') as f:
-        pickle.dump(clf, f)
-    # Evaluate the accuracy of the model on the testing data
+
+    # Impute missing values in the training and testing data
+    imputer = SimpleImputer(strategy='mean')
+    X_train = imputer.fit_transform(X_train)
+    X_test = imputer.transform(X_test)
+
+    # Fit a histogram gradient boosting classifier to the training data
+    model = RandomForestClassifier()
+    model.fit(X_train, y_train)
+
+    # Evaluate the model on the testing data
+    accuracy = model.score(X_test, y_test)
+
+    # Save the trained model and the scaler
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'scaler.pkl')
+    joblib.dump(model, model_file)
+    joblib.dump(scaler, scaler_file)
+
     return accuracy
-
-
 def predict_signal(ticker):
     model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
     scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'scaler.pkl')
