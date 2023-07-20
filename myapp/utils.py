@@ -46,7 +46,7 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 def train_and_save_model(ticker):
-    data = yf.Ticker(ticker).history(period="1y")
+    data = yf.Ticker(ticker).history(period="max")
     # Use pandas to preprocess the data
     data['target'] = data['Close'].shift(-1) > data['Close']
     data.dropna(inplace=True)
