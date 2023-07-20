@@ -218,7 +218,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # Configure storage backend
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
+DEFAULT_CHARSET = 'utf-8'
 # Set the bucket name
 AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06'
 
