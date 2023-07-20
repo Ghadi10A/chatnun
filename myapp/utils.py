@@ -46,7 +46,7 @@ def calculate_vwap(ticker):
     data['vwap'] = (data['Volume'] * data['Close']).cumsum() / data['Volume'].cumsum()
     return data['vwap'][-1]
 def train_and_save_model(ticker):
-    data = yf.Ticker(ticker).history(period="3y")
+    data = yf.Ticker(ticker).history(period="1y")
     # Use pandas to preprocess the data
     data['target'] = data['Close'].shift(-1) > data['Close']
     data.dropna(inplace=True)
@@ -69,62 +69,44 @@ def train_and_save_model(ticker):
 
 
 def predict_signal(ticker):
-    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'predict_model.pkl')
+    model_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'model.pkl')
+    scaler_file = os.path.join(settings.BASE_DIR, 'myapp', 'models', f'scaler.pkl')
 
-    # Retrieve financial data for the instrument using yfinance
-    data = yf.Ticker(ticker).history(period="max", interval="1m")
-    data = data.dropna()
+    # Load the trained model and the scaler
+    model = joblib.load(model_file)
+    scaler = joblib.load(scaler_file)
 
-    # Scale the data
-    scaler = StandardScaler()
-    X = scaler.fit_transform(data[['Open', 'High', 'Low', 'Close']])
-    y = data['Close'].shift(-1) > data['Close']
+    # Retrieve the latest data for the specified ticker from Yahoo Finance
+    data = yf.Ticker(ticker).history(period="5d")
+    close_price = data['Close'][-1]
+    if data.empty:
+        return None, 'No data available', None, None
 
-    # Split the data into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+    # Calculate the VWAP for the latest data
+    data['VWAP'] = (data['Close'] * data['Volume']).cumsum() / data['Volume'].cumsum()
 
-    # Train the model on the training set
-    model = RandomForestClassifier()
-    model.fit(X_train, y_train)
+    # Pre-process the latest data using the loaded scaler
+    scaled_data = scaler.transform(data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']])
+    data[['Open', 'High', 'Low', 'Close', 'Volume', 'VWAP']] = scaled_data
 
-    # Evaluate the model on the testing set using cross-validation if the testing set has sufficient samples
-    if len(X_test) < 5:
-        accuracy = 1.0
-    else:
-        scores = cross_val_score(model, X_test, y_test, cv=5)
-        accuracy = scores.mean()
-
-    # Make a prediction
-    prediction = model.predict([X[-1]])[0]
-
-    # Save the trained model to a pickle file
-    with open(model_file, 'wb') as f:
-        pickle.dump(model, f)
-
-    # Load the trained model
-    with open(model_file, 'rb') as f:
-        model = pickle.load(f)
-
-    # Determine the prediction signal
-    if prediction == True:
-        signal = 'Sell'
-    elif prediction == False:
+    # Define the target variable based on NASDAQ 100 logic
+    data['Next_Close'] = data['Close'].shift(-1)
+    data['Target'] = np.where(data['Next_Close'] > data['Close'], 1, 0)
+    
+    # Determine the position based on the prediction
+    prediction = model.predict(scaled_data)[0]
+    if prediction == 1:
         signal = 'Buy'
+    elif prediction == 0:
+        signal = 'Sell'
     else:
         signal = 'Neutral'
 
-    # Use the trained model to make predictions on the latest data
-    data = yf.Ticker(ticker).history(period="max")
-    close_price = data['Close'][-1]
-    X_latest = data[['Open', 'High', 'Low', 'Close']]
-    y_pred = model.predict(X_latest)
-
-    # Calculate other metrics
+    # Calculate other metrics based on NASDAQ 100 logic
     last_diff = data['Close'][-1] - data['Close'][-2]
     last_diff_percent = last_diff / data['Close'][-2] * 100
-    # latest_target = close_price < (latest_close - last_diff)
 
-    return close_price, signal, accuracy, last_diff, last_diff_percent
+    return close_price, signal, last_diff, last_diff_percent
 # def train_and_save_model():
 #     # Load the stock data
 #     stock_data = yf.Ticker('AAPL').history(period='max')
