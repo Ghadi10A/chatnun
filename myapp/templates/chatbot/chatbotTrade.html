@@ -99,14 +99,79 @@
           <script>
 
 function scrollToBottom() {
-  var container = document.getElementById("message-form");
-  window.scrollTo(-1, document.body.scrollHeight);
+    var container = document.getElementById("message-form");
+    window.scrollTo(-1, document.body.scrollHeight);
+  }
 
-}
+  window.onload = function () {
+    scrollToBottom();
+  };
 
-window.onload = function() {
-  scrollToBottom();
-};
+  function showChatbotResponse(timestamp, prompt, response) {
+    var savedConversationsContainer = document.getElementById("saved-conversations-container");
+
+    var chatItem = document.createElement("li");
+    chatItem.classList.add("list-group-item", "bg-primary", "text-white");
+    chatItem.style.marginBottom = "10px";
+    chatItem.style.backgroundColor = "#007aaf !important";
+    chatItem.style.color = "#fff !important";
+
+    var chatTime = document.createElement("p");
+    chatTime.textContent = new Date(timestamp).toLocaleString();
+
+    var youLabel = document.createElement("strong");
+    youLabel.style.fontWeight = "bold";
+    youLabel.textContent = "{% trans "You" %}: ";
+
+    var chatPrompt = document.createElement("span");
+    chatPrompt.textContent = prompt;
+
+    var chatbotLabel = document.createElement("strong");
+    chatbotLabel.style.fontWeight = "bold";
+    chatbotLabel.textContent = "{% trans "Chatbot" %}: ";
+
+    var chatResponse = document.createElement("span");
+    chatResponse.textContent = response;
+
+    chatItem.appendChild(chatTime);
+    chatItem.appendChild(document.createElement("br"));
+    chatItem.appendChild(youLabel);
+    chatItem.appendChild(chatPrompt);
+    chatItem.appendChild(document.createElement("br"));
+    chatItem.appendChild(chatbotLabel);
+    chatItem.appendChild(chatResponse);
+
+    savedConversationsContainer.appendChild(chatItem);
+  }
+
+  document.getElementById("message-form").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var prompt = document.getElementById("chat-prompt").value;
+    if (prompt.trim()) {
+      var formData = new FormData(event.target);
+      fetch(event.target.action, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-CSRFToken": "{{ csrf_token }}"
+        }
+      }).then(function (response) {
+        return response.text();
+      }).then(function (html) {
+        // Render the chatbot response
+        showChatbotResponse(new Date().toISOString(), prompt, html);
+
+        // Scroll to the bottom
+        scrollToBottom();
+
+        // Clear the input
+        document.getElementById("chat-prompt").value = "";
+
+        // Hide the loading spinner
+        hideLoadingSpinner();
+      });
+    }
+  });
           </script>
       </div>
     </div>
