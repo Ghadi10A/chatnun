@@ -1055,28 +1055,25 @@ def update_post_group(request, post_id):
         form = GroupPostForm(instance=post)
         context = {'form': form, 'new_conversation_id': new_conversation_id}
         return render(request, 'modals/edit_post.html', context)
-
-
-@login_required
-def delete_post_group(request, post_id):
+def delete_post(request, post_id):
     new_conversation_id = str(uuid.uuid4())
-    post = get_object_or_404(GroupPost, id=post_id, author=request.user)
+    post = get_object_or_404(Post, id=post_id, author=request.user)
 
     if request.method == 'POST':
-        group = post.group  # Get the associated group
         post.delete()
         messages.success(request, 'Your post has been deleted!')
-        return redirect('group_detail', name=group.name, pk=group.pk)
+        return redirect('show_profile', username=request.user)
 
     data = {
         'post': post,
         'new_conversation_id': new_conversation_id,
+
     }
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         html = render_to_string('delete_post_modal.html', data, request=request)
-        return JsonResponse({'html': html})
-    return render(request, 'modals/delete_post.html', data)
+        return JsonResponse({'html': html})    
+    return render(request, 'modals/delete_post.html', data) 
 
 @login_required
 def edit_comment_group(request, post_id, comment_id):
