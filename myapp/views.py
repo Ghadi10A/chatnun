@@ -1010,20 +1010,28 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
 
     if request.method == 'POST':
+        # Handle image deletion if it exists
+        try:
+            # Assuming 'image' is the related field for the image in your Post model
+            post.image.delete()  # This will delete the associated image file
+        except ObjectDoesNotExist:
+            pass  # If the image does not exist, just continue with post deletion
+
+        # Now delete the post
         post.delete()
+
         messages.success(request, 'Your post has been deleted!')
         return redirect('show_profile', username=request.user)
 
     data = {
         'post': post,
         'new_conversation_id': new_conversation_id,
-
     }
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         html = render_to_string('delete_post_modal.html', data, request=request)
         return JsonResponse({'html': html})    
-    return render(request, 'modals/delete_post.html', data) 
+    return render(request, 'modals/delete_post.html', data)
 @login_required
 def update_post_group(request, post_id):
     new_conversation_id = str(uuid.uuid4())
