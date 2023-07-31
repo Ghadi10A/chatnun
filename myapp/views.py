@@ -1004,28 +1004,21 @@ def update_post(request, post_id):
         form = PostForm(instance=post)
         context = {'form': form, 'new_conversation_id': new_conversation_id}
         return render(request, 'modals/edit_post.html', context)
+
 @login_required
 def delete_post(request, post_id):
     new_conversation_id = str(uuid.uuid4())
     post = get_object_or_404(Post, id=post_id, author=request.user)
 
     if request.method == 'POST':
-        # Handle image deletion if it exists
-        try:
-            # Assuming 'image' is the related field for the image in your Post model
-            post.image.delete()  # This will delete the associated image file
-        except ObjectDoesNotExist:
-            pass  # If the image does not exist, just continue with post deletion
-
-        # Now delete the post
         post.delete()
-
         messages.success(request, 'Your post has been deleted!')
         return redirect('show_profile', username=request.user)
 
     data = {
         'post': post,
         'new_conversation_id': new_conversation_id,
+
     }
 
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
