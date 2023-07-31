@@ -1004,7 +1004,6 @@ def update_post(request, post_id):
         form = PostForm(instance=post)
         context = {'form': form, 'new_conversation_id': new_conversation_id}
         return render(request, 'modals/edit_post.html', context)
-
 @login_required
 def delete_post(request, post_id):
     new_conversation_id = str(uuid.uuid4())
@@ -1024,7 +1023,7 @@ def delete_post(request, post_id):
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         html = render_to_string('delete_post_modal.html', data, request=request)
         return JsonResponse({'html': html})    
-    return render(request, 'modals/delete_post.html', data)
+    return render(request, 'modals/delete_post.html', data) 
 @login_required
 def update_post_group(request, post_id):
     new_conversation_id = str(uuid.uuid4())
