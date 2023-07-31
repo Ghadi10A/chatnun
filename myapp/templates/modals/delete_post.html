@@ -102,7 +102,7 @@
   <form method="POST">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger btn-sm">{% trans "Delete" %}</button>
-    <a href="{% url 'show_profile' username=request.user %}" class="btn btn-secondary">{% trans "Cancel" %}</a>
+    <a href="{% url 'show_profile' username=request.user %}" class="btn btn-secondary btn-sm">{% trans "Cancel" %}</a>
   </form>
 </div>
 </div>
