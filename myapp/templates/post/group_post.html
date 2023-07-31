@@ -4,39 +4,8 @@
 {% load emoji_reactions_tags %}
 {% block content %}
 <style>
-        @media (max-width: 767px) {
-                .col-md-2,
-    .col-md-10 {
-      width: 100%;
-      display: block;
-    }
+@media (max-width: 767px) {
 
-    .comment-info {
-      margin-top: 10px;
-    }
-
-    .profile-image {
-      width: 40px;
-      height: 40px;
-    }
-
-    .comment-info span {
-      font-size: 12px;
-    }
-
-    .comment-info small {
-      font-size: 8px;
-    }
-
-    .dropdown {
-      float: none;
-      text-align: right;
-    }
-
-    .dropdown-menu {
-      position: absolute;
-      right: 0;
-    }
 .col-md-4 {
 flex: 0 0 100%;
 max-width: 100%;
@@ -350,6 +319,8 @@ padding-bottom: 8px;
           </div>
         </div>
         <div class="col-md-10">
+           <div class="d-flex flex-row align-items-center">
+          <div class="col">      
           {% if request.user == comment.author %}
             <div class="dropdown" style="float: right;">
               <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -363,9 +334,10 @@ padding-bottom: 8px;
               </div>
             </div>
           {% endif %}
-          <div>
+          </div>       
+          <div class="col">
             <br>
-          <p style="font-size: 16px">{{ comment.comment }}</p>
+          <p style="font-size: 11px">{{ comment.comment }}</p>
         </div>
           
         </div>
