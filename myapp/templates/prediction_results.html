@@ -6,106 +6,29 @@
 <style>
 /* Global styles */
 /* Add any global styles here */
-
-@media (max-width: 767px) {
-  /* Styles for small screens */
-
-  .col-md-4,
+ @media (max-width: 767px) {
+  .col-md-4 {
+    width: 100%;
+    margin-top:30px;
+    margin-bottom:20px;
+  }
+  
   .col-md-7 {
     width: 100%;
-    margin-top: 10px;
+    margin-bottom:50px;
   }
-
-  .card-body {
-    padding: 0.5rem;
-  }
-
-  .profile-image {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-  }
-
-  #news-ticker {
-    background: #eee;
-    height: auto;
-  }
-
-  #news-ticker ul {
-    margin-top: 10px;
-    padding-left: 10px;
-  }
-
+  
   .tradingview-widget-container {
-    width: 100%;
-    margin: 10px auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    width: 100% !important;
+    max-width: 100% !important;
   }
-
-  .tradingview-widget-container__widget,
-  .tradingview-widget-container .tradingview-widget-container__widget {
-    width: 100%;
-  }
-
-  .tradingview-widget-container .tradingview-widget-container__widget,
-  .tradingview-widget-container #tradingview_speedometer,
-  .tradingview-widget-container #tradingview_5a5e5 {
-    height: auto !important;
-    min-height: 300px;
-  }
-
-  .table {
-    width: 100%;
-    margin-bottom: 1rem;
-    color: #212529;
-    border-collapse: collapse;
-  }
-
-  .table th,
+ .table th,
   .table td {
-    padding: 0.5rem;
+    padding: 0.25rem;
+    font-size: 10px;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
   }
-
-  .alert {
-    position: relative;
-    padding: 0.5rem 1rem;
-    margin-bottom: 0.5rem;
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
-  }
-
-  /* Adjust text size and alignment */
-  .text-center {
-    text-align: center;
-    font-size: 14px;
-  }
-
-  .text-primary {
-    color: #007bff !important;
-  }
-
-  .text-secondary {
-    color: #6c757d !important;
-  }
-
-  .text-success {
-    color: #28a745 !important;
-  }
-
-  .text-danger {
-    color: #dc3545 !important;
-  }
-
-  /* Adjust button width */
-  .btn-sm {
-    width: 100%;
-  }
-
-  /* More adjustments as needed */
 }
 </style>
 <div class="row">
