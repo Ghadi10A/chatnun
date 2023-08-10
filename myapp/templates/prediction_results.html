@@ -249,20 +249,20 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">{% trans "Close Price" %}</th>
-        <th scope="col">{% trans "Signal" %}</th>
-        <th scope="col">{% trans "Precision" %}</th>
-        <th scope="col">{% trans "Last Difference Change" %}</th>
-        <th scope="col">{% trans "Last Difference Change Percent" %}</th>
+        <th scope="col" style="font-size:11px;">{% trans "Close Price" %}</th>
+        <th scope="col style="font-size:11px;"">{% trans "Signal" %}</th>
+        <th scope="col" style="font-size:11px;">{% trans "Precision" %}</th>
+        <th scope="col" style="font-size:11px;">{% trans "Last Difference Change" %}</th>
+        <th scope="col" style="font-size:11px;">{% trans "Last Difference Change Percent" %}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td>{{ close_price }}$</td>
-        <td class="{% if signal == 'Buy' %}text-success{% elif signal == 'Sell' %}text-danger{% else %}text-secondary{% endif %}">{% if signal == 'Buy' %}{% trans "Buy" %}{% elif  signal == 'Sell' %}{% trans "Sell" %}{% endif %}</td>
-        <td {% if accuracy < 0.5 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ accuracy }}%</td>
-        <td {% if last_diff < 0 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ last_diff }}</td>
-        <td {% if last_diff_percent < 0 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ last_diff_percent }}%</td>
+        <td style="font-size:11px;">{{ close_price }}$</td>
+        <td style="font-size:11px;" class="{% if signal == 'Buy' %}text-success{% elif signal == 'Sell' %}text-danger{% else %}text-secondary{% endif %}">{% if signal == 'Buy' %}{% trans "Buy" %}{% elif  signal == 'Sell' %}{% trans "Sell" %}{% endif %}</td>
+        <td style="font-size:11px;" {% if accuracy < 0.5 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ accuracy }}%</td>
+        <td style="font-size:11px;" {% if last_diff < 0 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ last_diff }}</td>
+        <td style="font-size:11px;" {% if last_diff_percent < 0 %} class="text-danger" {% else %} class="text-success" {% endif %}>{{ last_diff_percent }}%</td>
       </tr>
     </tbody>
   </table>
