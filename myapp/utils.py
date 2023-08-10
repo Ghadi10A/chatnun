@@ -113,9 +113,9 @@ def predict_signal(ticker):
     # Determine the position based on the prediction
     prediction = model.predict(scaled_data)[0]
     if prediction == 1:
-        signal = 'Buy'
-    elif prediction == 0:
         signal = 'Sell'
+    elif prediction == 0:
+        signal = 'Buy'
     else:
         signal = 'Neutral'
 
