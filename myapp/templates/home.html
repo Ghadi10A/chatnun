@@ -329,7 +329,10 @@
       </div>
     </div>
   </div>
-  
+  <div class="video-container">
+        <video id="video-element" autoplay style="display: none;"></video>
+        <button id="record-button">Start Recording</button>
+      </div>
   <div class="card-footer">
     <button type="submit" class="btn btn-warning btn-sm w-100" onclick="showLoadingSpinner()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
@@ -486,6 +489,48 @@
   {% empty %}
   <p>No posts yet.</p>
   {% endfor %}
+            <script>
+  const videoElement = document.getElementById('video-element');
+  const recordButton = document.getElementById('record-button');
+  let mediaRecorder;
+  let recordedChunks = [];
+
+  recordButton.addEventListener('click', async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    videoElement.srcObject = stream;
+
+    mediaRecorder = new MediaRecorder(stream);
+    
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+      }
+    };
+
+    mediaRecorder.onstop = () => {
+      const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+      const videoUrl = URL.createObjectURL(videoBlob);
+      // You can use the videoUrl to display the recorded video to the user
+    };
+
+    mediaRecorder.start();
+    recordButton.textContent = 'Recording...';
+
+    // Set a timer to stop recording after 5 minutes (300000 ms)
+    setTimeout(() => {
+      mediaRecorder.stop();
+      recordButton.textContent = 'Start Recording';
+    }, 300000); // 5 minutes in milliseconds
+  });
+
+  // Implement stopping the recording
+  function stopRecording() {
+    if (mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      recordButton.textContent = 'Start Recording';
+    }
+  }
+</script>
 </div>
     </div>
 </section>
