@@ -330,15 +330,66 @@
     </div>
   </div>
   <div class="video-container">
-        <video id="video-element" autoplay></video>
-        <button id="record-button" class="btn-outline-dark btn-sm">short</button>
-  </div>
+          <video id="video-element" autoplay style="display: none; max-width: 100%; height: auto;"></video>
+        </div>
+        <button id="record-button" class="btn btn-primary mt-2">Short</button>
+        <button id="stop-button" class="btn btn-danger mt-2" style="display: none;">Stop</button>
   <div class="card-footer">
     <button type="submit" class="btn btn-warning btn-sm w-100" onclick="showLoadingSpinner()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
 </svg></button>
   </div>
 </form>
+                <script>
+    const videoElement = document.getElementById('video-element');
+    const recordButton = document.getElementById('record-button');
+    const stopButton = document.getElementById('stop-button');
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    recordButton.addEventListener('click', async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1080, height: 1920 }, audio: true });
+      videoElement.srcObject = stream;
+      videoElement.style.display = 'block';
+      stopButton.style.display = 'block';
+      recordButton.style.display = 'none';
+
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      };
+
+      mediaRecorder.onstop = async () => {
+        const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+        const videoUrl = URL.createObjectURL(videoBlob);
+
+        // Here, you can save the videoUrl as a post, e.g., send it to a server
+        // or display it in a video player on the page
+      };
+
+      mediaRecorder.start();
+    });
+
+    stopButton.addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        recordButton.style.display = 'block';
+        stopButton.style.display = 'none';
+      }
+    });
+
+    // Stop recording after 5 seconds
+    setTimeout(() => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        recordButton.style.display = 'block';
+        stopButton.style.display = 'none';
+      }
+    }, 5000); // 5 seconds in milliseconds
+  </script>
       </div>
         </div>
       {% for post in posts %}
@@ -489,48 +540,7 @@
   {% empty %}
   <p>No posts yet.</p>
   {% endfor %}
-            <script>
-  const videoElement = document.getElementById('video-element');
-  const recordButton = document.getElementById('record-button');
-  let mediaRecorder;
-  let recordedChunks = [];
-
-  recordButton.addEventListener('click', async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    videoElement.srcObject = stream;
-
-    mediaRecorder = new MediaRecorder(stream);
-    
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-      }
-    };
-
-    mediaRecorder.onstop = () => {
-      const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
-      const videoUrl = URL.createObjectURL(videoBlob);
-      // You can use the videoUrl to display the recorded video to the user
-    };
-
-    mediaRecorder.start();
-    recordButton.textContent = 'Recording...';
-
-    // Set a timer to stop recording after 5 minutes (300000 ms)
-    setTimeout(() => {
-      mediaRecorder.stop();
-      recordButton.textContent = 'Start Recording';
-    }, 5000); // 5 minutes in milliseconds
-  });
-
-  // Implement stopping the recording
-  function stopRecording() {
-    if (mediaRecorder.state === 'recording') {
-      mediaRecorder.stop();
-      recordButton.textContent = 'Start Recording';
-    }
-  }
-</script>
+            
 </div>
     </div>
 </section>
