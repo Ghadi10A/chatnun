@@ -548,11 +548,7 @@ def home(request, post_id=None):
                 post.created_at = timezone.now()
                 post.save()
                 # Save the recorded video as a file
-                video_file = request.FILES.get('video', None)
-                if video_file:
-                    post.video = video_file
-                    post.created_at = timezone.now(
-                    post.save()
+                
                 # Create notifications for followers
                 for follower in request.user.followers.all():
                     Notification.objects.create(
