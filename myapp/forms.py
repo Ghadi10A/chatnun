@@ -192,7 +192,7 @@ class PostForm(forms.ModelForm):
         'style': 'font-size: 80%;',
         'id': 'id_video',  # Add the ID attribute
     }), required=False)
-
+    
     sound = forms.FileField(widget=forms.ClearableFileInput(attrs={
         'class': 'form-control-file my-2',
         'style': 'font-size: 80%;',
