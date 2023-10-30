@@ -104,10 +104,10 @@ ASGI_APPLICATION = 'predictMarkets.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd7f8rqmt3g6vk6',
-        'USER': 'tgjmzvivuenzpj',
-        'PASSWORD': 'ce5308e80b98ffa36c801aa819faac8d4f17729db81a2bf5fa613329cc0c5f32',
-        'HOST': 'ec2-3-218-171-44.compute-1.amazonaws.com',
+        'NAME': 'dcur28sjvd8pja',
+        'USER': 'htqwqtianuzkye',
+        'PASSWORD': '581f6a6dc450713a11bb9c0a2384a9dbe0b713a68caa6a4e8a48943c3546181d',
+        'HOST': 'ec2-34-242-199-141.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -220,11 +220,11 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_CHARSET = 'utf-8'
 # Set the bucket name
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-b065505d-e62c-48c1-aa48-89f10be11f06'
+AWS_STORAGE_BUCKET_NAME = 'bucketeer-1fab3236-3416-4351-8d18-a154cda841b8'
 
 # Set the AWS access keys (replace with your own credentials)
-AWS_ACCESS_KEY_ID = 'AKIARVGPJVYVEQ2BFMNR'
-AWS_SECRET_ACCESS_KEY = 'NVdhrQDI/RuxtGLX2f0TSUVi7ut2ATCRlz6BgNXa'
+AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSYX5WZ3XUB '
+AWS_SECRET_ACCESS_KEY = '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'
 
 # Set the static and media URLs
 STATIC_URL = '/static/'
