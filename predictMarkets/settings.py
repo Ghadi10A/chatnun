@@ -35,7 +35,7 @@ DEBUG = True
 #DEBUG = config('DEBUG', cast=bool)
 #PREPEND_WWW = True
 #BASE_URL = "chatnun-06e9707ed490.herokuapp.comwww.chatnun.com"
-ALLOWED_HOSTS = ['66.96.162.150', 'chatnun.com', 'www.chatnun.com']
+ALLOWED_HOSTS = ['66.96.162.150', 'chatnun.com', 'www.chatnun.com', 'chatnun-fb94fb500daa.herokuapp.com']
 
 
 # Application definition
@@ -104,10 +104,10 @@ ASGI_APPLICATION = 'predictMarkets.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd7r6kni2p1bhmr',
-        'USER': 'iyooqbcrnissev',
-        'PASSWORD': 'c6afaaa7dc320454e14acaaf777c9bea90a41fcb01b781409b5992358e4085ba',
-        'HOST': 'ec2-54-205-67-130.compute-1.amazonaws.com',
+        'NAME': 'd5n65q1qnffnip',
+        'USER': 'zqvxbzurpmfbcl',
+        'PASSWORD': 'f392e53841654e83ec0e961ea10277b97253dcb53ad4aa2a2823d812c210559e',
+        'HOST': 'ec2-52-3-81-13.compute-1.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -220,11 +220,11 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_CHARSET = 'utf-8'
 # Set the bucket name
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-80cf0ca6-a8fa-4b9d-9e3b-a8942f743ffe'
+AWS_STORAGE_BUCKET_NAME = 'bucketeer-b6cdc071-a444-4bcf-8722-cfcae4849e12'
 
 # Set the AWS access keys (replace with your own credentials)
-AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSYRZGRJWYO'
-AWS_SECRET_ACCESS_KEY = 'aXT8n4Tunvz/6+H8RnFcAbwCsKNPe9MQOQ0vQba3'
+AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSYVFLNX3EY'
+AWS_SECRET_ACCESS_KEY = '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'
 
 # Set the static and media URLs
 STATIC_URL = '/static/'
