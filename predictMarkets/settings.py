@@ -31,10 +31,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 #DEBUG = config('DEBUG', cast=bool)
-#PREPEND_WWW = True
-#BASE_URL = "www.chatnun.com"
+PREPEND_WWW = True
+BASE_URL = "www.chatnun.com"
 ALLOWED_HOSTS = ['predict-markets-4c338fe7cb05.herokuapp.com', '66.96.162.150', 'chatnun.com', 'www.chatnun.com']
 
 
