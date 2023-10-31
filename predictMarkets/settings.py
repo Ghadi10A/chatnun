@@ -34,7 +34,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 #DEBUG = config('DEBUG', cast=bool)
 PREPEND_WWW = True
-#BASE_URL = "https://www.chatnun-2f01d515f89a.herokuapp.com"
+BASE_URL = "www.chatnun-2f01d515f89a.herokuapp.com"
 ALLOWED_HOSTS = ['www.chatnun.com', '66.96.162.150', 'chatnun.com', 'chatnun-2f01d515f89a.herokuapp.com']
 
 
