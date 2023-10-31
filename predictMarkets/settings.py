@@ -31,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 #DEBUG = config('DEBUG', cast=bool)
 #PREPEND_WWW = True
 #BASE_URL = "chatnun-06e9707ed490.herokuapp.comwww.chatnun.com"
