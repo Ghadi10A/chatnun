@@ -34,8 +34,8 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 #DEBUG = config('DEBUG', cast=bool)
 #PREPEND_WWW = True
-#BASE_URL = "chatnun-06e9707ed490.herokuapp.comwww.chatnun.com"
-ALLOWED_HOSTS = ['66.96.162.150', 'chatnun.com', 'www.chatnun.com', 'chatnun-fb94fb500daa.herokuapp.com']
+#BASE_URL = "****************"
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -104,10 +104,10 @@ ASGI_APPLICATION = 'predictMarkets.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd5n65q1qnffnip',
-        'USER': 'zqvxbzurpmfbcl',
-        'PASSWORD': 'f392e53841654e83ec0e961ea10277b97253dcb53ad4aa2a2823d812c210559e',
-        'HOST': 'ec2-52-3-81-13.compute-1.amazonaws.com',
+        'NAME': '************',
+        'USER': '************',
+        'PASSWORD': '****************',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -158,9 +158,9 @@ LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '844297491487-51hilep4qef7jvd9bcqhra5sa94anq8i.apps.googleusercontent.com',
-            'secret': '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',
-            'key': 'AIzaSyDP8W_Uss_MjE5zZvYbiOv6Xpre1qm9zrw'
+            'client_id': '**************************',
+            'secret': '*****************************',
+            'key': '********************************'
         },
         'SCOPE': [
             'profile',
@@ -172,8 +172,8 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'microsoft': {
         'APP': {
-            'client_id': '44ee508c-1d72-4fe6-9ec3-e8e3ac96baf2',
-            'secret': '0Ng8Q~H6uKeh06WW56-xHUKcTB0bCQyc6eU.OauO',
+            'client_id': '***********************',
+            'secret': '**************************',
             'tenant': 'common',  # Use 'common' for multi-tenant apps
         },
         'SCOPE': [
@@ -217,14 +217,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 # Configure storage backend
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DEFAULT_FILE_STORAGE = '*********************'
 DEFAULT_CHARSET = 'utf-8'
 # Set the bucket name
-AWS_STORAGE_BUCKET_NAME = 'bucketeer-b6cdc071-a444-4bcf-8722-cfcae4849e12'
+AWS_STORAGE_BUCKET_NAME = '*********************'
 
 # Set the AWS access keys (replace with your own credentials)
-AWS_ACCESS_KEY_ID = 'AKIAVZH4SBSYVFLNX3EY'
-AWS_SECRET_ACCESS_KEY = 'T/6r5fN3YXgGMweDrUhRzIcaOcw7UlxqrJGhQwB3'
+AWS_ACCESS_KEY_ID = '********************'
+AWS_SECRET_ACCESS_KEY = '*****************'
 
 # Set the static and media URLs
 STATIC_URL = '/static/'
@@ -235,19 +235,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Set the static and media file storage locations
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = '********************'
+DEFAULT_FILE_STORAGE = '*******************'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'contact@chatnun.com' # Replace with your email address
-EMAIL_HOST_PASSWORD = 'Ghadi03@' # Replace with your email password
+EMAIL_HOST_USER = 'contact@******.com' # Replace with your email address
+EMAIL_HOST_PASSWORD = '*********' # Replace with your email password
 EMAIL_USE_OAUTH = True
-EMAIL_CLIENT_ID = '844297491487-6emc7ua3op90mil7so3rbct2uo9sec4c.apps.googleusercontent.com'  # Obtained from the downloaded credentials file
-EMAIL_CLIENT_SECRET = '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'  # Obtained from the downloaded credentials file
-EMAIL_REFRESH_TOKEN = '1//04CvSYqLBFOyrCgYIARAAGAQSNwF-L9IrZTg74zVRefuQPo0qXZTWPK7GC4dWsQa_QXeblSMXHCQT-27RPkeaS9FwpLL5iYZDr84'
+EMAIL_CLIENT_ID = '**************************'  # Obtained from the downloaded credentials file
+EMAIL_CLIENT_SECRET = '**********************'  # Obtained from the downloaded credentials file
+EMAIL_REFRESH_TOKEN = '**********************'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 1025
@@ -256,8 +256,8 @@ EMAIL_REFRESH_TOKEN = '1//04CvSYqLBFOyrCgYIARAAGAQSNwF-L9IrZTg74zVRefuQPo0qXZTWP
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-# EMAIL_HOST_USER = 'b73eb5816e9cfc'
-# EMAIL_HOST_PASSWORD = '77774fb61fa88b'
+# EMAIL_HOST_USER = '***********'
+# EMAIL_HOST_PASSWORD = '**************'
 # EMAIL_PORT = '2525'
 # EMAIL_USE_TLS = True
 # EMAIL_USE_SSL = False
@@ -269,20 +269,20 @@ EMAIL_REFRESH_TOKEN = '1//04CvSYqLBFOyrCgYIARAAGAQSNwF-L9IrZTg74zVRefuQPo0qXZTWP
 
 # MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # django_heroku.settings(locals())
-# SENDGRID_API_KEY='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'
+# SENDGRID_API_KEY='*********************'
 # EMAIL_BACKEND = 'sgbackend.SendGridBackend'
-# OPENAI_API_KEY = "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"
+# OPENAI_API_KEY = "***********************"
 
 LOCATION_FIELD_PATH = STATIC_URL + 'location_field'
 LOCATION_FIELD = {
 'map.provider': 'openstreetmap',
 }
-ADMIN_EMAIL = 'contact@chatnun.com'
+ADMIN_EMAIL = 'contact@***********.com'
 LANGUAGE_COOKIE_NAME = 'django_language'
 
-STRIPE_PUBLISHABLE_KEY = 'pk_live_51MvUwGCTZjMJ7NHQCedzVz1S81Wu4lfjKPk95ZhphhLZjkkbzEctYPw5XX9z8AuN89LBMkpqj45LtR7tpAM6oySr00Tf6XV6q9'
-STRIPE_SECRET_KEY = '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'
-STRIPE_PRICE_3MONTHS = 'price_1N3jftCTZjMJ7NHQflijKnX1'
-STRIPE_PRICE_6MONTHS = 'price_1N3jftCTZjMJ7NHQkG1bZGvP'
-STRIPE_PRICE_1YEAR = 'price_1N3jftCTZjMJ7NHQt9GXAzSK'
+STRIPE_PUBLISHABLE_KEY = '********************************************************************************************************'
+STRIPE_SECRET_KEY = '*************************************************************************************************************'
+STRIPE_PRICE_3MONTHS = '******************************'
+STRIPE_PRICE_6MONTHS = '******************************'
+STRIPE_PRICE_1YEAR = '********************************'
 
