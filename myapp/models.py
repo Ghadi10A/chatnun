@@ -10,11 +10,7 @@ class Prediction(models.Model):
     app_label = 'myapp'
 
     INSTRUMENTS = [
-        ('nasdaq100', 'NASDAQ 100'),
-        ('tesla', 'Tesla'),
-        ('google', 'Google'),
-        ('apple', 'Apple'),
-        ('amazon', 'Amazon'),
+        
         ('btc', 'Bitcoin'),
         ('gold', 'Gold'),
         ('oil', 'Oil'),
